@@ -213,16 +213,36 @@
 	};
 
 	const onSelect = async (e) => {
-		const { type, data } = e;
+		const { type, data, features, autoSubmit } = e;
 
-		if (type === 'prompt') {
-			// Handle prompt selection
-			messageInput?.setText(data, async () => {
-				if (!($settings?.insertSuggestionPrompt ?? false)) {
-					await tick();
-					submitPrompt(prompt);
-				}
-			});
+		// Apply features if provided
+		if (features) {
+			if (features.webSearch !== undefined) {
+				webSearchEnabled = features.webSearch;
+			}
+			if (features.imageGeneration !== undefined) {
+				imageGenerationEnabled = features.imageGeneration;
+			}
+			if (features.codeInterpreter !== undefined) {
+				codeInterpreterEnabled = features.codeInterpreter;
+			}
+		}
+
+		if (type === 'focus') {
+			const chatInput = document.getElementById('chat-input');
+			chatInput?.focus();
+		} else if (type === 'prompt') {
+			if (autoSubmit && data) {
+				// Auto-submit: send the prompt directly without setting input
+				submitPrompt(data);
+				// Input stays empty since we didn't set it
+			} else {
+				// Not auto-submit: load prompt into input for user to edit
+				messageInput?.setText(data);
+				await tick();
+				const chatInput = document.getElementById('chat-input');
+				chatInput?.focus();
+			}
 		}
 	};
 
