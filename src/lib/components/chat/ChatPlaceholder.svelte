@@ -11,6 +11,9 @@
 	import { sanitizeResponseContent } from '$lib/utils';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 	import EyeSlash from '$lib/components/icons/EyeSlash.svelte';
+	
+	import CapabilitiesHub from './CapabilitiesHub.svelte';
+	import { goto } from '$app/navigation';
 
 	const i18n = getContext('i18n');
 
@@ -29,9 +32,31 @@
 
 	$: models = modelIds.map((id) => $_models.find((m) => m.id === id));
 
+	// Check if current model is Kingfisher (case-insensitive)
+	$: showCapabilitiesHub = models.some(m => 
+		m?.name?.toLowerCase().includes('kingfisher') || 
+		m?.id?.toLowerCase().includes('kingfisher')
+	);
+
 	onMount(() => {
 		mounted = true;
 	});
+
+	// Handle capability selection - wraps prompt in expected format with features and autoSubmit
+	function handleCapabilitySelect(
+		prompt: string, 
+		modelId?: string, 
+		features?: { webSearch?: boolean; imageGeneration?: boolean; codeInterpreter?: boolean },
+		autoSubmit?: boolean
+	) {
+		// If prompt is empty or undefined, just focus the input without submitting
+		if (!prompt) {
+			onSelect({ type: 'focus', features });
+			return;
+		}
+		// Otherwise, set the prompt in the input with optional features and autoSubmit flag
+		onSelect({ type: 'prompt', data: prompt, features, autoSubmit: autoSubmit ?? false });
+	}
 </script>
 
 {#key mounted}
@@ -125,14 +150,25 @@
 		</div>
 
 		<div class=" w-full font-primary" in:fade={{ duration: 200, delay: 300 }}>
-			<Suggestions
-				className="grid grid-cols-2"
-				suggestionPrompts={atSelectedModel?.info?.meta?.suggestion_prompts ??
-					models[selectedModelIdx]?.info?.meta?.suggestion_prompts ??
-					$config?.default_prompt_suggestions ??
-					[]}
-				{onSelect}
-			/>
+			{#if showCapabilitiesHub}
+				<!-- Show CapabilitiesHubWithConfig for Kingfisher model -->
+				<CapabilitiesHub 
+				  configUrl="/static/capabilities.json"
+				  onSelect={handleCapabilitySelect} 
+				  onNavigate={(route) => goto(route)} 
+				  userGroups={$user?.groups?.map(g => g.id) || []} 
+				/>
+			{:else}
+				<!-- Show default Suggestions for other models -->
+				<Suggestions
+					className="grid grid-cols-2"
+					suggestionPrompts={atSelectedModel?.info?.meta?.suggestion_prompts ??
+						models[selectedModelIdx]?.info?.meta?.suggestion_prompts ??
+						$config?.default_prompt_suggestions ??
+						[]}
+					{onSelect}
+				/>
+			{/if}
 		</div>
 	</div>
 {/key}

@@ -1,0 +1,556 @@
+{
+  "categories": [
+    { "id": "all", "label": "All" },
+    { "id": "research", "label": "Research" },
+    { "id": "productivity", "label": "Productivity" },
+    { "id": "write", "label": "Write" },
+    { "id": "create", "label": "Create" },
+    { "id": "workflow", "label": "Workflows" },
+    { "id": "apps", "label": "Apps" }
+  ],
+  "featuredTile": {
+    "id": "featured-jan-2026-v3",
+    "title": "Alceon AI Survey",
+    "subtitle": "We need your input!",
+    "description": "Just 3 minutes to complete. Totally anonymous. Your responses directly shape what we build, fix, and focus on in 2026.",
+    "icon": "👋",
+    "color": "from-[#1a365d] to-[#2b6cb0]",
+    "action": {
+      "type": "url",
+      "url": "https://survey.alceon.cloud"
+    },
+    "enabled": true
+  },
+  "capabilities": [
+    {
+      "id": "help_me_start",
+      "title": "Not Sure Where to Start?",
+      "subtitle": "I'll help you find the right tool",
+      "description": "Tell me what you're trying to do and I'll guide you",
+      "icon": "🧭",
+      "color": "from-[#10b981] to-[#34d399]",
+      "capabilityType": "Prompt",
+      "action": { "type": "prompt", "prompt": "I'm not sure where to start. I need help with: " },
+      "autoSubmit": false,
+      "tags": ["productivity"],
+      "enabled": true,
+      "visibility": "all",
+      "difficulty": "basic",
+      "helpText": "Perfect for when you're not sure which tool to use. Just describe what you need!",
+      "examples": ["I need to prepare for a meeting", "Help me write something professional", "I want to analyze some data"]
+    },
+    {
+      "id": "chat",
+      "title": "General Chat",
+      "subtitle": "Ask anything",
+      "description": "Have a conversation with AI on any topic",
+      "icon": "💬",
+      "color": "from-[#2b6cb0] to-[#63b3ed]",
+      "capabilityType": "Prompt",
+      "action": { "type": "prompt", "prompt": "" },
+      "autoSubmit": false,
+      "tags": ["productivity"],
+      "enabled": true,
+      "visibility": "all",
+      "difficulty": "basic",
+      "helpText": "Your go-to for any question or conversation.",
+      "examples": ["Explain this concept to me", "What do you think about...", "Help me brainstorm ideas"]
+    },
+    {
+      "id": "code",
+      "title": "Code Assistant",
+      "subtitle": "Write & debug code",
+      "description": "Get help with programming and debugging",
+      "icon": "👨‍💻",
+      "color": "from-[#1a365d] to-[#2b6cb0]",
+      "capabilityType": "Prompt",
+      "action": { "type": "prompt", "prompt": "Help me write code for: " },
+      "autoSubmit": false,
+      "tags": ["productivity"],
+      "enabled": true,
+      "visibility": "all",
+      "difficulty": "advanced",
+      "helpText": "Get help writing, debugging, or understanding code.",
+      "examples": ["Write a Python function that...", "Debug this error", "Explain how this code works"]
+    },
+    {
+      "id": "web_search",
+      "title": "Web Search",
+      "subtitle": "Search the internet",
+      "description": "Search the web for current information and news",
+      "icon": "🌐",
+      "color": "from-[#63b3ed] to-[#2b6cb0]",
+      "capabilityType": "Prompt",
+      "action": { "type": "prompt", "prompt": "Search the web for: " },
+      "features": { "webSearch": true },
+      "autoSubmit": false,
+      "tags": ["research"],
+      "enabled": true,
+      "visibility": "all",
+      "difficulty": "basic",
+      "helpText": "Find current information from the web.",
+      "examples": ["Latest news on...", "Current price of...", "Recent updates about..."]
+    },
+    {
+      "id": "research",
+      "title": "Deep Research",
+      "subtitle": "Comprehensive analysis",
+      "description": "Research a topic thoroughly using web sources",
+      "icon": "🔬",
+      "color": "from-[#1a365d] to-[#2b6cb0]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Research the following topic comprehensively:\n\n**Topic:** {{topic | text:placeholder=\"Enter research topic\":required}}\n\n**Focus Areas:** {{focus | textarea:placeholder=\"Specific aspects to focus on...\"}}\n\n**Depth:** {{depth | select:options=[\"Quick Overview\",\"Standard Analysis\",\"Deep Dive\"]:default=\"Standard Analysis\"}}\n\nPlease provide well-sourced information with citations."
+      },
+      "features": { "webSearch": true },
+      "autoSubmit": true,
+      "tags": ["research"],
+      "enabled": true,
+      "visibility": "all",
+      "difficulty": "basic",
+      "helpText": "Get comprehensive research on any topic with sources.",
+      "examples": ["Market analysis for...", "Background on a company", "Industry trends in..."]
+    },
+    {
+      "id": "image_gen",
+      "title": "Generate Image",
+      "subtitle": "AI image creation",
+      "description": "Create images from text descriptions",
+      "icon": "🎨",
+      "color": "from-[#c4a35a] to-[#d4b896]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Generate an image with the following specifications:\n\n**Description:** {{description | textarea:placeholder=\"Describe the image you want to create...\":required}}\n\n**Style:** {{style | select:options=[\"Photorealistic\",\"Digital Art\",\"Oil Painting\",\"Watercolor\",\"Sketch\",\"Anime\",\"3D Render\",\"Minimalist\",\"Abstract\"]:default=\"Photorealistic\"}}\n\n**Mood:** {{mood | select:options=[\"Bright & Cheerful\",\"Dark & Moody\",\"Calm & Serene\",\"Dramatic\",\"Whimsical\",\"Professional\"]:default=\"Bright & Cheerful\"}}\n\n**Aspect Ratio:** {{aspect | select:options=[\"Square (1:1)\",\"Landscape (16:9)\",\"Portrait (9:16)\",\"Wide (21:9)\"]:default=\"Square (1:1)\"}}"
+      },
+      "features": { "imageGeneration": true },
+      "autoSubmit": true,
+      "tags": ["create"],
+      "enabled": true,
+      "visibility": "all",
+      "difficulty": "basic",
+      "helpText": "Create images from descriptions - just describe what you want!",
+      "examples": ["A sunset over mountains", "Professional headshot background", "Abstract art for presentation"]
+    },
+    {
+      "id": "logo_design",
+      "title": "Logo Designer",
+      "subtitle": "Create logos",
+      "description": "Design professional logos for brands",
+      "icon": "✨",
+      "color": "from-[#c4a35a] to-[#8b7355]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Design a logo with these specifications:\n\n**Brand/Company Name:** {{name | text:placeholder=\"Brand name\":required}}\n\n**Industry:** {{industry | text:placeholder=\"e.g., Technology, Food, Fashion\"}}\n\n**Style:** {{style | select:options=[\"Modern & Minimal\",\"Classic & Elegant\",\"Bold & Dynamic\",\"Playful & Fun\",\"Tech & Futuristic\",\"Natural & Organic\"]:default=\"Modern & Minimal\"}}\n\n**Colors:** {{colors | text:placeholder=\"Preferred colors (e.g., blue and white)\"}}\n\n**Include Icon:** {{include_icon | checkbox:default=true}} Include a symbol/icon with the text\n\n**Additional Notes:** {{notes | textarea:placeholder=\"Any specific elements or references...\"}}"
+      },
+      "features": { "imageGeneration": true },
+      "autoSubmit": true,
+      "tags": ["create"],
+      "enabled": true,
+      "visibility": "all",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "data_analysis",
+      "title": "Data Analysis",
+      "subtitle": "Analyze data files",
+      "description": "Upload and analyze CSV, Excel, or other data",
+      "icon": "📊",
+      "color": "from-[#2b6cb0] to-[#1a365d]",
+      "capabilityType": "Prompt",
+      "action": { "type": "prompt", "prompt": "Analyze this data and provide insights: " },
+      "features": { "codeInterpreter": true },
+      "autoSubmit": false,
+      "tags": ["productivity"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "code_execute",
+      "title": "Run Code",
+      "subtitle": "Execute Python code",
+      "description": "Write and execute Python code with results",
+      "icon": "▶️",
+      "color": "from-[#63b3ed] to-[#2b6cb0]",
+      "capabilityType": "Prompt",
+      "action": { "type": "prompt", "prompt": "" },
+      "features": { "codeInterpreter": true },
+      "autoSubmit": false,
+      "tags": ["productivity"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "email",
+      "title": "Write Email",
+      "subtitle": "Professional emails",
+      "description": "Generate emails with custom tone and content",
+      "icon": "✉️",
+      "color": "from-[#d4b896] to-[#c4a35a]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Write a {{tone | select:options=[\"Professional\",\"Friendly\",\"Formal\",\"Casual\"]:default=\"Professional\"}} email to {{recipient | text:placeholder=\"Recipient name\":required}} about {{subject | text:placeholder=\"Email subject\":required}}.\n\nKey points to include:\n{{points | textarea:placeholder=\"List the main points to cover...\"}}\n\n{{include_signature | checkbox:default=true}} Include a professional signature for {{USER_NAME}}"
+      },
+      "autoSubmit": true,
+      "tags": ["write"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "deal_workflow",
+      "title": "Deal Workflow",
+      "subtitle": "Investment process",
+      "description": "Navigate through deal stages with guided prompts",
+      "icon": "📊",
+      "color": "from-[#1a365d] to-[#2b6cb0]",
+      "capabilityType": "Workflow",
+      "action": { "type": "workflow" },
+      "workflow": {
+        "stages": [
+          {
+            "id": "sourcing",
+            "name": "Sourcing",
+            "icon": "🔎",
+            "color": "from-[#63b3ed] to-[#2b6cb0]",
+            "prompts": [
+              { "title": "Market Overview", "prompt": "Provide a market overview for {{industry | text:placeholder=\"Industry name\":required}} including key players, market size, and growth trends.", "features": { "webSearch": true }, "autoSubmit": true },
+              { "title": "Company Search", "prompt": "Find potential acquisition targets in {{sector | text:placeholder=\"Sector\":required}} with revenue between {{min_rev | text:placeholder=\"Min revenue\"}} and {{max_rev | text:placeholder=\"Max revenue\"}}.", "features": { "webSearch": true }, "autoSubmit": true },
+              { "title": "Initial Screening", "prompt": "Create an initial screening checklist for evaluating {{company | text:placeholder=\"Company name\":required}} as a potential investment.", "autoSubmit": true }
+            ]
+          },
+          {
+            "id": "due_diligence",
+            "name": "Due Diligence",
+            "icon": "📋",
+            "color": "from-[#c4a35a] to-[#8b7355]",
+            "prompts": [
+              { "title": "Financial Analysis", "prompt": "Analyze the financial statements of {{company | text:placeholder=\"Company name\":required}}. Focus on revenue trends, margins, and cash flow.", "autoSubmit": true },
+              { "title": "Risk Assessment", "prompt": "Identify key risks and red flags for investing in {{company | text:placeholder=\"Company name\":required}} in the {{industry | text:placeholder=\"Industry\":required}} sector.", "features": { "webSearch": true }, "autoSubmit": true },
+              { "title": "Management Review", "prompt": "Evaluate the management team of {{company | text:placeholder=\"Company name\":required}} including background, track record, and alignment.", "features": { "webSearch": true }, "autoSubmit": true },
+              { "title": "DD Checklist", "prompt": "Generate a comprehensive due diligence checklist for {{deal_type | select:options=[\"Acquisition\",\"Minority Investment\",\"Joint Venture\"]:required}}.", "autoSubmit": true },
+              { "title": "Customer Analysis", "prompt": "Analyze the customer base of {{company | text:placeholder=\"Company name\":required}} including concentration, retention, and growth trends.", "autoSubmit": true },
+              { "title": "Legal Review", "prompt": "Outline key legal due diligence items to review for {{company | text:placeholder=\"Company name\":required}} including contracts, IP, and litigation.", "autoSubmit": true }
+            ]
+          },
+          {
+            "id": "valuation",
+            "name": "Valuation",
+            "icon": "💰",
+            "color": "from-[#2b6cb0] to-[#1a365d]",
+            "prompts": [
+              { "title": "Comparable Analysis", "prompt": "Find comparable companies and transactions for {{company | text:placeholder=\"Company name\":required}} in {{industry | text:placeholder=\"Industry\":required}}.", "features": { "webSearch": true }, "autoSubmit": true },
+              { "title": "DCF Model", "prompt": "Outline a DCF valuation approach for {{company | text:placeholder=\"Company name\":required}} with key assumptions to consider.", "autoSubmit": true },
+              { "title": "Valuation Summary", "prompt": "Create a valuation summary comparing different methodologies for {{company | text:placeholder=\"Company name\":required}}.", "autoSubmit": true }
+            ]
+          },
+          {
+            "id": "negotiation",
+            "name": "Negotiation",
+            "icon": "🤝",
+            "color": "from-[#d4b896] to-[#c4a35a]",
+            "prompts": [
+              { "title": "Term Sheet Review", "prompt": "Review and analyze this term sheet for key terms, risks, and negotiation points:\n\n{{terms | textarea:placeholder=\"Paste term sheet content...\":required}}", "autoSubmit": true },
+              { "title": "Negotiation Strategy", "prompt": "Develop a negotiation strategy for acquiring {{company | text:placeholder=\"Company name\":required}} at a target valuation of {{target | text:placeholder=\"Target valuation\":required}}.", "autoSubmit": true },
+              { "title": "Counter Proposal", "prompt": "Draft talking points for a counter proposal on {{issue | text:placeholder=\"Key issue\":required}}.", "autoSubmit": true }
+            ]
+          },
+          {
+            "id": "closing",
+            "name": "Closing",
+            "icon": "✅",
+            "color": "from-[#1a365d] to-[#2b6cb0]",
+            "prompts": [
+              { "title": "Closing Checklist", "prompt": "Generate a closing checklist for the {{company | text:placeholder=\"Company name\":required}} transaction.", "autoSubmit": true },
+              { "title": "Integration Plan", "prompt": "Create a 100-day integration plan for {{company | text:placeholder=\"Company name\":required}} post-acquisition.", "autoSubmit": true },
+              { "title": "Announcement Draft", "prompt": "Draft a press release announcing the acquisition of {{company | text:placeholder=\"Company name\":required}}.", "autoSubmit": true }
+            ]
+          }
+        ]
+      },
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "workspace",
+      "title": "Workspace",
+      "subtitle": "Models & tools",
+      "description": "Manage your models, prompts, and tools",
+      "icon": "⚙️",
+      "color": "from-[#1a365d] to-[#2b6cb0]",
+      "capabilityType": "Link",
+      "action": { "type": "route", "route": "/workspace" },
+      "tags": ["apps"],
+      "enabled": true,
+      "visibility": ["admins"]
+    },
+    {
+      "id": "ic_approval",
+      "title": "IC Approval",
+      "subtitle": "Committee review",
+      "description": "Investment Committee approval workflow",
+      "icon": "🏛️",
+      "color": "from-[#1a365d] to-[#2b6cb0]",
+      "capabilityType": "Workflow",
+      "action": { "type": "workflow" },
+      "workflow": {
+        "stages": [
+          {
+            "id": "pre_ic",
+            "name": "Pre-IC",
+            "icon": "📝",
+            "color": "from-[#63b3ed] to-[#2b6cb0]",
+            "prompts": [
+              { "title": "IC Memo Draft", "prompt": "Draft an Investment Committee memo for {{company | text:placeholder=\"Company name\":required}} covering investment thesis, key risks, and proposed terms.", "autoSubmit": true },
+              { "title": "Risk Summary", "prompt": "Summarize the top 5 risks for the {{company | text:placeholder=\"Company name\":required}} investment and proposed mitigants.", "autoSubmit": true },
+              { "title": "Comparable Deals", "prompt": "Find comparable transactions to {{company | text:placeholder=\"Company name\":required}} in {{sector | text:placeholder=\"Sector\":required}} from the past 3 years.", "features": { "webSearch": true }, "autoSubmit": true },
+              { "title": "Investment Thesis", "prompt": "Articulate the investment thesis for {{company | text:placeholder=\"Company name\":required}} including value creation levers.", "autoSubmit": true },
+              { "title": "Market Analysis", "prompt": "Provide a market analysis for {{company | text:placeholder=\"Company name\":required}} including TAM, competition, and trends.", "features": { "webSearch": true }, "autoSubmit": true }
+            ]
+          },
+          {
+            "id": "ic_presentation",
+            "name": "IC Deck",
+            "icon": "📊",
+            "color": "from-[#2b6cb0] to-[#1a365d]",
+            "prompts": [
+              { "title": "Slide Outline", "prompt": "Create an outline for an IC presentation deck for {{company | text:placeholder=\"Company name\":required}} investment.", "autoSubmit": true },
+              { "title": "Executive Summary", "prompt": "Write a 1-page executive summary for {{company | text:placeholder=\"Company name\":required}} suitable for IC review.", "autoSubmit": true },
+              { "title": "Q&A Prep", "prompt": "Generate likely IC questions and suggested answers for the {{company | text:placeholder=\"Company name\":required}} investment.", "autoSubmit": true }
+            ]
+          },
+          {
+            "id": "ic_meeting",
+            "name": "IC Meeting",
+            "icon": "👥",
+            "color": "from-[#c4a35a] to-[#8b7355]",
+            "prompts": [
+              { "title": "Meeting Agenda", "prompt": "Create an IC meeting agenda for reviewing {{company | text:placeholder=\"Company name\":required}}.", "autoSubmit": true },
+              { "title": "Discussion Points", "prompt": "List key discussion points and decision items for the {{company | text:placeholder=\"Company name\":required}} IC meeting.", "autoSubmit": true }
+            ]
+          },
+          {
+            "id": "post_ic",
+            "name": "Post-IC",
+            "icon": "✅",
+            "color": "from-[#1a365d] to-[#2b6cb0]",
+            "prompts": [
+              { "title": "IC Decision Summary", "prompt": "Draft an IC decision summary for {{company | text:placeholder=\"Company name\":required}} with outcome: {{outcome | select:options=[\"Approved\",\"Approved with Conditions\",\"Declined\",\"Deferred\"]:required}}.", "autoSubmit": true },
+              { "title": "Next Steps", "prompt": "Outline next steps following IC {{outcome | select:options=[\"approval\",\"conditional approval\",\"deferral\"]:required}} for {{company | text:placeholder=\"Company name\":required}}.", "autoSubmit": true },
+              { "title": "Stakeholder Update", "prompt": "Draft a stakeholder update email regarding the IC decision on {{company | text:placeholder=\"Company name\":required}}.", "autoSubmit": true }
+            ]
+          }
+        ]
+      },
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "finance_month_end",
+      "title": "Month-End Close",
+      "subtitle": "Finance workflow",
+      "description": "End of month financial close process",
+      "icon": "📅",
+      "color": "from-[#2b6cb0] to-[#63b3ed]",
+      "capabilityType": "Workflow",
+      "action": { "type": "workflow" },
+      "workflow": {
+        "stages": [
+          {
+            "id": "reconciliation",
+            "name": "Reconciliation",
+            "icon": "🔄",
+            "color": "from-[#63b3ed] to-[#2b6cb0]",
+            "prompts": [
+              { "title": "Bank Rec Checklist", "prompt": "Generate a bank reconciliation checklist for {{month | text:placeholder=\"Month/Year\":required}}.", "autoSubmit": true },
+              { "title": "Intercompany Rec", "prompt": "Create an intercompany reconciliation template for entities: {{entities | textarea:placeholder=\"List entities...\"}}", "autoSubmit": true },
+              { "title": "AR Aging Analysis", "prompt": "Analyze accounts receivable aging and suggest collection priorities for balances over {{days | select:options=[\"30 days\",\"60 days\",\"90 days\"]:default=\"60 days\"}}.", "autoSubmit": true }
+            ]
+          },
+          {
+            "id": "accruals",
+            "name": "Accruals",
+            "icon": "📋",
+            "color": "from-[#c4a35a] to-[#d4b896]",
+            "prompts": [
+              { "title": "Accrual Review", "prompt": "List standard month-end accruals to review for {{department | text:placeholder=\"Department\":required}}.", "autoSubmit": true },
+              { "title": "Bonus Accrual", "prompt": "Calculate bonus accrual estimate based on {{performance | select:options=[\"Below Target\",\"At Target\",\"Above Target\"]:default=\"At Target\"}} performance.", "autoSubmit": true },
+              { "title": "Expense Accruals", "prompt": "Generate expense accrual entries for {{category | select:options=[\"Professional Services\",\"Marketing\",\"Travel\",\"Utilities\",\"Other\"]:required}}.", "autoSubmit": true }
+            ]
+          },
+          {
+            "id": "reporting",
+            "name": "Reporting",
+            "icon": "📈",
+            "color": "from-[#2b6cb0] to-[#1a365d]",
+            "prompts": [
+              { "title": "Variance Analysis", "prompt": "Create a variance analysis template comparing actuals to budget for {{month | text:placeholder=\"Month\":required}}.", "autoSubmit": true },
+              { "title": "Management Report", "prompt": "Draft a management report summary for {{month | text:placeholder=\"Month\":required}} financial results.", "autoSubmit": true },
+              { "title": "KPI Dashboard", "prompt": "List key financial KPIs to include in the monthly dashboard for {{audience | select:options=[\"Executive Team\",\"Board\",\"Department Heads\"]:default=\"Executive Team\"}}.", "autoSubmit": true }
+            ]
+          },
+          {
+            "id": "close_checklist",
+            "name": "Close",
+            "icon": "✅",
+            "color": "from-[#1a365d] to-[#2b6cb0]",
+            "prompts": [
+              { "title": "Close Checklist", "prompt": "Generate a month-end close checklist with sign-off tracking for {{month | text:placeholder=\"Month/Year\":required}}.", "autoSubmit": true },
+              { "title": "Journal Entry Review", "prompt": "Create a journal entry review template for manual entries over {{threshold | text:placeholder=\"$10,000\"}}.", "autoSubmit": true }
+            ]
+          }
+        ]
+      },
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "meeting_notes",
+      "title": "Meeting Notes",
+      "subtitle": "Summarize meetings",
+      "description": "Generate structured meeting notes and action items",
+      "icon": "📝",
+      "color": "from-[#63b3ed] to-[#2b6cb0]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Create structured meeting notes:\n\n**Meeting Title:** {{title | text:placeholder=\"Meeting name\":required}}\n**Date:** {{date | date:required}}\n**Attendees:** {{attendees | textarea:placeholder=\"List attendees...\"}}\n\n**Discussion Topics/Transcript:**\n{{topics | textarea:placeholder=\"Paste transcript or key discussion points...\":required}}\n\nPlease provide:\n1. Executive summary\n2. Key decisions made\n3. Action items with owners\n4. Next steps"
+      },
+      "autoSubmit": true,
+      "tags": ["write"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "contract_review",
+      "title": "Contract Review",
+      "subtitle": "Analyze contracts",
+      "description": "Review contracts and highlight key terms",
+      "icon": "📜",
+      "color": "from-[#c4a35a] to-[#8b7355]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Review this contract and provide analysis:\n\n**Contract Type:** {{type | select:options=[\"NDA\",\"Service Agreement\",\"Employment\",\"Lease\",\"Purchase Agreement\",\"Partnership\",\"Other\"]:required}}\n\n**Contract Text:**\n{{contract | textarea:placeholder=\"Paste contract text...\":required}}\n\n**Focus Areas:** {{focus | select:options=[\"Key Terms\",\"Risk Analysis\",\"Compliance\",\"Negotiation Points\",\"Full Review\"]:default=\"Full Review\"}}\n\nPlease identify key terms, potential risks, and notable clauses."
+      },
+      "autoSubmit": true,
+      "tags": ["research"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "competitor_analysis",
+      "title": "Competitor Intel",
+      "subtitle": "Market research",
+      "description": "Research and analyze competitors",
+      "icon": "🎯",
+      "color": "from-[#1a365d] to-[#2b6cb0]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Conduct competitor analysis:\n\n**Your Company/Product:** {{company | text:placeholder=\"Your company\":required}}\n**Competitor(s):** {{competitors | textarea:placeholder=\"List competitors to analyze...\":required}}\n**Industry:** {{industry | text:placeholder=\"Industry/sector\"}}\n\n**Analysis Type:** {{analysis | select:options=[\"SWOT Analysis\",\"Feature Comparison\",\"Pricing Analysis\",\"Market Position\",\"Full Competitive Review\"]:default=\"Full Competitive Review\"}}\n\nProvide detailed competitive intelligence with actionable insights."
+      },
+      "features": { "webSearch": true },
+      "autoSubmit": true,
+      "tags": ["research"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "presentation_outline",
+      "title": "Presentation",
+      "subtitle": "Create outlines",
+      "description": "Generate presentation outlines and talking points",
+      "icon": "🎬",
+      "color": "from-[#d4b896] to-[#c4a35a]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Create a presentation outline:\n\n**Topic:** {{topic | text:placeholder=\"Presentation topic\":required}}\n**Audience:** {{audience | select:options=[\"Executive Team\",\"Board of Directors\",\"Clients\",\"Team Members\",\"Investors\",\"Conference\"]:required}}\n**Duration:** {{duration | select:options=[\"5 minutes\",\"15 minutes\",\"30 minutes\",\"1 hour\"]:default=\"15 minutes\"}}\n**Objective:** {{objective | textarea:placeholder=\"What should the audience take away?\"}}\n\nGenerate a structured outline with key points and suggested talking points for each slide."
+      },
+      "autoSubmit": true,
+      "tags": ["write"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "sql_helper",
+      "title": "SQL Assistant",
+      "subtitle": "Write SQL queries",
+      "description": "Generate and optimize SQL queries",
+      "icon": "🗃️",
+      "color": "from-[#2b6cb0] to-[#63b3ed]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Help me with SQL:\n\n**Database Type:** {{db | select:options=[\"PostgreSQL\",\"MySQL\",\"SQL Server\",\"SQLite\",\"Oracle\",\"BigQuery\"]:default=\"PostgreSQL\"}}\n\n**Task:** {{task | select:options=[\"Write a new query\",\"Optimize existing query\",\"Debug query\",\"Explain query\",\"Convert between databases\"]:required}}\n\n**Table Schema (if known):**\n{{schema | textarea:placeholder=\"Describe your tables and columns...\"}}\n\n**Request:**\n{{request | textarea:placeholder=\"Describe what you need...\":required}}"
+      },
+      "autoSubmit": true,
+      "tags": ["productivity"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "api_docs",
+      "title": "API Documentation",
+      "subtitle": "Document APIs",
+      "description": "Generate API documentation from code or specs",
+      "icon": "📖",
+      "color": "from-[#1a365d] to-[#2b6cb0]",
+      "capabilityType": "Prompt",
+      "action": { "type": "prompt", "prompt": "Generate API documentation for the following endpoint or code: " },
+      "autoSubmit": false,
+      "tags": ["productivity"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "weekly_report",
+      "title": "Weekly Report",
+      "subtitle": "Status updates",
+      "description": "Generate weekly status reports",
+      "icon": "📋",
+      "color": "from-[#63b3ed] to-[#2b6cb0]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Generate a weekly status report:\n\n**Week Ending:** {{week | date:required}}\n**Project/Team:** {{project | text:placeholder=\"Project or team name\":required}}\n\n**Accomplishments this week:**\n{{accomplishments | textarea:placeholder=\"List what was completed...\":required}}\n\n**In Progress:**\n{{in_progress | textarea:placeholder=\"Current work items...\"}}\n\n**Blockers/Risks:**\n{{blockers | textarea:placeholder=\"Any blockers or risks?\"}}\n\n**Next Week's Priorities:**\n{{next_week | textarea:placeholder=\"Planned focus areas...\"}}\n\nFormat as a professional status report suitable for {{audience | select:options=[\"Manager\",\"Leadership\",\"Stakeholders\",\"Team\"]:default=\"Manager\"}}."
+      },
+      "autoSubmit": true,
+      "tags": ["write"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "knowledge_base",
+      "title": "Knowledge Base",
+      "subtitle": "Internal docs",
+      "description": "Search internal documentation and wikis",
+      "icon": "📚",
+      "color": "from-[#2b6cb0] to-[#1a365d]",
+      "capabilityType": "Link",
+      "action": { "type": "url", "url": "https://wiki.company.com" },
+      "tags": ["apps"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "hr_portal",
+      "title": "HR Portal",
+      "subtitle": "Employee resources",
+      "description": "Access HR policies and employee services",
+      "icon": "👤",
+      "color": "from-[#c4a35a] to-[#d4b896]",
+      "capabilityType": "Link",
+      "action": { "type": "url", "url": "https://hr.company.com" },
+      "tags": ["apps"],
+      "enabled": true,
+      "visibility": "all"
+    }
+  ]
+}
