@@ -60,6 +60,7 @@
 	interface Category {
 		id: string;
 		label: string;
+		default?: boolean;  // If true, this category is selected by default
 	}
 
 	interface FeaturedTile {
@@ -248,9 +249,20 @@
 		configError = null;
 	}
 
-	onMount(() => {
-		loadConfig();
-		loadUserPreferences();
+	// Set the initial category based on starred items and config default
+	function setInitialCategory() {
+		if (starredCapabilities.length > 0) {
+			selectedCategory = 'starred';
+		} else {
+			const defaultCat = categories.find(c => c.default);
+			selectedCategory = defaultCat?.id || 'all';
+		}
+	}
+
+	onMount(async () => {
+		loadUserPreferences();  // Load starred items first
+		await loadConfig();     // Then load config
+		setInitialCategory();   // Set category based on starred items
 	});
 
 	// Helper function to check if user can see a capability
@@ -266,11 +278,30 @@
 		return false;
 	}
 
+	// Get default category from config or fall back to 'all'
+	$: defaultCategory = categories.find(c => c.default)?.id || 'all';
 	let selectedCategory = 'all';
+	let previousCategory = 'all';  // Track category before expanded view
 	let searchQuery = '';
 	let scrollContainer: HTMLDivElement;
 	let showLeftArrow = false;
 	let showRightArrow = false;
+	
+	// Expanded view state
+	let showExpandedView = false;
+	
+	// Open expanded view (saves current category, switches to 'all')
+	function openExpandedView() {
+		previousCategory = selectedCategory;
+		selectedCategory = 'all';
+		showExpandedView = true;
+	}
+	
+	// Close expanded view (restores previous category)
+	function closeExpandedView() {
+		selectedCategory = previousCategory;
+		showExpandedView = false;
+	}
 
 	let showInputModal = false;
 	let currentCapability: Capability | null = null;
@@ -614,16 +645,28 @@
 				</button>
 			{/each}
 		</div>
-		<div class="relative hidden sm:block">
-			<input
-				type="text"
-				placeholder="Search..."
-				bind:value={searchQuery}
-				class="w-40 px-3 py-1 pl-8 rounded-full text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-			/>
-			<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-			</svg>
+		<div class="flex items-center gap-2">
+			<div class="relative hidden sm:block">
+				<input
+					type="text"
+					placeholder="Search..."
+					bind:value={searchQuery}
+					class="w-40 px-3 py-1 pl-8 rounded-full text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+				/>
+				<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+				</svg>
+			</div>
+			<!-- Expand button - desktop only -->
+			<button
+				class="hidden sm:flex p-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 transition-colors items-center justify-center"
+				on:click={openExpandedView}
+				title="Expand view"
+			>
+				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+				</svg>
+			</button>
 		</div>
 	</div>
 
@@ -892,6 +935,106 @@
 </p>
 
 </div>
+{/if}
+
+<!-- Expanded View Modal -->
+{#if showExpandedView}
+	<div class="absolute inset-0 top-12 bottom-16 sm:bottom-0 bg-white dark:bg-gray-900 z-50 flex flex-col overflow-hidden rounded-t-xl" in:fade={{ duration: 200 }}>
+		<!-- Header -->
+		<div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+			<h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">What would you like to do?</h2>
+			<div class="flex items-center gap-3">
+				<!-- Search in expanded view -->
+				<div class="relative">
+					<input
+						type="text"
+						placeholder="Search..."
+						bind:value={searchQuery}
+						class="w-48 px-3 py-1.5 pl-8 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+					/>
+					<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+					</svg>
+				</div>
+				<!-- Close button -->
+				<button
+					class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors"
+					on:click={closeExpandedView}
+					title="Close"
+				>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+					</svg>
+				</button>
+			</div>
+		</div>
+		
+		<!-- Category tabs -->
+		<div class="flex items-center gap-2 p-4 border-b border-gray-200 dark:border-gray-700 flex-wrap">
+			{#each visibleCategories as category}
+				<button
+					class="px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200
+						   {selectedCategory === category.id ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'}"
+					on:click={() => (selectedCategory = category.id)}
+				>
+					{category.label}
+				</button>
+			{/each}
+		</div>
+		
+		<!-- All tiles grid -->
+		<div class="flex-1 overflow-y-auto p-4">
+			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+				{#each displayCapabilities as capability (capability.id)}
+					<!-- svelte-ignore a11y-no-static-element-interactions -->
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<div
+						class="capability-card group relative rounded-xl p-3 sm:p-4 text-left cursor-pointer
+							   bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50
+							   hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-lg
+							   transform hover:-translate-y-0.5 transition-all duration-200"
+						on:click={() => { closeExpandedView(); handleCapabilityClick(capability); }}
+					>
+						<!-- Top row: Badge left, icons right -->
+						<div class="flex items-center justify-between mb-3">
+							<span class="text-[9px] sm:text-[10px] font-medium px-1.5 py-0.5 rounded {getBadgeColor(capability.capabilityType)}">{capability.capabilityType}</span>
+							<div class="flex items-center gap-0.5">
+								{#if capability.description || capability.helpText}
+									<div
+										class="w-5 h-5 rounded-full flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors opacity-0 group-hover:opacity-100 cursor-help"
+										on:mouseenter={(e) => showTooltip(capability.description + (capability.helpText ? '\n\n' + capability.helpText : ''), e)}
+										on:mouseleave={hideTooltip}
+									>
+										<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+									</div>
+								{/if}
+								<button
+									class="w-5 h-5 rounded-full flex items-center justify-center transition-colors
+										   {isStarred(capability.id) 
+										   	? 'text-[#63b3ed]' 
+										   	: 'text-gray-300 hover:text-[#63b3ed] opacity-0 group-hover:opacity-100'}"
+									on:click|stopPropagation={(e) => toggleStarred(capability.id, e)}
+									title={isStarred(capability.id) ? 'Remove from starred' : 'Add to starred'}
+								>
+									<svg class="w-3.5 h-3.5" fill={isStarred(capability.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+								</button>
+							</div>
+						</div>
+
+						<div class="flex items-center gap-2.5">
+							<div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-gradient-to-br {capability.color} shadow-sm group-hover:scale-110 transition-transform duration-200">
+								<span class="text-base">{capability.icon}</span>
+							</div>
+							<div class="min-w-0 flex-1">
+								<h3 class="font-semibold text-sm text-gray-800 dark:text-gray-100 truncate leading-tight">{capability.title}</h3>
+								<p class="text-xs text-gray-500 dark:text-gray-400 truncate leading-tight mt-0.5">{capability.subtitle}</p>
+							</div>
+						</div>
+					</div>
+				{/each}
+			</div>
+		</div>
+	</div>
 {/if}
 
 <!-- Standard Input Modal -->

@@ -5,19 +5,20 @@
     { "id": "productivity", "label": "Productivity" },
     { "id": "write", "label": "Write" },
     { "id": "create", "label": "Create" },
-    { "id": "workflow", "label": "Workflows" },
+    { "id": "workflow", "label": "Workflows", "default": true },
     { "id": "apps", "label": "Apps" }
   ],
   "featuredTile": {
-    "id": "featured-jan-2026-v3",
-    "title": "Alceon AI Survey",
-    "subtitle": "We need your input!",
-    "description": "Just 3 minutes to complete. Totally anonymous. Your responses directly shape what we build, fix, and focus on in 2026.",
+    "id": "featured-jan-2026-v1",
+    "title": "🎉 Welcome to Kingfisher",
+    "subtitle": "Your AI Assistant Hub",
+    "description": "Explore our collection of AI-powered tools designed to help you research, write, create, and boost productivity. Start by browsing the tiles or use the search to find what you need.",
     "icon": "👋",
     "color": "from-[#1a365d] to-[#2b6cb0]",
     "action": {
-      "type": "url",
-      "url": "https://survey.alceon.cloud"
+      "type": "prompt",
+      "prompt": "I'm new to Kingfisher. Can you give me a quick tour of what I can do here?",
+      "label": "Take a Tour"
     },
     "enabled": true
   },
