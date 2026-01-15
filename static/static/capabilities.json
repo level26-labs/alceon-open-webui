@@ -2,8 +2,9 @@
   "categories": [
     { "id": "all", "label": "All", "default": true },
     { "id": "write", "label": "Write" },
-    { "id": "create", "label": "Create" },
+    { "id": "review", "label": "Review" },
     { "id": "research", "label": "Research" },
+	{ "id": "report", "label": "Report" },
     { "id": "workflow", "label": "Work" },
     { "id": "lookup", "label": "Lookup" }
   ],
@@ -122,7 +123,7 @@
       "capabilityType": "Form",
       "action": {
         "type": "prompt",
-        "prompt": "Generate an image with the following specifications:\n\n**Description:** {{description | textarea:placeholder=\"Describe the image you want to create...\":required}}\n\n**Style:** {{style | select:options=[\"Photorealistic\",\"Digital Art\",\"Oil Painting\",\"Watercolor\",\"Sketch\",\"Anime\",\"3D Render\",\"Minimalist\",\"Abstract\"]:default=\"Photorealistic\"}}\n\n**Mood:** {{mood | select:options=[\"Bright & Cheerful\",\"Dark & Moody\",\"Calm & Serene\",\"Dramatic\",\"Whimsical\",\"Professional\"]:default=\"Bright & Cheerful\"}}\n\n**Aspect Ratio:** {{aspect | select:options=[\"Square (1:1)\",\"Landscape (16:9)\",\"Portrait (9:16)\",\"Wide (21:9)\"]:default=\"Square (1:1)\"}}"
+        "prompt": "Generate an image with the following specifications:\n\n**Description:** {{description | textarea:placeholder=\"Describe the image you want to create...\":required}}\n\n**Style:** {{style | select:options=[\"Photorealistic\",\"Digital Art\",\"Oil Painting\",\"Watercolor\",\"Sketch\",\"Anime\",\"3D Render\",\"Minimalist\",\"Abstract\"]:default=\"Photorealistic\"}}\n\n**Mood:** {{mood | select:options=[\"Bright & Cheerful\",\"Dark & Moody\",\"Calm & Serene\",\"Dramatic\",\"Whimsical\",\"Professional\"]:default=\"Bright & Cheerful\"}}"
       },
       "features": { "imageGeneration": true },
       "autoSubmit": true,
@@ -589,7 +590,7 @@
 	{
       "id": "diligent_company_report",
       "title": "Company Report",
-      "subtitle": "Full company lookup",
+      "subtitle": "Diligent lookup",
       "description": "Generate a comprehensive company information report using Diligent",
       "icon": "🏢",
       "color": "from-[#2b6cb0] to-[#1a365d]",
@@ -606,8 +607,8 @@
     {
       "id": "diligent_address",
       "title": "Get Address",
-      "subtitle": "Company address lookup",
-      "description": "Retrieve registered and business address for an entity",
+      "subtitle": "Diligent lookup",
+      "description": "Retrieve registered and business address for an entity from Diligent",
       "icon": "📍",
       "color": "from-[#63b3ed] to-[#2b6cb0]",
       "capabilityType": "Form",
@@ -623,8 +624,8 @@
     {
       "id": "diligent_shareholders",
       "title": "Get Shareholders",
-      "subtitle": "Shareholder lookup",
-      "description": "Retrieve complete list of shareholders for an entity",
+      "subtitle": "Diligent lookup",
+      "description": "Retrieve complete list of shareholders for an entity from Diligent",
       "icon": "👥",
       "color": "from-[#2b6cb0] to-[#63b3ed]",
       "capabilityType": "Form",
@@ -640,8 +641,8 @@
     {
       "id": "diligent_legal_name",
       "title": "Get Legal Name",
-      "subtitle": "Legal name lookup",
-      "description": "Retrieve the complete legal name of an entity",
+      "subtitle": "Diligent lookup",
+      "description": "Retrieve the complete legal name of an entity from Diligent",
       "icon": "📛",
       "color": "from-[#1a365d] to-[#2b6cb0]",
       "capabilityType": "Form",
@@ -657,8 +658,8 @@
     {
       "id": "diligent_acn_abn",
       "title": "Get ACN & ABN",
-      "subtitle": "Company numbers lookup",
-      "description": "Retrieve ACN and ABN for an entity",
+      "subtitle": "Diligent lookup",
+      "description": "Retrieve ACN and ABN for an entity from Diligent",
       "icon": "🔢",
       "color": "from-[#63b3ed] to-[#1a365d]",
       "capabilityType": "Form",
@@ -674,8 +675,8 @@
     {
       "id": "diligent_officeholders",
       "title": "Get Officeholders",
-      "subtitle": "Directors & officers lookup",
-      "description": "Retrieve all current and past office holders for an entity",
+      "subtitle": "Diligent lookup",
+      "description": "Retrieve all current and past office holders for an entity from Diligent",
       "icon": "👔",
       "color": "from-[#2b6cb0] to-[#1a365d]",
       "capabilityType": "Form",
@@ -1092,7 +1093,7 @@
         "prompt": "As a law clerk at Alceon, provide definitions and explanations for specific investment terms, legal documents, and processes related to funding investments.\n\n**Term to Define:**\n{{term | text:placeholder=\"Enter the term or concept...\":required}}\n\n**Context (optional):**\n{{context | textarea:placeholder=\"Any specific context or document type this relates to...\"}}\n\nPlease provide:\n1. Clear definition\n2. Practical explanation\n3. Example usage in investment context\n4. Related terms"
       },
       "autoSubmit": true,
-      "tags": ["lookup"],
+      "tags": ["research"],
       "enabled": true,
       "visibility": "all"
     },
