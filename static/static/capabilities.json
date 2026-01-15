@@ -1,11 +1,12 @@
 {
   "categories": [
     { "id": "all", "label": "All", "default": true },
-    { "id": "write", "label": "Write" },
+	{ "id": "create", "label": "Create" },
+    { "id": "analyse", "label": "Analyse" },
     { "id": "review", "label": "Review" },
     { "id": "research", "label": "Research" },
 	{ "id": "report", "label": "Report" },
-    { "id": "workflow", "label": "Work" },
+    { "id": "workflow", "label": "Workflow" },
     { "id": "lookup", "label": "Lookup" }
   ],
   "featuredTile": {
@@ -469,6 +470,12 @@
       "icon": "📜",
       "color": "from-[#c4a35a] to-[#8b7355]",
       "capabilityType": "Form",
+	  "fileUpload": {
+        "enabled": true,
+        "multiple": true,
+        "accept": ".pdf,.docx,.xlsx",
+        "label": "Upload facility documents"
+      },
       "action": {
         "type": "prompt",
         "prompt": "Review this contract and provide analysis:\n\n**Contract Type:** {{type | select:options=[\"NDA\",\"Service Agreement\",\"Employment\",\"Lease\",\"Purchase Agreement\",\"Partnership\",\"Other\"]:required}}\n\n**Contract Text:**\n{{contract | textarea:placeholder=\"Paste contract text...\":required}}\n\n**Focus Areas:** {{focus | select:options=[\"Key Terms\",\"Risk Analysis\",\"Compliance\",\"Negotiation Points\",\"Full Review\"]:default=\"Full Review\"}}\n\nPlease identify key terms, potential risks, and notable clauses."

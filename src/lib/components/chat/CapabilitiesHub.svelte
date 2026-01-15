@@ -27,6 +27,13 @@
 		codeInterpreter?: boolean;
 	}
 
+	interface FileUploadConfig {
+		enabled?: boolean;
+		multiple?: boolean;
+		accept?: string;  // e.g., ".pdf,.docx,image/*"
+		label?: string;   // e.g., "Upload documents"
+	}
+
 	interface Capability {
 		id: string;
 		title: string;
@@ -44,6 +51,7 @@
 		};
 		features?: PromptFeatures;
 		autoSubmit?: boolean;
+		fileUpload?: FileUploadConfig;
 		workflow?: {
 			stages: WorkflowStage[];
 		};
@@ -90,7 +98,7 @@
 	// Config can be passed directly as a prop (inline) OR loaded from URL
 	export let config: { categories: Category[]; capabilities: Capability[]; featuredTile?: FeaturedTile } | null = null;
 	export let configUrl: string = '';  // Optional URL to load config from
-	export let onSelect: (prompt: string, modelId?: string, features?: PromptFeatures, autoSubmit?: boolean) => void = () => {};
+	export let onSelect: (prompt: string, modelId?: string, features?: PromptFeatures, autoSubmit?: boolean, files?: File[]) => void = () => {};
 	export let onNavigate: (route: string) => void = () => {};
 	// User's group IDs from Open WebUI - pass this in from parent component
 	export let userGroups: string[] = [];
@@ -317,6 +325,10 @@
 		value: any;
 	}> = [];
 
+	// File upload state
+	let uploadedFiles: File[] = [];
+	let fileInputElement: HTMLInputElement | null = null;
+
 	let showWorkflowModal = false;
 	let currentWorkflow: Capability | null = null;
 	let selectedStageId: string | null = null;
@@ -452,6 +464,30 @@
 		return result;
 	}
 
+	// Handle file selection
+	function handleFileSelect(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (input.files) {
+			uploadedFiles = Array.from(input.files);
+		}
+	}
+
+	// Remove a file from the upload list
+	function removeFile(index: number) {
+		uploadedFiles = uploadedFiles.filter((_, i) => i !== index);
+		// Reset the file input
+		if (fileInputElement) {
+			fileInputElement.value = '';
+		}
+	}
+
+	// Format file size for display
+	function formatFileSize(bytes: number): string {
+		if (bytes < 1024) return bytes + ' B';
+		if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+		return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+	}
+
 	async function handleCapabilityClick(capability: Capability) {
 		if (capability.action.type === 'workflow' && capability.workflow) {
 			currentWorkflow = capability;
@@ -465,11 +501,12 @@
 		} else if (capability.action.type === 'prompt') {
 			const prompt = capability.action.prompt ?? '';
 			const customVars = parseInputVariables(prompt);
-			if (customVars.length > 0) {
+			if (customVars.length > 0 || capability.fileUpload?.enabled) {
 				currentCapability = capability;
 				currentFeatures = capability.features || null;
 				currentAutoSubmit = capability.autoSubmit ?? true;
 				inputVariables = customVars;
+				uploadedFiles = [];  // Reset files
 				showInputModal = true;
 			} else {
 				const processedPrompt = await replaceSystemVariables(prompt);
@@ -491,7 +528,7 @@
 		let prompt = currentCapability.action.prompt ?? '';
 		prompt = await replaceSystemVariables(prompt);
 		prompt = replaceInputVariables(prompt, inputVariables);
-		onSelect(prompt, undefined, currentFeatures || undefined, currentAutoSubmit);
+		onSelect(prompt, undefined, currentFeatures || undefined, currentAutoSubmit, uploadedFiles.length > 0 ? uploadedFiles : undefined);
 		closeModal();
 	}
 
@@ -501,6 +538,7 @@
 		currentFeatures = null;
 		currentAutoSubmit = true;
 		inputVariables = [];
+		uploadedFiles = [];
 	}
 
 	function closeWorkflowModal() {
@@ -1051,13 +1089,6 @@
 				</button>
 			</div>
 			<div class="p-3 sm:p-4 overflow-y-auto max-h-[60vh]">
-				<!-- Friendly helper message -->
-				<div class="mb-4 p-2.5 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800/30">
-					<p class="text-xs text-blue-700 dark:text-blue-300 flex items-center gap-2">
-						<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-						<span>Don't worry about getting it perfect — you can always refine as you go!</span>
-					</p>
-				</div>
 				<form on:submit|preventDefault={handleModalSubmit} class="space-y-3">
 					{#each inputVariables as variable}
 						<div class="space-y-1">
@@ -1078,6 +1109,67 @@
 							{/if}
 						</div>
 					{/each}
+
+					<!-- File Upload Section -->
+					{#if currentCapability.fileUpload?.enabled}
+						<div class="space-y-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								{currentCapability.fileUpload.label || 'Upload Files'}
+							</label>
+							
+							<!-- File input -->
+							<div class="flex items-center gap-2">
+								<input
+									bind:this={fileInputElement}
+									type="file"
+									accept={currentCapability.fileUpload.accept || '*/*'}
+									multiple={currentCapability.fileUpload.multiple ?? true}
+									on:change={handleFileSelect}
+									class="hidden"
+									id="file-upload-input"
+								/>
+								<label 
+									for="file-upload-input"
+									class="flex items-center gap-2 px-3 py-2 text-sm rounded-lg border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer transition-colors"
+								>
+									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+									</svg>
+									<span>Choose files...</span>
+								</label>
+								{#if uploadedFiles.length > 0}
+									<span class="text-xs text-gray-500">{uploadedFiles.length} file{uploadedFiles.length > 1 ? 's' : ''} selected</span>
+								{/if}
+							</div>
+
+							<!-- File list -->
+							{#if uploadedFiles.length > 0}
+								<div class="space-y-1.5 mt-2">
+									{#each uploadedFiles as file, index}
+										<div class="flex items-center justify-between px-3 py-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+											<div class="flex items-center gap-2 min-w-0 flex-1">
+												<svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+												</svg>
+												<span class="text-sm text-gray-700 dark:text-gray-300 truncate">{file.name}</span>
+												<span class="text-xs text-gray-400 flex-shrink-0">({formatFileSize(file.size)})</span>
+											</div>
+											<button
+												type="button"
+												class="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+												on:click={() => removeFile(index)}
+												title="Remove file"
+											>
+												<svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+												</svg>
+											</button>
+										</div>
+									{/each}
+								</div>
+							{/if}
+						</div>
+					{/if}
 				</form>
 			</div>
 			<div class="flex justify-end gap-2 p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700">
