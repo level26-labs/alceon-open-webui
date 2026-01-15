@@ -213,8 +213,8 @@
 	};
 
 	const onSelect = async (e) => {
-		const { type, data, features, autoSubmit } = e;
-
+		const { type, data, features, autoSubmit, files: inputFiles } = e;
+		
 		// Apply features if provided
 		if (features) {
 			if (features.webSearch !== undefined) {
@@ -227,12 +227,25 @@
 				codeInterpreterEnabled = features.codeInterpreter;
 			}
 		}
-
+		
+		// Handle files from CapabilitiesHub if provided
+		if (inputFiles && inputFiles.length > 0) {
+			await inputFilesHandler(inputFiles);
+		}
+		
 		if (type === 'focus') {
 			const chatInput = document.getElementById('chat-input');
 			chatInput?.focus();
 		} else if (type === 'prompt') {
 			if (autoSubmit && data) {
+				// Wait for any file uploads to complete before submitting
+				const waitForUploads = async () => {
+					while (files.some(f => f.status === 'uploading')) {
+						await new Promise(r => setTimeout(r, 100));
+					}
+				};
+				await waitForUploads();
+				
 				// Auto-submit: send the prompt directly without setting input
 				submitPrompt(data);
 				// Input stays empty since we didn't set it
