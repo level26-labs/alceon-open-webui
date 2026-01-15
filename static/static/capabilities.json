@@ -1,24 +1,23 @@
 {
   "categories": [
-    { "id": "all", "label": "All" },
-    { "id": "research", "label": "Research" },
-    { "id": "productivity", "label": "Productivity" },
+    { "id": "all", "label": "All", "default": true },
     { "id": "write", "label": "Write" },
     { "id": "create", "label": "Create" },
-    { "id": "workflow", "label": "Workflows", "default": true },
-    { "id": "apps", "label": "Apps" }
+    { "id": "research", "label": "Research" },
+    { "id": "workflow", "label": "Work" },
+    { "id": "lookup", "label": "Lookup" }
   ],
   "featuredTile": {
-    "id": "featured-jan-2026-v1",
-    "title": "🎉 Welcome to Kingfisher",
-    "subtitle": "Your AI Assistant Hub",
-    "description": "Explore our collection of AI-powered tools designed to help you research, write, create, and boost productivity. Start by browsing the tiles or use the search to find what you need.",
-    "icon": "👋",
+    "id": "featured-jan-2026-v5",
+    "title": "2025 AI Survey",
+    "subtitle": "Your Input Needed",
+    "description": "Your responses directly shape what we build, fix, and focus on next year.",
+    "icon": "📝",
     "color": "from-[#1a365d] to-[#2b6cb0]",
     "action": {
-      "type": "prompt",
-      "prompt": "I'm new to Kingfisher. Can you give me a quick tour of what I can do here?",
-      "label": "Take a Tour"
+      "type": "url",
+      "url": "https://survey.alceon.cloud",
+      "label": "Take the Survey"
     },
     "enabled": true
   },
@@ -201,25 +200,123 @@
       "visibility": "all"
     },
     {
-      "id": "deal_workflow",
-      "title": "Deal Workflow",
-      "subtitle": "Investment process",
-      "description": "Navigate through deal stages with guided prompts",
-      "icon": "📊",
+      "id": "re_workflow",
+      "title": "Real Estate",
+      "subtitle": "RE Deal workflow",
+      "description": "Navigate through real estate deal stages with guided prompts",
+      "icon": "🏗️",
       "color": "from-[#1a365d] to-[#2b6cb0]",
       "capabilityType": "Workflow",
       "action": { "type": "workflow" },
       "workflow": {
         "stages": [
           {
-            "id": "sourcing",
-            "name": "Sourcing",
+            "id": "origination",
+            "name": "Origination",
             "icon": "🔎",
             "color": "from-[#63b3ed] to-[#2b6cb0]",
             "prompts": [
-              { "title": "Market Overview", "prompt": "Provide a market overview for {{industry | text:placeholder=\"Industry name\":required}} including key players, market size, and growth trends.", "features": { "webSearch": true }, "autoSubmit": true },
-              { "title": "Company Search", "prompt": "Find potential acquisition targets in {{sector | text:placeholder=\"Sector\":required}} with revenue between {{min_rev | text:placeholder=\"Min revenue\"}} and {{max_rev | text:placeholder=\"Max revenue\"}}.", "features": { "webSearch": true }, "autoSubmit": true },
-              { "title": "Initial Screening", "prompt": "Create an initial screening checklist for evaluating {{company | text:placeholder=\"Company name\":required}} as a potential investment.", "autoSubmit": true }
+              {
+                "title": "Research Location",
+                "prompt": "Prompt not found",
+                "features": { "webSearch": true },
+                "autoSubmit": false
+              },
+              {
+                "title": "Research Construction Projects",
+                "prompt": "Prompt not found",
+                "features": { "webSearch": true },
+                "autoSubmit": false
+              }
+            ]
+          },
+          {
+            "id": "research",
+            "name": "Research",
+            "icon": "🔬",
+            "color": "from-[#c4a35a] to-[#8b7355]",
+            "prompts": [
+              {
+                "title": "Research Market Comps",
+                "prompt": "Research Market Comparables\nPrompt Purpose:\n\nValidate pricing and revenue assumptions based on proven market performance. Ideal for feasibility analysis, pricing strategy, investment committee presentations, and underwriting assumptions.\n\n\nSystem Instruction:\n\nYou are an elite real estate analyst working for Alceon Group with deep expertise in Australian property markets, transaction analysis, and comparative valuation.\nYour task is to research and analyse completed market comparables for the project specified below.\n\nYou must:\n\nIdentify 5-10 highly relevant completed and settled projects (not just launched) based on location, asset class, scale, and target market\nGather key metrics: Project Name, Developer, Location, Completion Date, Achieved $/sqm, Total Units/GFA, Absorption Rate (months to sell out), Settlement Date, and Premium/Discount to Market\nFocus on projects that completed and achieved final sales within the last 1-3 years\nPrioritise projects within the same suburb or adjacent submarkets with similar buyer profiles\nPresent findings in a consistent markdown table format with these strict requirements:\n\nUse standard markdown table syntax with pipes (|) and hyphens (-) for EVERY row\nKeep cell content concise — use abbreviations where needed (e.g., \"18 mths\" not \"18 months to sell out\")\nIf a cell requires multiple points, use semicolons (;) not line breaks\nMaintain perfect table structure for ALL rows — do not break formatting partway through\nIf content is too long for a cell, truncate and note \"see analysis\"\nMaximum 12 rows to maintain formatting integrity\n\n\nAfter the table, provide separate detailed analysis covering achieved pricing, absorption performance, pricing variance, and validated assumptions\nHighlight pricing variance by floor level, aspect, or unit type if data available\nFlag any data gaps, estimated figures, or assumptions made during research\nReturn only the research output — no unnecessary preamble\n\n**Project Location:**\n{{location | text:placeholder=\"Suburb, City, State\":required}}\n\n**Asset Class:**\n{{asset_class | select:options=[\"Residential Apartments\",\"Townhouses\",\"Land Subdivision\",\"Mixed-Use\",\"Industrial\",\"Office\",\"Retail\"]:default=\"Residential Apartments\"}}\n\n**Target Market:**\n{{target_market | textarea:placeholder=\"e.g., Owner-occupiers, downsizers, investors, first home buyers\"}}\n\n**Project Scale:**\n{{scale | textarea:placeholder=\"Approx. number of units/lots, GFA, price range\"}}",
+                "features": { "webSearch": true },
+                "autoSubmit": true
+              },
+              {
+                "title": "Research Supply Comps",
+                "prompt": "Research Supply Pipeline\nPrompt Purpose:\n\nAssess competitive landscape, timing risks, and market absorption capacity. Ideal for launch timing strategy, competitive positioning, market saturation analysis, and risk assessment.\n\n\nSystem Instruction:\n\nYou are an elite real estate analyst working for Alceon Group with deep expertise in Australian property markets, development pipelines, and competitive intelligence.\nYour task is to research and analyse the upcoming supply pipeline for the market segment specified below.\n\nYou must:\n\nIdentify 8-15 relevant future competing projects (approved, under construction, or preparing to launch) based on location, asset class, scale, and target market\nGather key metrics: Project Name, Developer, Location, Expected Launch Date, Expected Completion Date, Number of Units/GFA, Indicative/Asking $/sqm, Pre-sales %, Current Construction Stage, DA Approval Date, and Key Competitive Features\nFocus on projects expected to launch or complete within the next 2-3 years\nPrioritise projects within the same suburb or adjacent submarkets targeting similar buyer segments\nPresent findings in a consistent markdown table format with these strict requirements:\n\nUse standard markdown table syntax with pipes (|) and hyphens (-) for EVERY row\nKeep cell content concise — use abbreviations where needed (e.g., \"Q2 2025\" not \"Second Quarter 2025\")\nIf a cell requires multiple points, use semicolons (;) not line breaks\nMaintain perfect table structure for ALL rows — do not break formatting partway through\nIf content is too long for a cell, truncate and note \"see analysis\"\nMaximum 15 rows to maintain formatting integrity\n\n\nAfter the table, provide separate detailed analysis covering timing clusters, supply concentration, competitive threats, timing risks, and recommended launch windows\nFlag any data gaps, publicly unavailable information, or assumptions\nReturn only the research output — no unnecessary preamble\n\n**Project Location:**\n{{location | text:placeholder=\"Suburb, City, State\":required}}\n\n**Asset Class:**\n{{asset_class | select:options=[\"Residential Apartments\",\"Townhouses\",\"Land Subdivision\",\"Mixed-Use\",\"Industrial\",\"Office\",\"Retail\"]:default=\"Residential Apartments\"}}\n\n**Target Market:**\n{{target_market | textarea:placeholder=\"e.g., Owner-occupiers, downsizers, investors, first home buyers\"}}\n\n**Project Scale:**\n{{scale | textarea:placeholder=\"Approx. number of units/lots, GFA, price range\"}}",
+                "features": { "webSearch": true },
+                "autoSubmit": true
+              }
+            ]
+          },
+          {
+            "id": "due_diligence",
+            "name": "Due Diligence",
+            "icon": "📋",
+            "color": "from-[#2b6cb0] to-[#1a365d]",
+            "prompts": [
+              {
+                "title": "Sponsor Due Diligence",
+                "prompt": "Conduct lender‑grade due diligence on a real estate sponsor's profile and track record using public information, with a clear focus on sponsor overview, past projects table, and key risks/comments for Alceon as a non‑bank lender.\n\nSystem Instruction:\nYou are an elite real estate credit analyst working for Alceon Group, a non‑bank real estate lender based in Australia, with deep expertise in sponsor due diligence, track record assessment, and credit risk analysis.\nYour task is to research and analyse the sponsor specified below using publicly available information only, and then produce a concise, lender‑focused summary.\n\nYou must:\n\nFocus on the sponsor's real estate development / investment / project track record over the requested time horizon\nPrioritise Australian information and sources where relevant, but include offshore projects if clearly linked to the sponsor\nBe explicit when information is not available or uncertain – do not guess or fabricate data\nClearly distinguish between verified facts and reasonable inferences\nCore Requirements:\n\nProvide a concise Sponsor Overview section\nBuild a Past Projects table in strict markdown format\nHighlight Key Risks & Comments that are relevant from a lender perspective\n\n**Sponsor Information:**\n{{sponsor_info | textarea:placeholder=\"Sponsor legal name, trading name(s), group/brand names, and any known principal(s) or directors\":required}}\n\n**Sponsor Focus:**\n{{sponsor_focus | textarea:placeholder=\"Asset types (e.g. resi apartments, land subdivision, industrial, mixed-use), typical project size, buyer/tenant profile, etc.\"}}\n\n**Geography & Time Horizon:**\n{{geo_time | textarea:placeholder=\"Key geographies (suburb/state/country) and time horizon to review (e.g. last 10–15 years, emphasis on last 5 years)\"}}\n\n**Additional Instructions:**\n{{extra_instructions | textarea:placeholder=\"Any specific concerns, counterparties, or projects to investigate; thresholds for materiality; or any focus areas\"}}",
+                "features": { "webSearch": true },
+                "autoSubmit": true
+              }
+            ]
+          },
+          {
+            "id": "documentation",
+            "name": "Documentation",
+            "icon": "📄",
+            "color": "from-[#d4b896] to-[#c4a35a]",
+            "prompts": [
+              {
+                "title": "Summarise Key Terms",
+                "prompt": "You are a senior real estate financial analyst. You are tasked with reviewing and summarising key terms in term sheets, producing an accurate and succinct summary of terms in a table format. Do not miss any key terms.\n\nPlease summarise the key terms from the attached document using the following table format:\n\nFor each row, extract the relevant details directly from the document.\nIf a term is not specified, state \"Not specified\".\nEnsure all information is accurate and sourced from the attached document.\nOnly include the columns \"Key Detail\" and \"Extracted Information\" in your table.\nUse bullet points for multi-part answers (e.g., Securities & Support, Key Undertakings).\nDo not include any information that is not explicitly stated in the document.\nDo not provide additional commentary or explanation outside of the table.\n\n| Key Detail | Extracted Information |\n|------------|----------------------|\n| Borrower | [Insert details] |\n| Sponsor | [Insert details] |\n| Project | [Insert details] |\n| Property Address | [Insert details] |\n| Facility | [Insert details] |\n| Facility Commitment | [Insert details] |\n| Purpose | [Insert details] |\n| Maturity Date / Tenor | [Insert details] |\n| Minimum Earn | [Insert details] |\n| Arranger Fee | [Insert details] |\n| Coupon Rate | [Insert details] |\n| Securities & Support | [Insert details] |\n| Key Undertakings | [Insert details] |\n\nIf a term is not specified in the document, state \"Not specified\". Do not include a source reference column.",
+                "autoSubmit": true
+              },
+              {
+                "title": "Review IC Paper",
+                "prompt": "COO Prompt to Review Alceon IC Papers — Traffic-Light Result Edition\n\nPurpose: Ensure every IC paper is complete (no empty/TBC sections), follows the Alceon template, is internally consistent, clearly articulates risks/mitigants and exit, and is decision-ready. Output must be a structured review table with clear actions and severity, using traffic lights for the Result.\n\nScope and Template Anchors (Alceon IC format)\nVerify the paper follows the Alceon structure and each section is populated (no \"TBC\", blanks, placeholders):\n\nMain Body: Executive Summary; Transaction Overview; Key Financials; Market Overview; Key Investment Terms; Transaction Structure; Risks & Mitigants; Exit/Repayment Strategy; Sensitivity Analysis; Funding & Syndication Strategy; IC Approval & Compliance.\nAppendices: Planning; Cashflow Profile; Project Images.\n\nReview Instructions:\n1. Completeness and Template Compliance - Confirm all required sections exist and are populated\n2. Check IC Approval & Compliance is complete: steps, expected drawdown, maturity, and sign‑offs\n3. Validate the Compliance Checklist fields are justified\n4. Internal Consistency - Cross-check figures across sections\n5. Risk Assessment - Verify risks are clearly articulated with mitigants\n6. Exit Strategy - Ensure repayment/exit path is clear and realistic\n\nPlease review the attached IC paper and provide your assessment.",
+                "autoSubmit": true
+              }
+            ]
+          }
+        ]
+      },
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "pe_workflow",
+      "title": "Private Equity",
+      "subtitle": "PE Deal workflow",
+      "description": "Navigate through private equity deal stages with guided prompts",
+      "icon": "💼",
+      "color": "from-[#2b6cb0] to-[#1a365d]",
+      "capabilityType": "Workflow",
+      "action": { "type": "workflow" },
+      "workflow": {
+        "stages": [
+          {
+            "id": "origination",
+            "name": "Origination",
+            "icon": "🔎",
+            "color": "from-[#63b3ed] to-[#2b6cb0]",
+            "prompts": [
+              {
+                "title": "Industry Research & Target List",
+                "prompt": "You are a senior private equity analyst at Alceon Group, an Australian-based alternative investment firm focused on mid-market opportunities. You have deep expertise in industry analysis, competitive dynamics, and identifying attractive acquisition targets.\n\nYour task is to conduct thorough industry research and produce actionable intelligence that helps the PE team identify and prioritise potential targets.\n\nYou must:\n• Focus on the Australian and Asia-Pacific market unless otherwise specified\n• Prioritise actionable insights over generic industry overviews\n• Identify specific companies that fit Alceon's mid-market focus (typically $20m–$200m enterprise value)\n• Highlight consolidation opportunities, founder succession situations, and corporate carve-outs\n• Be explicit about data limitations and clearly distinguish facts from inferences\n\n**Industry / Sector to Research:**\n{{industry_sector | textarea:placeholder=\"e.g., Aged care services, Industrial automation, Veterinary clinics, Fire protection services\":required}}\n\n**Geographic Focus:**\n{{geography | textarea:placeholder=\"e.g., Australia-wide, Eastern seaboard, specific states, or Asia-Pacific\"}}\n\n**Investment Thesis Hypothesis:**\n{{thesis_hypothesis | textarea:placeholder=\"e.g., Fragmented market ripe for consolidation; ageing founder demographics; regulatory tailwinds; technology disruption creating acquisition opportunities\"}}\n\n**Target Company Profile:**\n{{target_profile | textarea:placeholder=\"e.g., Revenue range ($5m–$30m), EBITDA margins (>10%), owner-operated, specific service lines, customer concentration limits\"}}\n\n**Specific Questions or Focus Areas:**\n{{focus_areas | textarea:placeholder=\"e.g., Key barriers to entry, typical valuation multiples, recent transactions, major strategic acquirers in the space, regulatory considerations\"}}\n\nOUTPUT REQUIREMENTS:\n1. Industry Overview (2–3 paragraphs covering market size, growth drivers, key trends)\n2. Competitive Landscape (major players, market structure, consolidation activity)\n3. Target Long List (table with: Company Name | Location | Est. Revenue | Owner Profile | Fit Score 1–5 | Notes)\n4. Recent Transaction Precedents (if available)\n5. Key Investment Considerations for Alceon\n6. Recommended Next Steps",
+                "features": { "webSearch": true },
+                "autoSubmit": true
+              },
+              {
+                "title": "New Deal Filter Analysis",
+                "prompt": "You are a private equity investment professional at Alceon Group. Your role is to quickly assess new investment opportunities against Alceon's investment criteria and produce a clear recommendation on whether to progress.\n\nAlceon's Core Investment Criteria (apply these as the filter):\n• Enterprise value: Typically $20m–$200m\n• Geography: Primarily Australia, selectively Asia-Pacific\n• Sector: Industry-agnostic but favour defensive, essential services with recurring revenue\n• EBITDA: Minimum $3m, preference for >$5m with growth potential\n• Ownership: Preference for founder/family-owned, corporate carve-outs, or situations with clear transition need\n• Management: Quality management team willing to stay or clear succession plan\n• Deal type: Control positions preferred; growth equity considered selectively\n\nYour assessment must be:\n• Concise and decision-focused\n• Balanced (highlight both positives and concerns)\n• Clear on your recommendation (Pass / Reject / Conditional Pass)\n\n**Company / Opportunity Name:**\n{{company_name | textarea:placeholder=\"Company name or deal code name\":required}}\n\n**Information Memorandum Summary:**\n{{im_summary | textarea:placeholder=\"Paste key details from the IM: business description, financials (revenue, EBITDA, margins), ownership, reason for sale, asking price/multiple, key customers, etc.\":required}}\n\n**Source / Adviser:**\n{{source | textarea:placeholder=\"e.g., Direct approach, XYZ Corporate Advisory, management referral\"}}\n\n**Initial Impressions / MD Feedback:**\n{{initial_impressions | textarea:placeholder=\"Any early thoughts or specific concerns MDs have flagged\"}}\n\nOUTPUT REQUIREMENTS:\nProduce a concise assessment (max 1 page) with:\n\n1. QUICK FACTS TABLE\n| Attribute | Detail |\n|-----------|--------|\n| Sector | |\n| Location | |\n| Revenue (LTM) | |\n| EBITDA (LTM) | |\n| EV / Asking Price | |\n| Implied Multiple | |\n| Ownership | |\n| Reason for Sale | |\n\n2. FILTER ASSESSMENT\nFor each criterion, mark ✓ Pass / ✗ Fail / ? Unclear\n\n3. KEY POSITIVES (3-5 bullets)\n\n4. KEY CONCERNS (3-5 bullets)\n\n5. RECOMMENDATION & NEXT STEPS",
+                "features": { "webSearch": true },
+                "autoSubmit": true
+              }
             ]
           },
           {
@@ -228,45 +325,103 @@
             "icon": "📋",
             "color": "from-[#c4a35a] to-[#8b7355]",
             "prompts": [
-              { "title": "Financial Analysis", "prompt": "Analyze the financial statements of {{company | text:placeholder=\"Company name\":required}}. Focus on revenue trends, margins, and cash flow.", "autoSubmit": true },
-              { "title": "Risk Assessment", "prompt": "Identify key risks and red flags for investing in {{company | text:placeholder=\"Company name\":required}} in the {{industry | text:placeholder=\"Industry\":required}} sector.", "features": { "webSearch": true }, "autoSubmit": true },
-              { "title": "Management Review", "prompt": "Evaluate the management team of {{company | text:placeholder=\"Company name\":required}} including background, track record, and alignment.", "features": { "webSearch": true }, "autoSubmit": true },
-              { "title": "DD Checklist", "prompt": "Generate a comprehensive due diligence checklist for {{deal_type | select:options=[\"Acquisition\",\"Minority Investment\",\"Joint Venture\"]:required}}.", "autoSubmit": true },
-              { "title": "Customer Analysis", "prompt": "Analyze the customer base of {{company | text:placeholder=\"Company name\":required}} including concentration, retention, and growth trends.", "autoSubmit": true },
-              { "title": "Legal Review", "prompt": "Outline key legal due diligence items to review for {{company | text:placeholder=\"Company name\":required}} including contracts, IP, and litigation.", "autoSubmit": true }
+              {
+                "title": "Review IM",
+                "prompt": "You are a private equity investment analyst at Alceon Group.\n\nYour task is to:\n• Conduct a detailed assessment of the uploaded Information Memorandum (IM)\n• Produce a structured 1-page internal summary\n• Optionally generate a draft email summarising the deal for the PE team\n\nYou must:\n• Use the user's input and uploaded IM as your primary sources\n• Adapt your output depending on whether this is a standalone investment or a bolt-on acquisition\n• Highlight key financials, business model, investment merits, risks, and diligence questions\n• Maintain a professional and analytical tone throughout\n\n**Is this a standalone investment or a bolt-on acquisition?**\n{{deal_type | select:options=[\"Standalone\",\"Bolt-on\"]:default=\"Standalone\"}}\n\n**If bolt-on, what is the relevant Alceon portfolio company?**\n{{portco | text:placeholder=\"Not applicable if standalone\"}}\n\n**Would you like help drafting a deal summary email to the PE team?**\n{{draft_new_deal_email | select:options=[\"Yes\",\"No\"]:default=\"Yes\"}}\n\nOUTPUT STRUCTURE:\n1. Executive Overview (Business name, industry, location, ownership, deal structure, summary)\n2. Business Snapshot (Business model, key customers, geographies, financials table)\n3. Key Highlights (3–5 bullets on investment merits)\n4. Risks and Diligence Areas\n5. Bolt-On Analysis (if applicable)\n6. Follow-Up Questions\n7. New Deal Email (if requested)",
+                "autoSubmit": true
+              },
+              {
+                "title": "Find Expert (Investor Pool)",
+                "prompt": "Prompt not found",
+                "autoSubmit": false
+              },
+              {
+                "title": "Prepare for Expert Call",
+                "prompt": "You are a private equity professional at Alceon Group preparing for an expert network call. Your goal is to extract maximum value from a 45–60 minute call with an industry expert.\n\nExpert calls are expensive and time-limited, so your questions must be:\n• Highly specific and targeted (avoid generic questions the expert can't uniquely answer)\n• Prioritised by importance (most critical first in case time runs short)\n• Designed to validate or challenge your investment thesis\n• Focused on information you cannot easily obtain elsewhere\n• Open-ended to encourage detailed responses\n\nNever ask questions that:\n• Can be answered by desk research or the IM\n• Are too broad (\"tell me about the industry\")\n• Reveal confidential deal information unnecessarily\n\n**Target Company / Sector:**\n{{target_sector | textarea:placeholder=\"Company name (if appropriate to share) or sector/subsector being explored\":required}}\n\n**Expert Background:**\n{{expert_background | textarea:placeholder=\"Expert's role/title, company, tenure, specific expertise (as provided by expert network)\"}}\n\n**Our Investment Thesis:**\n{{investment_thesis | textarea:placeholder=\"Our hypothesis for why this could be an attractive investment\"}}\n\n**Key Questions / Uncertainties to Address:**\n{{key_questions | textarea:placeholder=\"What are the 3–5 critical things we need to learn? What would make us walk away? What would increase conviction?\"}}\n\n**Information We Already Have:**\n{{existing_info | textarea:placeholder=\"What do we already know from IM, desk research, etc.? (So we don't waste time asking the expert)\"}}\n\n**Specific Competitive / Market Intelligence Needed:**\n{{competitive_intel | textarea:placeholder=\"e.g., How does Company X compare to Y? What's the typical win rate? Who's gaining/losing share?\"}}\n\nOUTPUT REQUIREMENTS:\n1. CALL INTRODUCTION SCRIPT (30 seconds – how to frame the call without revealing the target if confidential)\n2. PRIORITISED QUESTION LIST\n   • Tier 1 – Must Ask (5–7 questions) – critical to investment decision\n   • Tier 2 – If Time Permits (3–5 questions)\n3. FOLLOW-UP PROBES for each Tier 1 question\n4. RED FLAGS TO LISTEN FOR\n5. POST-CALL SUMMARY TEMPLATE",
+                "autoSubmit": true
+              },
+              {
+                "title": "Draft Investment Memo",
+                "prompt": "You are a senior private equity professional at Alceon Group with extensive experience writing investment committee memoranda. Your writing style is:\n• Clear, concise, and analytically rigorous\n• Evidence-based with explicit sourcing of key claims\n• Balanced – presenting both the bull and bear case\n• Structured to facilitate IC decision-making\n• Free of marketing language or unsupported superlatives\n\nAn effective IC memo tells a compelling but honest story about why this investment makes sense (or doesn't) for Alceon, with clear articulation of risks and mitigants.\n\n**Company Name:**\n{{company_name | textarea:placeholder=\"Target company name\":required}}\n\n**Section to Draft:**\n{{section | textarea:placeholder=\"e.g., Executive Summary, Business Overview, Market Analysis, Investment Thesis, Key Risks, Financial Analysis, Valuation, Transaction Overview\":required}}\n\n**Raw Inputs / Notes:**\n{{raw_inputs | textarea:placeholder=\"Paste your notes, bullet points, data, or rough draft for this section. Include sources where relevant.\"}}\n\n**Key Messages to Convey:**\n{{key_messages | textarea:placeholder=\"What are the 2–3 most important points this section needs to communicate?\"}}\n\n**Specific Requirements:**\n{{requirements | textarea:placeholder=\"e.g., Word count limit, specific data points to include, tone guidance, any Alceon-specific formatting requirements\"}}\n\n**Questions the IC Will Ask:**\n{{ic_questions | textarea:placeholder=\"What tough questions do you anticipate from the IC on this section? (So we can pre-emptively address them)\"}}\n\nOUTPUT:\nDraft the requested section in a format suitable for an investment committee memo, including:\n• Clear section heading\n• Well-structured prose (not bullet points unless appropriate for the section)\n• Supporting data and evidence with sources\n• Balanced presentation of positives and concerns\n• Clear articulation of implications for the investment decision",
+                "autoSubmit": true
+              },
+              {
+                "title": "Create DD Plan",
+                "prompt": "You are a private equity professional at Alceon Group experienced in managing complex due diligence processes. Your role is to create practical, comprehensive DD plans that:\n• Cover all critical workstreams while being proportionate to deal size and risk\n• Assign clear ownership and deadlines\n• Identify third-party advisers needed and their scope\n• Highlight key decision points and dependencies\n• Balance thoroughness with speed (PE processes are competitive)\n\nAlceon typically uses a \"pod\" structure where a small deal team owns the process end-to-end, with support from functional experts (legal, tax, operations) as needed.\n\n**Company / Deal Name:**\n{{deal_name | textarea:placeholder=\"Target company name\":required}}\n\n**Transaction Overview:**\n{{transaction_overview | textarea:placeholder=\"Deal structure, indicative timing, process dynamics (exclusive/competitive), key milestones\"}}\n\n**Key Deal Risks / Focus Areas:**\n{{key_risks | textarea:placeholder=\"What are the critical areas requiring deep diligence? e.g., customer concentration, environmental, regulatory, technology, key contracts\"}}\n\n**Deal Team / Resources:**\n{{deal_team | textarea:placeholder=\"Who is on the pod? What internal resources are available? What's the budget for external advisers?\"}}\n\n**Timeline Constraints:**\n{{timeline | textarea:placeholder=\"Target signing date, exclusivity period, any external deadlines\"}}\n\n**External Advisers Engaged / To Be Engaged:**\n{{advisers | textarea:placeholder=\"e.g., Legal – [Firm], Accounting – TBD, Commercial – considering [Firm]\"}}\n\n**Previous DD Findings (if any):**\n{{previous_findings | textarea:placeholder=\"Key issues or findings from preliminary DD that need to be resolved\"}}\n\nOUTPUT REQUIREMENTS:\n1. DUE DILIGENCE WORKSTREAM SUMMARY TABLE\n| Workstream | Scope | Owner | Adviser | Target Completion | Status |\n\n2. DETAILED WORKSTREAM PLANS (for each major workstream):\n• Objectives\n• Key questions to answer\n• Information requests / data room items needed\n• Red flags to watch for\n• Deliverables\n\n3. CRITICAL PATH & KEY DECISION POINTS\n\n4. RISK REGISTER (key risks and proposed approach)",
+                "autoSubmit": true
+              }
             ]
           },
           {
-            "id": "valuation",
-            "name": "Valuation",
-            "icon": "💰",
+            "id": "transact",
+            "name": "Transact",
+            "icon": "🤝",
             "color": "from-[#2b6cb0] to-[#1a365d]",
             "prompts": [
-              { "title": "Comparable Analysis", "prompt": "Find comparable companies and transactions for {{company | text:placeholder=\"Company name\":required}} in {{industry | text:placeholder=\"Industry\":required}}.", "features": { "webSearch": true }, "autoSubmit": true },
-              { "title": "DCF Model", "prompt": "Outline a DCF valuation approach for {{company | text:placeholder=\"Company name\":required}} with key assumptions to consider.", "autoSubmit": true },
-              { "title": "Valuation Summary", "prompt": "Create a valuation summary comparing different methodologies for {{company | text:placeholder=\"Company name\":required}}.", "autoSubmit": true }
+              {
+                "title": "Investment Structure Analysis",
+                "prompt": "Prompt not found",
+                "autoSubmit": false
+              },
+              {
+                "title": "Competitive Bidding Strategy",
+                "prompt": "You are a senior private equity professional at Alceon Group experienced in competitive M&A processes. Your role is to develop winning strategies that:\n• Differentiate Alceon from other bidders beyond just price\n• Build relationships and credibility with the seller and management\n• Anticipate and address seller concerns proactively\n• Structure bids to maximise certainty and execution speed\n• Position for exclusive negotiations where possible\n\nKey Alceon differentiators to leverage:\n• Flexible mandate (can do control, minority, various structures)\n• Operational value-add capability\n• Strong track record with Australian family-owned businesses\n• Patient capital / long-term orientation\n• Alignment with management (partnership approach)\n\n**Target Company:**\n{{company_name | textarea:placeholder=\"Target company name\":required}}\n\n**Process Dynamics:**\n{{process | textarea:placeholder=\"Auction type (single/two-stage), number of bidders, timeline, adviser running the process\"}}\n\n**Known / Likely Competitors:**\n{{competitors | textarea:placeholder=\"Who else is likely bidding? What are their typical approaches and advantages?\"}}\n\n**Seller Profile and Priorities:**\n{{seller | textarea:placeholder=\"Who is the seller (founder, PE, corporate)? What are their key priorities beyond price (legacy, employees, management, speed, certainty)?\"}}\n\n**Management Position:**\n{{management | textarea:placeholder=\"Is management rolling? What is their preferred buyer profile? Do we have a relationship?\"}}\n\n**Our Competitive Position:**\n{{our_position | textarea:placeholder=\"Our advantages vs. competitors. Any unique angles or relationships?\"}}\n\n**Valuation Parameters:**\n{{valuation | textarea:placeholder=\"Our indicative valuation range, key value drivers, where we might stretch or need to be conservative\"}}\n\n**Key Concerns / Deal-Breakers:**\n{{concerns | textarea:placeholder=\"What could cause us to lose or withdraw? Key risks we've identified\"}}\n\nOUTPUT REQUIREMENTS:\n1. COMPETITIVE LANDSCAPE ANALYSIS TABLE\n2. SELLER PRIORITY MATRIX\n3. DIFFERENTIATION STRATEGY\n4. BID POSITIONING & MESSAGING\n5. KEY TACTICS BY PROCESS STAGE\n6. RISK MITIGATION STRATEGIES",
+                "autoSubmit": true
+              },
+              {
+                "title": "Prepare IC Paper Summary",
+                "prompt": "You are a senior private equity professional at Alceon Group preparing an investment committee cover page. The cover page is the IC's first impression of the deal and must:\n• Provide a complete summary on a single page\n• Enable IC members to quickly grasp the opportunity\n• Clearly state what approval is being sought\n• Highlight the key decision factors (both positive and negative)\n• Be precise with numbers and facts\n\nThe cover page should answer: \"What is this, why is it attractive, what are the risks, and what do you want from us?\"\n\n**Company Name:**\n{{company_name | textarea:placeholder=\"Target company name\":required}}\n\n**Approval Sought:**\n{{approval | textarea:placeholder=\"e.g., Approval to submit NBIO at $Xm; Approval to proceed to final DD; Approval to complete transaction\":required}}\n\n**Deal Team:**\n{{deal_team | textarea:placeholder=\"Pod lead and team members\"}}\n\n**One-Line Description:**\n{{one_liner | textarea:placeholder=\"One sentence describing what the company does\"}}\n\n**Transaction Summary:**\n{{transaction | textarea:placeholder=\"Structure, price, multiple, sources of funding, key terms\"}}\n\n**Key Financials:**\n{{financials | textarea:placeholder=\"LTM Revenue, EBITDA, margins, growth rates, forecast assumptions\"}}\n\n**Investment Thesis (3 bullets):**\n{{thesis | textarea:placeholder=\"The 3 key reasons this is an attractive investment\"}}\n\n**Key Risks (3 bullets):**\n{{risks | textarea:placeholder=\"The 3 key risks and how we propose to mitigate them\"}}\n\n**Value Creation Plan:**\n{{value_creation | textarea:placeholder=\"Primary value creation levers and expected impact\"}}\n\n**Exit Considerations:**\n{{exit | textarea:placeholder=\"Likely exit route, timing, comparable exits\"}}\n\n**Key DD Findings / Open Issues:**\n{{dd_findings | textarea:placeholder=\"Material findings from DD, any open issues to resolve\"}}\n\nOUTPUT REQUIREMENTS:\nGenerate a single-page IC cover page with:\n1. HEADER (Company name, sector, location, deal team, date, approval sought)\n2. TRANSACTION SUMMARY TABLE\n3. INVESTMENT THESIS (3 numbered points)\n4. KEY RISKS & MITIGANTS (3 numbered points)\n5. VALUE CREATION SUMMARY\n6. KEY DD FINDINGS / OPEN ISSUES\n7. RECOMMENDATION",
+                "autoSubmit": true
+              }
             ]
           },
           {
-            "id": "negotiation",
-            "name": "Negotiation",
-            "icon": "🤝",
+            "id": "hold",
+            "name": "Hold",
+            "icon": "📈",
             "color": "from-[#d4b896] to-[#c4a35a]",
             "prompts": [
-              { "title": "Term Sheet Review", "prompt": "Review and analyze this term sheet for key terms, risks, and negotiation points:\n\n{{terms | textarea:placeholder=\"Paste term sheet content...\":required}}", "autoSubmit": true },
-              { "title": "Negotiation Strategy", "prompt": "Develop a negotiation strategy for acquiring {{company | text:placeholder=\"Company name\":required}} at a target valuation of {{target | text:placeholder=\"Target valuation\":required}}.", "autoSubmit": true },
-              { "title": "Counter Proposal", "prompt": "Draft talking points for a counter proposal on {{issue | text:placeholder=\"Key issue\":required}}.", "autoSubmit": true }
+              {
+                "title": "Create 100-Day Plan",
+                "prompt": "You are a private equity operating partner at Alceon Group responsible for post-acquisition value creation. Your role is to develop practical, actionable 100-day plans that:\n• Prioritise high-impact initiatives that can be executed quickly\n• Build momentum and confidence with management\n• Address critical \"Day 1\" requirements (legal, compliance, systems)\n• Establish baseline KPIs and reporting cadence\n• Set up the platform for longer-term value creation\n• Balance Alceon oversight with management empowerment\n\nThe 100-day plan should be realistic – don't overcommit. Focus on \"quick wins\" and foundational work that enables future initiatives.\n\n**Company Name:**\n{{company_name | textarea:placeholder=\"Portfolio company name\":required}}\n\n**Investment Thesis Summary:**\n{{investment_thesis | textarea:placeholder=\"Brief summary of why we invested and key value creation levers\"}}\n\n**Key Value Creation Initiatives:**\n{{value_initiatives | textarea:placeholder=\"Primary value creation levers identified during DD: e.g., pricing optimisation, add-on M&A, operational efficiency, geographic expansion\"}}\n\n**Management Team Assessment:**\n{{management_assessment | textarea:placeholder=\"Strengths and gaps in current management team. Key hires needed?\"}}\n\n**Critical Day 1 Requirements:**\n{{day1_requirements | textarea:placeholder=\"Legal, compliance, insurance, banking, system access requirements that must be completed immediately\"}}\n\n**Current State Issues / Findings from DD:**\n{{current_issues | textarea:placeholder=\"Key issues identified during DD that need immediate attention\"}}\n\n**Governance / Reporting Requirements:**\n{{governance | textarea:placeholder=\"Board composition, reporting cadence, KPIs to track\"}}\n\n**Budget for Initiatives:**\n{{budget | textarea:placeholder=\"Available budget for transformation / improvement initiatives\"}}\n\nOUTPUT REQUIREMENTS:\n1. EXECUTIVE SUMMARY (1 paragraph – key priorities for first 100 days)\n2. 100-DAY TIMELINE TABLE\n3. DETAILED INITIATIVE PLANS\n4. GOVERNANCE & REPORTING FRAMEWORK\n5. KEY RISKS & MITIGATION\n6. SUCCESS METRICS",
+                "autoSubmit": true
+              },
+              {
+                "title": "Investor Update",
+                "prompt": "You are a senior investment analyst within Alceon Private Equity's investor relations team, experienced in preparing institutional-grade investor communications and portfolio company analysis.\n\nYour task is to generate an investor update presentation that provides material updates from the previous reporting period.\n\nYou must:\n• Use the uploaded documents, financial statements, and board reports as primary sources\n• Focus only on material changes and updates since the last investor communication\n• Extract data accurately without requiring source citations\n• Present information in a clear, executive-ready format suitable for institutional investors\n• Maintain consistent formatting and professional tone throughout\n• Include forward-looking commentary based on management guidance and market conditions\n\n**Reporting Period:**\n{{Reporting_Period | text:placeholder=\"e.g. 1H FY25 or FY2025\":required}}\n\n**Portfolio Company:**\n{{company_name | text:placeholder=\"Portfolio company name\":required}}\n\n**Key Updates to Highlight:**\n{{key_updates | textarea:placeholder=\"Major events, milestones, or changes since last report\"}}\n\n**Financial Performance Summary:**\n{{financial_summary | textarea:placeholder=\"Revenue, EBITDA, key metrics vs. budget/prior period\"}}\n\n**Strategic Initiatives Update:**\n{{strategic_update | textarea:placeholder=\"Progress on value creation initiatives, M&A activity, operational improvements\"}}\n\nOUTPUT STRUCTURE:\n1. COVER PAGE (Company, fund, reporting period, date)\n2. INVESTMENT BACKGROUND AND UPDATE\n3. FINANCIAL PERFORMANCE\n4. OPERATIONAL HIGHLIGHTS\n5. STRATEGIC INITIATIVES PROGRESS\n6. OUTLOOK AND KEY PRIORITIES\n7. RISKS AND MITIGATIONS",
+                "autoSubmit": true
+              },
+              {
+                "title": "Research Bolt-on Targets",
+                "prompt": "Prompt not found",
+                "features": { "webSearch": true },
+                "autoSubmit": false
+              }
             ]
           },
           {
-            "id": "closing",
-            "name": "Closing",
-            "icon": "✅",
+            "id": "exit",
+            "name": "Exit",
+            "icon": "🚀",
             "color": "from-[#1a365d] to-[#2b6cb0]",
             "prompts": [
-              { "title": "Closing Checklist", "prompt": "Generate a closing checklist for the {{company | text:placeholder=\"Company name\":required}} transaction.", "autoSubmit": true },
-              { "title": "Integration Plan", "prompt": "Create a 100-day integration plan for {{company | text:placeholder=\"Company name\":required}} post-acquisition.", "autoSubmit": true },
-              { "title": "Announcement Draft", "prompt": "Draft a press release announcing the acquisition of {{company | text:placeholder=\"Company name\":required}}.", "autoSubmit": true }
+              {
+                "title": "Identify Buyer Universe",
+                "prompt": "You are a senior private equity professional at Alceon Group preparing for a portfolio company exit. Your task is to identify and analyse the universe of potential buyers for the asset.\n\nYou must:\n• Identify both strategic and financial buyers with demonstrated interest or capability in this sector\n• Assess each buyer's strategic rationale, financial capacity, and likely interest level\n• Consider both domestic (Australian/APAC) and international buyers where relevant\n• Highlight any existing relationships or prior interactions with potential buyers\n• Be realistic about buyer appetite and ability to transact\n\n**Portfolio Company:**\n{{company_name | textarea:placeholder=\"Company name\":required}}\n\n**Business Description:**\n{{business_description | textarea:placeholder=\"Brief description of the business, sector, key products/services, geographic footprint\"}}\n\n**Key Financials:**\n{{financials | textarea:placeholder=\"LTM Revenue, EBITDA, growth trajectory, expected exit valuation range\"}}\n\n**Investment Thesis / Value Created:**\n{{value_created | textarea:placeholder=\"What has Alceon done to improve the business? Key value creation achievements\"}}\n\n**Target Exit Timing:**\n{{timing | textarea:placeholder=\"Expected exit window, any time constraints or considerations\"}}\n\n**Preferred Exit Route:**\n{{exit_route | select:options=[\"Trade Sale\",\"Secondary PE Sale\",\"IPO\",\"Open to All Options\"]:default=\"Open to All Options\"}}\n\n**Previous Buyer Interest / Known Parties:**\n{{known_parties | textarea:placeholder=\"Any parties who have previously expressed interest or are known to be active in the sector\"}}\n\nOUTPUT REQUIREMENTS:\n1. BUYER UNIVERSE SUMMARY TABLE\n| Buyer | Type (Strategic/PE) | Rationale | Financial Capacity | Interest Level (H/M/L) | Key Considerations |\n\n2. STRATEGIC BUYERS DEEP DIVE (Top 5-7)\n• Acquisition history\n• Strategic fit\n• Likely valuation approach\n• Relationship status\n\n3. FINANCIAL BUYERS DEEP DIVE (Top 5-7)\n• Fund status / dry powder\n• Sector experience\n• Value creation angle\n• Relationship status\n\n4. RECOMMENDED OUTREACH PRIORITY\n\n5. KEY CONSIDERATIONS FOR PROCESS DESIGN",
+                "features": { "webSearch": true },
+                "autoSubmit": true
+              },
+              {
+                "title": "Research Comparable Exits",
+                "prompt": "You are a senior private equity professional at Alceon Group analysing exit precedents to inform valuation expectations and process strategy for a portfolio company sale.\n\nYour task is to research and analyse comparable exit transactions to establish valuation benchmarks and identify key success factors.\n\nYou must:\n• Focus on transactions in similar sectors, geographies, and size ranges\n• Gather key metrics: EV, Revenue, EBITDA, multiples, buyer type, deal structure\n• Prioritise Australian and Asia-Pacific transactions where relevant\n• Identify trends in valuation multiples and buyer behaviour\n• Highlight factors that drove premium valuations\n\n**Portfolio Company:**\n{{company_name | textarea:placeholder=\"Company name\":required}}\n\n**Sector / Industry:**\n{{sector | textarea:placeholder=\"Industry sector, sub-sector, business model type\":required}}\n\n**Company Profile:**\n{{company_profile | textarea:placeholder=\"Revenue, EBITDA, key characteristics (e.g., recurring revenue %, growth rate, customer concentration)\"}}\n\n**Geographic Focus for Comps:**\n{{geography | textarea:placeholder=\"e.g., Australia, Asia-Pacific, Global\"}}\n\n**Time Period:**\n{{time_period | select:options=[\"Last 2 years\",\"Last 3 years\",\"Last 5 years\"]:default=\"Last 3 years\"}}\n\n**Transaction Size Range:**\n{{size_range | textarea:placeholder=\"EV range for comparable transactions (e.g., $50m - $300m)\"}}\n\nOUTPUT REQUIREMENTS:\n1. COMPARABLE TRANSACTIONS TABLE\n| Target | Buyer | Date | EV ($m) | Revenue ($m) | EBITDA ($m) | EV/Revenue | EV/EBITDA | Deal Type | Key Features |\n\n2. VALUATION ANALYSIS\n• Multiple ranges (25th/50th/75th percentile)\n• Trend analysis over time\n• Premium drivers\n\n3. KEY OBSERVATIONS\n• What drove premium valuations?\n• Buyer types and their typical multiples\n• Process dynamics (auction vs. bilateral)\n\n4. IMPLICATIONS FOR OUR EXIT\n• Indicative valuation range\n• Recommended positioning\n• Key value drivers to emphasise",
+                "features": { "webSearch": true },
+                "autoSubmit": true
+              },
+              {
+                "title": "Exit Readiness Assessment",
+                "prompt": "You are a senior private equity professional at Alceon Group conducting an exit readiness assessment for a portfolio company. Your task is to systematically evaluate whether the company is prepared for a successful exit process.\n\nThe assessment should cover all dimensions that sophisticated buyers will evaluate during due diligence and help identify gaps that need to be addressed before launching a process.\n\n**Portfolio Company:**\n{{company_name | textarea:placeholder=\"Company name\":required}}\n\n**Target Exit Timing:**\n{{timing | textarea:placeholder=\"When do we want to exit? (e.g., Q2 2025, within 12 months)\"}}\n\n**Expected Exit Route:**\n{{exit_route | select:options=[\"Trade Sale\",\"Secondary PE Sale\",\"IPO\",\"Dual Track (Trade/PE)\",\"TBD\"]:default=\"Trade Sale\"}}\n\n**Current Business Status:**\n{{business_status | textarea:placeholder=\"Current performance vs. plan, recent developments, key achievements\"}}\n\n**Management Team Assessment:**\n{{management | textarea:placeholder=\"Strength of management team, key person dependencies, succession plans, retention arrangements\"}}\n\n**Financial Reporting Quality:**\n{{financials | textarea:placeholder=\"Quality of management accounts, audit status, any restatements or adjustments needed\"}}\n\n**Known Issues or Concerns:**\n{{issues | textarea:placeholder=\"Any known issues that buyers might raise (litigation, customer concentration, regulatory, environmental, etc.)\"}}\n\n**Data Room Status:**\n{{data_room | textarea:placeholder=\"Current state of document preparation, information availability\"}}\n\nOUTPUT REQUIREMENTS:\n1. EXIT READINESS SCORECARD\n| Dimension | Status (🟢/🟡/🔴) | Key Issues | Actions Required | Timeline |\n\nDimensions to assess:\n• Financial Performance & Trajectory\n• Financial Reporting & Audit Quality\n• Management Team & Retention\n• Legal & Compliance\n• Customer / Contract Review\n• Operational Documentation\n• IT / Systems Separation\n• Tax Structuring\n• Employee Matters\n• Data Room Preparation\n\n2. CRITICAL PATH ITEMS (Must address before launch)\n\n3. RECOMMENDED TIMELINE TO LAUNCH\n\n4. KEY RISKS TO EXIT VALUE\n\n5. RECOMMENDED ADVISERS / WORKSTREAMS",
+                "autoSubmit": true
+              }
             ]
           }
         ]
@@ -287,128 +442,6 @@
       "tags": ["apps"],
       "enabled": true,
       "visibility": ["admins"]
-    },
-    {
-      "id": "ic_approval",
-      "title": "IC Approval",
-      "subtitle": "Committee review",
-      "description": "Investment Committee approval workflow",
-      "icon": "🏛️",
-      "color": "from-[#1a365d] to-[#2b6cb0]",
-      "capabilityType": "Workflow",
-      "action": { "type": "workflow" },
-      "workflow": {
-        "stages": [
-          {
-            "id": "pre_ic",
-            "name": "Pre-IC",
-            "icon": "📝",
-            "color": "from-[#63b3ed] to-[#2b6cb0]",
-            "prompts": [
-              { "title": "IC Memo Draft", "prompt": "Draft an Investment Committee memo for {{company | text:placeholder=\"Company name\":required}} covering investment thesis, key risks, and proposed terms.", "autoSubmit": true },
-              { "title": "Risk Summary", "prompt": "Summarize the top 5 risks for the {{company | text:placeholder=\"Company name\":required}} investment and proposed mitigants.", "autoSubmit": true },
-              { "title": "Comparable Deals", "prompt": "Find comparable transactions to {{company | text:placeholder=\"Company name\":required}} in {{sector | text:placeholder=\"Sector\":required}} from the past 3 years.", "features": { "webSearch": true }, "autoSubmit": true },
-              { "title": "Investment Thesis", "prompt": "Articulate the investment thesis for {{company | text:placeholder=\"Company name\":required}} including value creation levers.", "autoSubmit": true },
-              { "title": "Market Analysis", "prompt": "Provide a market analysis for {{company | text:placeholder=\"Company name\":required}} including TAM, competition, and trends.", "features": { "webSearch": true }, "autoSubmit": true }
-            ]
-          },
-          {
-            "id": "ic_presentation",
-            "name": "IC Deck",
-            "icon": "📊",
-            "color": "from-[#2b6cb0] to-[#1a365d]",
-            "prompts": [
-              { "title": "Slide Outline", "prompt": "Create an outline for an IC presentation deck for {{company | text:placeholder=\"Company name\":required}} investment.", "autoSubmit": true },
-              { "title": "Executive Summary", "prompt": "Write a 1-page executive summary for {{company | text:placeholder=\"Company name\":required}} suitable for IC review.", "autoSubmit": true },
-              { "title": "Q&A Prep", "prompt": "Generate likely IC questions and suggested answers for the {{company | text:placeholder=\"Company name\":required}} investment.", "autoSubmit": true }
-            ]
-          },
-          {
-            "id": "ic_meeting",
-            "name": "IC Meeting",
-            "icon": "👥",
-            "color": "from-[#c4a35a] to-[#8b7355]",
-            "prompts": [
-              { "title": "Meeting Agenda", "prompt": "Create an IC meeting agenda for reviewing {{company | text:placeholder=\"Company name\":required}}.", "autoSubmit": true },
-              { "title": "Discussion Points", "prompt": "List key discussion points and decision items for the {{company | text:placeholder=\"Company name\":required}} IC meeting.", "autoSubmit": true }
-            ]
-          },
-          {
-            "id": "post_ic",
-            "name": "Post-IC",
-            "icon": "✅",
-            "color": "from-[#1a365d] to-[#2b6cb0]",
-            "prompts": [
-              { "title": "IC Decision Summary", "prompt": "Draft an IC decision summary for {{company | text:placeholder=\"Company name\":required}} with outcome: {{outcome | select:options=[\"Approved\",\"Approved with Conditions\",\"Declined\",\"Deferred\"]:required}}.", "autoSubmit": true },
-              { "title": "Next Steps", "prompt": "Outline next steps following IC {{outcome | select:options=[\"approval\",\"conditional approval\",\"deferral\"]:required}} for {{company | text:placeholder=\"Company name\":required}}.", "autoSubmit": true },
-              { "title": "Stakeholder Update", "prompt": "Draft a stakeholder update email regarding the IC decision on {{company | text:placeholder=\"Company name\":required}}.", "autoSubmit": true }
-            ]
-          }
-        ]
-      },
-      "tags": ["workflow"],
-      "enabled": true,
-      "visibility": "all"
-    },
-    {
-      "id": "finance_month_end",
-      "title": "Month-End Close",
-      "subtitle": "Finance workflow",
-      "description": "End of month financial close process",
-      "icon": "📅",
-      "color": "from-[#2b6cb0] to-[#63b3ed]",
-      "capabilityType": "Workflow",
-      "action": { "type": "workflow" },
-      "workflow": {
-        "stages": [
-          {
-            "id": "reconciliation",
-            "name": "Reconciliation",
-            "icon": "🔄",
-            "color": "from-[#63b3ed] to-[#2b6cb0]",
-            "prompts": [
-              { "title": "Bank Rec Checklist", "prompt": "Generate a bank reconciliation checklist for {{month | text:placeholder=\"Month/Year\":required}}.", "autoSubmit": true },
-              { "title": "Intercompany Rec", "prompt": "Create an intercompany reconciliation template for entities: {{entities | textarea:placeholder=\"List entities...\"}}", "autoSubmit": true },
-              { "title": "AR Aging Analysis", "prompt": "Analyze accounts receivable aging and suggest collection priorities for balances over {{days | select:options=[\"30 days\",\"60 days\",\"90 days\"]:default=\"60 days\"}}.", "autoSubmit": true }
-            ]
-          },
-          {
-            "id": "accruals",
-            "name": "Accruals",
-            "icon": "📋",
-            "color": "from-[#c4a35a] to-[#d4b896]",
-            "prompts": [
-              { "title": "Accrual Review", "prompt": "List standard month-end accruals to review for {{department | text:placeholder=\"Department\":required}}.", "autoSubmit": true },
-              { "title": "Bonus Accrual", "prompt": "Calculate bonus accrual estimate based on {{performance | select:options=[\"Below Target\",\"At Target\",\"Above Target\"]:default=\"At Target\"}} performance.", "autoSubmit": true },
-              { "title": "Expense Accruals", "prompt": "Generate expense accrual entries for {{category | select:options=[\"Professional Services\",\"Marketing\",\"Travel\",\"Utilities\",\"Other\"]:required}}.", "autoSubmit": true }
-            ]
-          },
-          {
-            "id": "reporting",
-            "name": "Reporting",
-            "icon": "📈",
-            "color": "from-[#2b6cb0] to-[#1a365d]",
-            "prompts": [
-              { "title": "Variance Analysis", "prompt": "Create a variance analysis template comparing actuals to budget for {{month | text:placeholder=\"Month\":required}}.", "autoSubmit": true },
-              { "title": "Management Report", "prompt": "Draft a management report summary for {{month | text:placeholder=\"Month\":required}} financial results.", "autoSubmit": true },
-              { "title": "KPI Dashboard", "prompt": "List key financial KPIs to include in the monthly dashboard for {{audience | select:options=[\"Executive Team\",\"Board\",\"Department Heads\"]:default=\"Executive Team\"}}.", "autoSubmit": true }
-            ]
-          },
-          {
-            "id": "close_checklist",
-            "name": "Close",
-            "icon": "✅",
-            "color": "from-[#1a365d] to-[#2b6cb0]",
-            "prompts": [
-              { "title": "Close Checklist", "prompt": "Generate a month-end close checklist with sign-off tracking for {{month | text:placeholder=\"Month/Year\":required}}.", "autoSubmit": true },
-              { "title": "Journal Entry Review", "prompt": "Create a journal entry review template for manual entries over {{threshold | text:placeholder=\"$10,000\"}}.", "autoSubmit": true }
-            ]
-          }
-        ]
-      },
-      "tags": ["workflow"],
-      "enabled": true,
-      "visibility": "all"
     },
     {
       "id": "meeting_notes",
