@@ -11,7 +11,7 @@
     "id": "featured-jan-2026-v5",
     "title": "2025 AI Survey",
     "subtitle": "Your Input Needed",
-    "description": "Your responses directly shape what we build, fix, and focus on next year.",
+    "description": "Your responses directly shape what we build, fix, and focus on in 2026.",
     "icon": "📝",
     "color": "from-[#1a365d] to-[#2b6cb0]",
     "action": {
@@ -583,6 +583,638 @@
       "capabilityType": "Link",
       "action": { "type": "url", "url": "https://hr.company.com" },
       "tags": ["apps"],
+      "enabled": true,
+      "visibility": "all"
+    },
+	{
+      "id": "diligent_company_report",
+      "title": "Company Report",
+      "subtitle": "Full company lookup",
+      "description": "Generate a comprehensive company information report using Diligent",
+      "icon": "🏢",
+      "color": "from-[#2b6cb0] to-[#1a365d]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "# Complete Diligent Company Information Report\n\n## Prompt Purpose:\n* Retrieve and compile a comprehensive company information report for the specified entity, presenting key information as bullet points and shareholder/office holder details in tables.\n\n## System Instruction:\n* You are an expert company information specialist with access to the Diligent API.\n* Your task is to retrieve and compile a complete company information report for the provided entity name.\n\n**Entity Name:**\n{{entity_name | text:placeholder=\"Enter the company or entity name...\":required}}"
+      },
+      "autoSubmit": true,
+      "tags": ["lookup"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "diligent_address",
+      "title": "Get Address",
+      "subtitle": "Company address lookup",
+      "description": "Retrieve registered and business address for an entity",
+      "icon": "📍",
+      "color": "from-[#63b3ed] to-[#2b6cb0]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Retrieve the official registered address and business address for the specified entity.\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve the registered address and business address for the provided entity.\n\n**Entity Name:**\n{{entity_name | text:placeholder=\"Enter the company or entity name...\":required}}\n\nYou must:\n- Query the Diligent API using the entity name provided\n- Present the registered address and business address clearly\n- Include the ACN for reference"
+      },
+      "autoSubmit": true,
+      "tags": ["lookup"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "diligent_shareholders",
+      "title": "Get Shareholders",
+      "subtitle": "Shareholder lookup",
+      "description": "Retrieve complete list of shareholders for an entity",
+      "icon": "👥",
+      "color": "from-[#2b6cb0] to-[#63b3ed]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Retrieve a complete list of shareholders for the specified entity.\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve all shareholders for the provided entity.\n\n**Entity Name:**\n{{entity_name | text:placeholder=\"Enter the company or entity name...\":required}}\n\nYou must:\n- Query the Diligent API using the entity name provided\n- Present shareholders in a table format\n- Include all data fields returned by the API for each shareholder\n- Calculate and display total shares and percentages\n- Include the ACN and summary totals"
+      },
+      "autoSubmit": true,
+      "tags": ["lookup"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "diligent_legal_name",
+      "title": "Get Legal Name",
+      "subtitle": "Legal name lookup",
+      "description": "Retrieve the complete legal name of an entity",
+      "icon": "📛",
+      "color": "from-[#1a365d] to-[#2b6cb0]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Retrieve the complete legal name of the specified entity.\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve the full legal name for the provided entity.\n\n**Entity Name:**\n{{entity_name | text:placeholder=\"Enter the company or entity name...\":required}}\n\nYou must:\n- Query the Diligent API using the entity name provided\n- Present the legal name and any name variations as bullet points\n- Include the ACN for reference"
+      },
+      "autoSubmit": true,
+      "tags": ["lookup"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "diligent_acn_abn",
+      "title": "Get ACN & ABN",
+      "subtitle": "Company numbers lookup",
+      "description": "Retrieve ACN and ABN for an entity",
+      "icon": "🔢",
+      "color": "from-[#63b3ed] to-[#1a365d]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Retrieve the Australian Company Number (ACN) and Australian Business Number (ABN) for the specified entity.\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve the ACN and ABN for the provided entity name.\n\n**Entity Name:**\n{{entity_name | text:placeholder=\"Enter the company or entity name...\":required}}\n\nYou must:\n- Query the Diligent API using the entity name provided\n- Extract and present the ACN and ABN clearly\n- Include all related identification numbers if available (ARBN, etc.)\n- Present the information in a clear format"
+      },
+      "autoSubmit": true,
+      "tags": ["lookup"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "diligent_officeholders",
+      "title": "Get Officeholders",
+      "subtitle": "Directors & officers lookup",
+      "description": "Retrieve all current and past office holders for an entity",
+      "icon": "👔",
+      "color": "from-[#2b6cb0] to-[#1a365d]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Retrieve a complete list of all current and past office holders (directors, company secretaries, and former officers) for the specified entity.\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve all office holders for the provided entity.\n\n**Entity Name:**\n{{entity_name | text:placeholder=\"Enter the company or entity name...\":required}}\n\nYou must:\n- Query the Diligent API using the entity name provided\n- Present all office holders in separate tables for current directors, company secretaries, and past office holders\n- Include appointment dates, cessation dates, and roles\n- Include the ACN for reference"
+      },
+      "autoSubmit": true,
+      "tags": ["lookup"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "draft_deal_summary",
+      "title": "Draft Deal Summary",
+      "subtitle": "Deal summary email",
+      "description": "Create an internal DD summary email for a deal",
+      "icon": "📧",
+      "color": "from-[#c4a35a] to-[#d4b896]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "I am preparing an internal due diligence (DD) summary for a deal discussed at a recent meeting.\n\n**Deal Name:**\n{{deal_name | text:placeholder=\"Deal name\":required}}\n\n**Meeting Name:**\n{{meeting_name | text:placeholder=\"e.g., Monday Deal Review\"}}\n\n**Feedback Source:**\n{{feedback_source | text:placeholder=\"e.g., MD, Investment Committee\"}}\n\n**Deal Details:**\n{{deal_details | textarea:placeholder=\"Key deal terms, structure, pricing, timeline...\"}}\n\nPlease create a comprehensive internal DD summary that captures all relevant details and documents the deal for record purposes."
+      },
+      "autoSubmit": true,
+      "tags": ["write"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "loan_statement",
+      "title": "Loan Statement Transform",
+      "subtitle": "Extract loan data",
+      "description": "Transform loan schedule screenshots into structured statements",
+      "icon": "💰",
+      "color": "from-[#1a365d] to-[#2b6cb0]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "You are to extract and transform data from a screenshot or image of a loan schedule table to produce a loan statement in the specified format.\nIt is essential that only actual transactions affecting the loan balance are included—do not include any accrued (non-capitalised) items.\n\nInstructions:\n\nInput Source Format:\nThe source is a screenshot or image of a loan schedule table.\nUse only the visible columns in the screenshot, by header name:\n- Date (or Payment Date)\n- Drawdown ($)\n- Interest Capitalised ($)\n- Repayment ($)\n- Balance ($)\n\nPlease process the attached loan schedule image."
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "review_workpapers",
+      "title": "Review Workpapers",
+      "subtitle": "QA check workpapers",
+      "description": "Check workpapers for formatting and consistency issues",
+      "icon": "✅",
+      "color": "from-[#63b3ed] to-[#2b6cb0]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Please review the attached accounts workpapers PDF and check for:\n\n- Formatting inconsistencies\n- Hashes (#) appearing in any of the workpapers (alert me to them)\n- Words that are cut-off in the PDF\n- References appearing in every top-right-hand corner\n- Cross-referencing accuracy\n\nProvide a detailed report of any issues found."
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "number_formatting_check",
+      "title": "Number Format Check",
+      "subtitle": "Find number errors",
+      "description": "Check documents for number formatting errors like misplaced commas",
+      "icon": "🔍",
+      "color": "from-[#c4a35a] to-[#8b7355]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Please review the attached document and check every page for number formatting errors related to misplaced commas in monetary values. Specifically, look for instances where commas are incorrectly placed within numbers (e.g., \"$15,00.00\" instead of \"$15,000.00\"). List any errors you find, specify the incorrect and correct versions, and indicate the relevant page or section. If all numbers are correctly formatted, please confirm that as well."
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "review_facility_doc",
+      "title": "Review Facility Doc",
+      "subtitle": "Debt facility review",
+      "description": "Extract and summarise key items from a facility document",
+      "icon": "📑",
+      "color": "from-[#2b6cb0] to-[#63b3ed]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "I need to review a facility document for an entity. The goal is to extract and summarise key items from the document.\n\n**Entity Name:**\n{{entity_name | text:placeholder=\"Entity name\":required}}\n\nPlease summarise the following from the attached facility document:\n\n1. Identify and list the parties to the document along with their positions (e.g., borrower, financier, guarantor)\n2. Note the date of the document\n3. Extract facility amount, interest rate, term, and maturity date\n4. Identify key covenants and conditions\n5. Note any security or guarantees required"
+      },
+      "autoSubmit": true,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "facility_agreement_notes",
+      "title": "Facility Agreement Notes",
+      "subtitle": "Generate LFA notes",
+      "description": "Summarise a Loan Facility Agreement into notes for workpapers",
+      "icon": "📝",
+      "color": "from-[#1a365d] to-[#63b3ed]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Please summarise the attached Loan Facility Agreement into notes suitable for use in the Fund Accounting team's notes workpaper. Focus on key commercial terms, parties, amounts, rates, and important dates. Present in a clear, structured format."
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "lndp_notes",
+      "title": "LNDP Notes",
+      "subtitle": "Generate LNDP notes",
+      "description": "Summarise Loan Note Deed Poll into a table format",
+      "icon": "📋",
+      "color": "from-[#63b3ed] to-[#1a365d]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Please review the attached Loan Note Deed Poll and prepare a summary table of the key commercial terms. Focus on:\n\n- Effective date\n- Commitment (per subscription agreement)\n- Termination date (sunset)\n- Interest rate and payment frequency\n- Principal repayment terms\n- Security arrangements\n\nExclude operational mechanics, legal boilerplate, and detailed definitions unless directly relevant to the headline terms."
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "combined_notes_summary",
+      "title": "Combined Notes Summary",
+      "subtitle": "FA & LNDP summary",
+      "description": "Summarise both Facility Agreement and LNDP in one output",
+      "icon": "📚",
+      "color": "from-[#c4a35a] to-[#d4b896]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Please summarise the key commercial terms of the attached Facility Agreement and Loan Note Deed Poll (LNDP) in two separate tables, suitable for inclusion in Alceon accounting workpapers.\n\nFor each item, provide a concise summary and cite the relevant clause/condition/definition from the relevant document.\n\nExclude operational/administrative details, general legal boilerplate, and events of default (except for default interest rate)."
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "facility_agreement_summary",
+      "title": "Facility Agreement Summary",
+      "subtitle": "FA key terms table",
+      "description": "Summarise Facility Agreement key terms in table format",
+      "icon": "📊",
+      "color": "from-[#2b6cb0] to-[#c4a35a]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Please summarise the key commercial terms of the attached Facility Agreement in table format, suitable for inclusion in Alceon accounting workpapers.\n\nFor each item, provide a concise summary and cite the relevant clause/condition/definition from the Facility Agreement.\n\nExclude operational/administrative details, general legal boilerplate, and events of default (except for default interest rate).\n\nTable Columns:\n- Section\n- Summary\n- Reference"
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "lndp_summary",
+      "title": "LNDP Summary",
+      "subtitle": "LNDP key terms table",
+      "description": "Generate LNDP summary table for accounting workpapers",
+      "icon": "📄",
+      "color": "from-[#1a365d] to-[#c4a35a]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Please summarise the key terms of the Loan Note Deed Poll (LNDP) in table format, suitable for inclusion in accounting workpapers.\n\nFor each item, provide a concise summary and cite the relevant clause/condition/definition from the LNDP.\n\nExclude operational/administrative details, events of default (except for default interest rate), and general legal boilerplate.\n\nTable Columns:\n- Section\n- Summary\n- Reference"
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "myob_cash_rec",
+      "title": "MYOB Cash Rec",
+      "subtitle": "Cash reconciliation",
+      "description": "Prepare cash reconciliation summary from MYOB general ledger",
+      "icon": "💵",
+      "color": "from-[#63b3ed] to-[#c4a35a]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "I have uploaded a general ledger file. Please prepare an Excel-ready table summarising, for each loan note class:\n\n**Entity Name:**\n{{entity_name | text:placeholder=\"Entity name\":required}}\n\n**Financial Year:**\n{{financial_year | text:placeholder=\"e.g., 2024\":required}}\n\nFor each loan note class, provide:\n- Interest Paid: Sum of all \"spend money\" transactions in the relevant interest payable account\n- ROC: Sum of all \"spend money\" transactions in the relevant principal repayment account\n- Total: Sum of Interest Paid and ROC\n\nExclude bridge loans or any non-loan note classes."
+      },
+      "autoSubmit": true,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "tenancy_schedule",
+      "title": "Tenancy Schedule",
+      "subtitle": "Create lease summary",
+      "description": "Create a tenancy schedule summarising lease terms for a property",
+      "icon": "🏠",
+      "color": "from-[#c4a35a] to-[#8b7355]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Create a tenancy schedule summarising the lease terms for a property.\n\n**Property Reference:**\n{{property_ref | text:placeholder=\"Property name or reference\":required}}\n\n**As of Date:**\n{{as_of_date | date:required}}\n\nPlease create an Excel-ready document that outlines the terms of each lease for the referenced property, including:\n- Tenant details\n- Lease commencement and expiry\n- Rent amounts and review dates\n- Options and special conditions"
+      },
+      "autoSubmit": true,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "lease_synopsis",
+      "title": "Lease Synopsis",
+      "subtitle": "Detailed lease summary",
+      "description": "Create a detailed synopsis of lease terms with recommendations",
+      "icon": "📋",
+      "color": "from-[#2b6cb0] to-[#8b7355]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Create a table synopsis of each lease and any other critical items and recommendations to review. Also provide budget annual commencing and current rent on net and gross basis.\n\nInclude the following fields:\n- Tenant Name\n- Dated\n- Trading As\n- Lease Over\n- Approximate Area (m2)\n- Lease Commencement\n- Lease Expiry\n- Term\n- Base Rent - Net\n- Car Parks\n- Car Park - Commencing Rent\n- Annual Reviews\n- Options\n- Option Review\n- Registered?\n- Option Exercise Window\n- Fully Executed?\n- After Hours Air Conditioning\n- Outgoings\n- Make Good\n- Bank Guarantee\n- Recommendations"
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "summarise_doc",
+      "title": "Summarise Document",
+      "subtitle": "Quick document summary",
+      "description": "Summarise a document into a structured topic/summary table",
+      "icon": "📖",
+      "color": "from-[#63b3ed] to-[#2b6cb0]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Summarise the provided document and output a 2 column table that details each section of the document:\n\n1. Topic\n2. Summary"
+      },
+      "autoSubmit": false,
+      "tags": ["write"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "c2o_survey",
+      "title": "C2O Survey Analysis",
+      "subtitle": "Survey insights",
+      "description": "Extract themes and insights from workplace survey responses",
+      "icon": "📊",
+      "color": "from-[#c4a35a] to-[#d4b896]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "You have collected responses from employees regarding their experiences and insights after attending workplace training. The goal is to identify key themes and insights from this survey data.\n\n**Number of Responses:**\n{{number_of_responses | text:placeholder=\"e.g., 6000\"}}\n\n**Survey Topic:**\n{{survey_topic | text:placeholder=\"e.g., Workplace safety training\":required}}\n\nPlease extract and summarise key themes and insights from the attached survey responses, focusing on perceptions of the training effectiveness, areas for improvement, and actionable recommendations."
+      },
+      "autoSubmit": true,
+      "tags": ["research"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "what_would_trevor_say",
+      "title": "Trevor's Review",
+      "subtitle": "Investor report QA",
+      "description": "Review investor report against Alceon's 20-point reporting standards",
+      "icon": "👨‍💼",
+      "color": "from-[#1a365d] to-[#2b6cb0]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "### What Would Trevor Say?\n\n#### Alceon Investor Report Review Assistant\n\nRole: Senior analyst conducting investor report compliance review for Alceon Group's private equity team.\n\nTask: Review attached investor report against Alceon's 20-point reporting standards. Provide succinct analysis in table format.\n\nBefore we begin, check the documents that were attached against the required list:\n- Current investor report that is being reviewed\n- Previous investor report for comparison\n- Board pack or management accounts\n\nPlease identify any missing documents and then proceed with the review."
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "investment_summary",
+      "title": "Investment Summary",
+      "subtitle": "2-page deal summary",
+      "description": "Prepare a professional 2-page investment summary from deal documents",
+      "icon": "📑",
+      "color": "from-[#2b6cb0] to-[#c4a35a]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "### Prepare Investment Summary\n\nYou are a top-tier Private Equity Associate at Alceon Group.\n\nYour task is to synthesise the uploaded IM and supporting materials into an executive-level investment memo designed for fast, high-quality decision-making by the deal team.\n\nProduce a sharp, professional-grade 2-page investment summary that covers:\n\n1. Executive Overview\n2. Business Description\n3. Investment Highlights\n4. Key Risks & Mitigants\n5. Financial Summary\n6. Valuation Considerations\n7. Recommended Next Steps"
+      },
+      "autoSubmit": false,
+      "tags": ["write"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "investor_pl",
+      "title": "Investor P&L",
+      "subtitle": "Generate P&L statement",
+      "description": "Generate a simplified Profit & Loss statement from board report data",
+      "icon": "📈",
+      "color": "from-[#63b3ed] to-[#1a365d]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Generate a simplified Profit & Loss statement in markdown format based on the provided board report data.\n\nInstructions:\n1. Preserve accuracy: Use the exact figures from the source data\n2. Flexible categorisation: Map actual P&L line items to the most appropriate template categories\n3. Include: Revenue, Cost of Sales, Gross Profit, Operating Expenses, EBITDA, D&A, EBIT, Interest, Tax, Net Profit\n4. Show comparison periods where available\n5. Calculate variances"
+      },
+      "autoSubmit": false,
+      "tags": ["write"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "investor_balance_sheet",
+      "title": "Investor Balance Sheet",
+      "subtitle": "Detailed balance sheet",
+      "description": "Generate a detailed balance sheet with current/non-current classifications",
+      "icon": "📊",
+      "color": "from-[#c4a35a] to-[#2b6cb0]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Generate ONE detailed balance sheet table in markdown format using traditional accounting structure with current/non-current classifications.\n\nInclude:\n- Current Assets (Cash, Receivables, Inventory, etc.)\n- Non-Current Assets (PPE, Intangibles, Investments, etc.)\n- Current Liabilities (Payables, Short-term debt, etc.)\n- Non-Current Liabilities (Long-term debt, Provisions, etc.)\n- Equity (Share capital, Retained earnings, etc.)\n\nShow comparison periods and calculate variances."
+      },
+      "autoSubmit": false,
+      "tags": ["write"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "investor_balance_sheet_simple",
+      "title": "Simplified Balance Sheet",
+      "subtitle": "Net assets summary",
+      "description": "Generate a simplified balance sheet showing net assets",
+      "icon": "📋",
+      "color": "from-[#1a365d] to-[#c4a35a]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Generate ONE simplified balance sheet table in markdown format. This is NOT a traditional balance sheet - it's a streamlined financial summary showing net assets.\n\nFocus on key line items:\n- Cash and equivalents\n- Trade receivables\n- Inventory\n- Property, plant & equipment\n- Trade payables\n- Borrowings\n- Net assets\n\nShow comparison periods and calculate variances."
+      },
+      "autoSubmit": false,
+      "tags": ["write"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "investor_cashflow",
+      "title": "Investor Cash Flow",
+      "subtitle": "Cash flow waterfall",
+      "description": "Generate a cash flow waterfall statement",
+      "icon": "💧",
+      "color": "from-[#63b3ed] to-[#c4a35a]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "Generate a cash flow waterfall in markdown format.\n\nInclude:\n- Opening Cash\n- Operating cash flows (EBITDA, Working capital movements)\n- Investing cash flows (Capex, Acquisitions)\n- Financing cash flows (Debt, Dividends, Equity)\n- Closing Cash\n\nMetrics section:\n- Operating FCF\n- Change in cash\n\nPopulate with figures from the attached documents."
+      },
+      "autoSubmit": false,
+      "tags": ["write"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "prepare_mgmt_presentation",
+      "title": "Prep for Management Preso",
+      "subtitle": "Management meeting prep",
+      "description": "Prepare discussion points and questions for a management presentation",
+      "icon": "🎤",
+      "color": "from-[#2b6cb0] to-[#d4b896]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "### Prepare for Management Presentation\n\nYou are a private equity professional preparing for a management presentation as part of investment due diligence.\n\nYour task is to review the uploaded materials and generate a focused set of:\n\n1. Key discussion points to explore with management\n2. Validation questions to test the investment thesis\n3. Red flags or concerns to probe\n4. Diligence angles to pursue post-meeting\n5. Information requests to make during the presentation"
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "prepare_board_meeting",
+      "title": "Prep for Board Meeting",
+      "subtitle": "Board meeting prep",
+      "description": "Extract key insights and actions from board materials",
+      "icon": "🏛️",
+      "color": "from-[#c4a35a] to-[#1a365d]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "### Prepare for a Board Meeting\n\nYou are a senior investment executive with deep experience in board governance and portfolio company oversight.\n\nYour task is to review the uploaded board pack and prepare a clear, actionable meeting prep document including:\n\n1. Executive Summary of key items\n2. Financial performance highlights and concerns\n3. Strategic issues requiring board discussion\n4. Risk items and proposed mitigations\n5. Recommended questions to ask\n6. Follow-up actions to track"
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "define_term",
+      "title": "Define",
+      "subtitle": "Investment terms",
+      "description": "Get definitions and explanations for investment terms and concepts",
+      "icon": "📚",
+      "color": "from-[#63b3ed] to-[#2b6cb0]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "As a law clerk at Alceon, provide definitions and explanations for specific investment terms, legal documents, and processes related to funding investments.\n\n**Term to Define:**\n{{term | text:placeholder=\"Enter the term or concept...\":required}}\n\n**Context (optional):**\n{{context | textarea:placeholder=\"Any specific context or document type this relates to...\"}}\n\nPlease provide:\n1. Clear definition\n2. Practical explanation\n3. Example usage in investment context\n4. Related terms"
+      },
+      "autoSubmit": true,
+      "tags": ["lookup"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "proofread_document",
+      "title": "Proofread Document",
+      "subtitle": "Fact & number check",
+      "description": "Check documents for factual, financial, and logical consistency",
+      "icon": "🔎",
+      "color": "from-[#1a365d] to-[#63b3ed]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "### Proofread a Document\n\nConduct a detailed factual, financial, and logical consistency check across one or more investment-related documents.\n\n**Priority Sections:**\n{{priority_sections | textarea:placeholder=\"e.g., Financial model, strategy section, market size data\"}}\n\n**Known Issues:**\n{{known_issues | textarea:placeholder=\"e.g., Valuation section, historical performance, TAM assumptions\"}}\n\n**Source Type:**\n{{sources | select:options=[\"Internally prepared\",\"Mix of internal and third-party\",\"Mostly third-party\"]:default=\"Mix of internal and third-party\"}}\n\nPlease review the attached document(s) and provide:\n1. Data Verification (numerical inconsistencies)\n2. Timeline Consistency\n3. Terminology Alignment\n4. Financial Validation\n5. Source Consistency\n6. Logical Flow Assessment\n7. Accuracy Checks (questionable claims)\n8. Recommended Corrections"
+      },
+      "autoSubmit": true,
+      "tags": ["write"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "review_im",
+      "title": "Review IM",
+      "subtitle": "IM analysis & email",
+      "description": "Analyse an Information Memorandum and draft a deal summary email",
+      "icon": "📄",
+      "color": "from-[#2b6cb0] to-[#c4a35a]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "### Review an IM and Draft New Deal Email\n\nYou are a private equity investment analyst at Alceon Group.\n\n**Deal Type:**\n{{deal_type | select:options=[\"Standalone\",\"Bolt-on\"]:default=\"Standalone\"}}\n\n**Portfolio Company (if bolt-on):**\n{{portco | text:placeholder=\"Not applicable if standalone\"}}\n\n**Draft Deal Summary Email?**\n{{draft_email | select:options=[\"Yes\",\"No\"]:default=\"Yes\"}}\n\nPlease:\n1. Conduct a detailed assessment of the uploaded IM\n2. Produce a structured 1-page internal summary\n3. Generate a deal introduction email (if requested)"
+      },
+      "autoSubmit": true,
+      "tags": ["research"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "re_market_comps",
+      "title": "RE Market Comps",
+      "subtitle": "Market comparables",
+      "description": "Research completed market comparables for real estate projects",
+      "icon": "🏗️",
+      "color": "from-[#c4a35a] to-[#8b7355]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Research Market Comparables for real estate project validation.\n\nYou are an elite real estate analyst working for Alceon Group with deep expertise in Australian property markets.\n\n**Project Location:**\n{{location | text:placeholder=\"Suburb, City, State\":required}}\n\n**Asset Class:**\n{{asset_class | select:options=[\"Residential Apartments\",\"Townhouses\",\"Land Subdivision\",\"Mixed-Use\",\"Industrial\",\"Office\",\"Retail\"]:default=\"Residential Apartments\"}}\n\n**Target Market:**\n{{target_market | textarea:placeholder=\"e.g., Owner-occupiers, downsizers, investors, first home buyers\"}}\n\n**Project Scale:**\n{{scale | textarea:placeholder=\"Approx. number of units/lots, GFA, price range\"}}\n\nIdentify 5-10 completed and settled projects with key metrics including achieved $/sqm, absorption rates, and settlement performance."
+      },
+      "features": { "webSearch": true },
+      "autoSubmit": true,
+      "tags": ["research"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "re_supply_comps",
+      "title": "RE Supply Pipeline",
+      "subtitle": "Competitive supply",
+      "description": "Research upcoming supply pipeline for real estate markets",
+      "icon": "📊",
+      "color": "from-[#2b6cb0] to-[#8b7355]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Research Supply Pipeline for competitive analysis.\n\nYou are an elite real estate analyst working for Alceon Group with deep expertise in Australian property markets.\n\n**Project Location:**\n{{location | text:placeholder=\"Suburb, City, State\":required}}\n\n**Asset Class:**\n{{asset_class | select:options=[\"Residential Apartments\",\"Townhouses\",\"Land Subdivision\",\"Mixed-Use\",\"Industrial\",\"Office\",\"Retail\"]:default=\"Residential Apartments\"}}\n\n**Target Market:**\n{{target_market | textarea:placeholder=\"e.g., Owner-occupiers, downsizers, investors, first home buyers\"}}\n\n**Project Scale:**\n{{scale | textarea:placeholder=\"Approx. number of units/lots, GFA, price range\"}}\n\nIdentify 8-15 future competing projects with expected launch dates, completion dates, pre-sales status, and competitive features."
+      },
+      "features": { "webSearch": true },
+      "autoSubmit": true,
+      "tags": ["research"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "re_sponsor_dd",
+      "title": "RE Sponsor DD",
+      "subtitle": "Sponsor due diligence",
+      "description": "Conduct lender-grade due diligence on a real estate sponsor",
+      "icon": "🔍",
+      "color": "from-[#1a365d] to-[#8b7355]",
+      "capabilityType": "Form",
+      "action": {
+        "type": "prompt",
+        "prompt": "Conduct lender-grade due diligence on a real estate sponsor.\n\nYou are an elite real estate credit analyst working for Alceon Group.\n\n**Sponsor Information:**\n{{sponsor_info | textarea:placeholder=\"Sponsor legal name, trading name(s), group/brand names, and any known principal(s) or directors\":required}}\n\n**Sponsor Focus:**\n{{sponsor_focus | textarea:placeholder=\"Asset types, typical project size, buyer/tenant profile\"}}\n\n**Geography & Time Horizon:**\n{{geo_time | textarea:placeholder=\"Key geographies and time horizon to review (e.g., last 10-15 years)\"}}\n\n**Additional Instructions:**\n{{extra_instructions | textarea:placeholder=\"Any specific concerns, counterparties, or projects to investigate\"}}\n\nProvide: Sponsor Overview, Past Projects table, and Key Risks & Comments from a lender perspective."
+      },
+      "features": { "webSearch": true },
+      "autoSubmit": true,
+      "tags": ["research"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "re_key_terms",
+      "title": "RE Key Terms",
+      "subtitle": "Term sheet summary",
+      "description": "Summarise key terms from a real estate term sheet",
+      "icon": "📝",
+      "color": "from-[#63b3ed] to-[#8b7355]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "You are a senior real estate financial analyst. Please summarise the key terms from the attached term sheet document in table format.\n\nFor each row, extract the relevant details directly from the document. If a term is not specified, state \"Not specified\".\n\nKey Details to extract:\n- Borrower\n- Sponsor\n- Project\n- Property Address\n- Facility\n- Facility Commitment\n- Purpose\n- Maturity Date / Tenor\n- Minimum Earn\n- Arranger Fee\n- Coupon Rate\n- Securities & Support\n- Key Undertakings"
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
+      "enabled": true,
+      "visibility": "all"
+    },
+    {
+      "id": "ic_review",
+      "title": "Review IC Paper",
+      "subtitle": "IC paper QA",
+      "description": "Review IC papers for completeness and consistency",
+      "icon": "✅",
+      "color": "from-[#c4a35a] to-[#2b6cb0]",
+      "capabilityType": "Prompt",
+      "action": {
+        "type": "prompt",
+        "prompt": "COO Prompt to Review Alceon IC Papers — Traffic-Light Result Edition\n\nPurpose: Ensure every IC paper is complete (no empty/TBC sections), follows the Alceon template, is internally consistent, clearly articulates risks/mitigants and exit, and is decision-ready.\n\nVerify the paper follows the Alceon structure:\n- Executive Summary\n- Transaction Overview\n- Key Financials\n- Market Overview\n- Key Investment Terms\n- Transaction Structure\n- Risks & Mitigants\n- Exit/Repayment Strategy\n- Sensitivity Analysis\n- Funding & Syndication Strategy\n- IC Approval & Compliance\n\nOutput: Structured review table with clear actions and severity using traffic lights (🟢/🟡/🔴) for the Result."
+      },
+      "autoSubmit": false,
+      "tags": ["workflow"],
       "enabled": true,
       "visibility": "all"
     }
