@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { v4 as uuidv4 } from 'uuid';
+	import { uploadFile } from '$lib/apis/files';
 	import { toast } from 'svelte-sonner';
 	import { PaneGroup, Pane, PaneResizer } from 'paneforge';
 
@@ -212,6 +213,50 @@
 		}
 	};
 
+	// Handle files from CapabilitiesHub
+	const handleCapabilityFiles = async (inputFiles) => {
+		for (const file of inputFiles) {
+			const tempItemId = uuidv4();
+			const fileItem = {
+				type: 'file',
+				file: '',
+				id: null,
+				url: '',
+				name: file.name,
+				collection_name: '',
+				status: 'uploading',
+				size: file.size,
+				error: '',
+				itemId: tempItemId
+			};
+
+			if (fileItem.size === 0) {
+				toast.error($i18n.t('You cannot upload an empty file.'));
+				continue;
+			}
+
+			files = [...files, fileItem];
+
+			try {
+				const uploadedFile = await uploadFile(localStorage.token, file, null);
+
+				if (uploadedFile) {
+					fileItem.status = 'uploaded';
+					fileItem.file = uploadedFile;
+					fileItem.id = uploadedFile.id;
+					fileItem.collection_name = uploadedFile?.meta?.collection_name || uploadedFile?.collection_name;
+					fileItem.url = `${uploadedFile.id}`;
+					files = files;
+				} else {
+					files = files.filter((item) => item?.itemId !== tempItemId);
+				}
+			} catch (e) {
+				toast.error(`${e}`);
+				files = files.filter((item) => item?.itemId !== tempItemId);
+			}
+		}
+	};	
+	
 	const onSelect = async (e) => {
 		const { type, data, features, autoSubmit, files: inputFiles } = e;
 		
@@ -230,7 +275,7 @@
 		
 		// Handle files from CapabilitiesHub if provided
 		if (inputFiles && inputFiles.length > 0) {
-			await inputFilesHandler(inputFiles);
+			await handleCapabilityFiles(inputFiles);
 		}
 		
 		if (type === 'focus') {
@@ -246,9 +291,8 @@
 				};
 				await waitForUploads();
 				
-				// Auto-submit: send the prompt directly without setting input
+				// Auto-submit: send the prompt directly
 				submitPrompt(data);
-				// Input stays empty since we didn't set it
 			} else {
 				// Not auto-submit: load prompt into input for user to edit
 				messageInput?.setText(data);
