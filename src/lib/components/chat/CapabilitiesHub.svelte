@@ -320,9 +320,13 @@
 		showExpandedScrollIndicator = false;
 	}
 
-	// Re-check scroll indicator when displayed capabilities change or expanded view opens
-	$: if (showExpandedView && displayCapabilities && expandedScrollContainer) {
-		setTimeout(updateExpandedScrollIndicator, 50);
+	// Re-check scroll indicator when displayed capabilities change, category changes, or expanded view opens
+	$: if (showExpandedView && expandedScrollContainer) {
+		// Track selectedCategory and displayCapabilities to re-trigger
+		selectedCategory;
+		displayCapabilities;
+		// Need a small delay for DOM to update after category change
+		setTimeout(updateExpandedScrollIndicator, 100);
 	}
 	
 	// Close expanded view (restores previous category)
