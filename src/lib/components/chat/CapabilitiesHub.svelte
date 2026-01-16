@@ -295,14 +295,33 @@
 	let showLeftArrow = false;
 	let showRightArrow = false;
 	
+	// Expanded view scroll state
+	let expandedScrollContainer: HTMLDivElement;
+	let showExpandedScrollIndicator = true;
+
+	function updateExpandedScrollIndicator() {
+		if (!expandedScrollContainer) return;
+		const { scrollTop, scrollHeight, clientHeight } = expandedScrollContainer;
+		// Hide indicator when near bottom (within 50px)
+		showExpandedScrollIndicator = scrollTop < scrollHeight - clientHeight - 50;
+	}
+	
 	// Expanded view state
 	let showExpandedView = false;
 	
-	// Open expanded view (saves current category, switches to 'all')
+	// Reset scroll indicator when opening expanded view
 	function openExpandedView() {
 		previousCategory = selectedCategory;
 		selectedCategory = 'all';
 		showExpandedView = true;
+		showExpandedScrollIndicator = true;
+		// Check after render if scrolling is even needed
+		setTimeout(() => {
+			if (expandedScrollContainer) {
+				const { scrollHeight, clientHeight } = expandedScrollContainer;
+				showExpandedScrollIndicator = scrollHeight > clientHeight;
+			}
+		}, 100);
 	}
 	
 	// Close expanded view (restores previous category)
@@ -977,7 +996,7 @@
 
 <!-- Expanded View Modal -->
 {#if showExpandedView}
-	<div class="absolute inset-0 top-12 bottom-[150px] bg-white dark:bg-gray-900 z-50 flex flex-col overflow-hidden rounded-xl" in:fade={{ duration: 200 }}>
+	<div class="absolute inset-0 top-12 bottom-[160px] bg-white dark:bg-gray-900 z-50 flex flex-col overflow-hidden rounded-xl" in:fade={{ duration: 200 }}>
 		<!-- Header -->
 		<div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
 			<h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">What would you like to do?</h2>
@@ -1021,7 +1040,11 @@
 		</div>
 		
 		<!-- All tiles grid -->
-		<div class="flex-1 overflow-y-auto p-4">
+		<div 
+			class="flex-1 overflow-y-auto p-4 relative"
+			bind:this={expandedScrollContainer}
+			on:scroll={updateExpandedScrollIndicator}
+		>
 			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 				{#each displayCapabilities as capability (capability.id)}
 					<!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -1072,6 +1095,24 @@
 				{/each}
 			</div>
 		</div>
+		
+		<!-- Scroll indicator -->
+		{#if showExpandedScrollIndicator}
+			<div 
+				class="absolute bottom-0 left-0 right-0 flex justify-center pointer-events-none"
+				in:fade={{ duration: 150 }}
+				out:fade={{ duration: 150 }}
+			>
+				<div class="bg-gradient-to-t from-white dark:from-gray-900 via-white/80 dark:via-gray-900/80 to-transparent pt-8 pb-3 px-6 w-full flex justify-center">
+					<div class="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 animate-bounce">
+						<span>Scroll for more</span>
+						<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+						</svg>
+					</div>
+				</div>
+			</div>
+		{/if}
 	</div>
 {/if}
 
