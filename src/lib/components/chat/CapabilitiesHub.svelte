@@ -286,6 +286,7 @@
 		return false;
 	}
 
+	
 	// Get default category from config or fall back to 'all'
 	$: defaultCategory = categories.find(c => c.default)?.id || 'all';
 	let selectedCategory = 'all';
@@ -295,32 +296,31 @@
 	let showLeftArrow = false;
 	let showRightArrow = false;
 	
+	// Expanded view state
+	let showExpandedView = false;
+	
 	// Expanded view scroll state
 	let expandedScrollContainer: HTMLDivElement;
-	let showExpandedScrollIndicator = true;
+	let showExpandedScrollIndicator = false;
 
 	function updateExpandedScrollIndicator() {
 		if (!expandedScrollContainer) return;
 		const { scrollTop, scrollHeight, clientHeight } = expandedScrollContainer;
-		// Hide indicator when near bottom (within 50px)
-		showExpandedScrollIndicator = scrollTop < scrollHeight - clientHeight - 50;
+		// Only show if content is scrollable AND not near bottom
+		const isScrollable = scrollHeight > clientHeight;
+		const isNearBottom = scrollTop >= scrollHeight - clientHeight - 50;
+		showExpandedScrollIndicator = isScrollable && !isNearBottom;
 	}
-	
-	// Expanded view state
-	let showExpandedView = false;
-	
+
 	// Reset scroll indicator when opening expanded view
 	function openExpandedView() {
 		previousCategory = selectedCategory;
 		selectedCategory = 'all';
 		showExpandedView = true;
-		showExpandedScrollIndicator = true;
-		// Check after render if scrolling is even needed
+		showExpandedScrollIndicator = false;
+		// Check after render if scrolling is needed
 		setTimeout(() => {
-			if (expandedScrollContainer) {
-				const { scrollHeight, clientHeight } = expandedScrollContainer;
-				showExpandedScrollIndicator = scrollHeight > clientHeight;
-			}
+			updateExpandedScrollIndicator();
 		}, 100);
 	}
 	
@@ -1096,23 +1096,19 @@
 			</div>
 		</div>
 		
-		<!-- Scroll indicator -->
-		{#if showExpandedScrollIndicator}
-			<div 
-				class="absolute bottom-0 left-0 right-0 flex justify-center pointer-events-none"
-				in:fade={{ duration: 150 }}
-				out:fade={{ duration: 150 }}
-			>
-				<div class="bg-gradient-to-t from-white dark:from-gray-900 via-white/80 dark:via-gray-900/80 to-transparent pt-8 pb-3 px-6 w-full flex justify-center">
-					<div class="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 animate-bounce">
-						<span>Scroll for more</span>
-						<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-						</svg>
-					</div>
-				</div>
-			</div>
-		{/if}
+<!-- Scroll indicator -->
+{#if showExpandedScrollIndicator}
+	<div 
+		class="absolute bottom-0 left-0 right-0 flex justify-center pb-3 pointer-events-none"
+		in:fade={{ duration: 150 }}
+		out:fade={{ duration: 150 }}
+	>
+		<div class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+			<span>Scroll for more</span>
+			<svg class="w-3.5 h-3.5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+			</svg>
+		</div>
 	</div>
 {/if}
 
