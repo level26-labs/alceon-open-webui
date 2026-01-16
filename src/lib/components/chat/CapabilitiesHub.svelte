@@ -286,7 +286,6 @@
 		return false;
 	}
 
-	
 	// Get default category from config or fall back to 'all'
 	$: defaultCategory = categories.find(c => c.default)?.id || 'all';
 	let selectedCategory = 'all';
@@ -320,7 +319,7 @@
 		showExpandedScrollIndicator = false;
 	}
 
-	// Re-check scroll indicator when displayed capabilities change, category changes, or expanded view opens
+	// Re-check scroll indicator when displayed capabilities change or expanded view opens
 	$: if (showExpandedView && expandedScrollContainer) {
 		// Track selectedCategory and displayCapabilities to re-trigger
 		selectedCategory;
@@ -1101,24 +1100,26 @@
 			</div>
 		</div>
 		
-<!-- Scroll indicator -->
-{#if showExpandedScrollIndicator}
-	<div 
-		class="absolute bottom-0 left-0 right-0 pointer-events-none"
-		in:fade={{ duration: 150 }}
-		out:fade={{ duration: 150 }}
-	>
-		<!-- Gradient fade -->
-		<div class="h-16 bg-gradient-to-t from-white dark:from-gray-900 to-transparent"></div>
-		<!-- Button -->
-		<div class="flex justify-center pb-3 bg-white dark:bg-gray-900">
-			<div class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
-				<span>Scroll for more</span>
-				<svg class="w-3.5 h-3.5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-				</svg>
+		<!-- Scroll indicator -->
+		{#if showExpandedScrollIndicator}
+			<div 
+				class="absolute bottom-0 left-0 right-0 pointer-events-none"
+				in:fade={{ duration: 150 }}
+				out:fade={{ duration: 150 }}
+			>
+				<!-- Gradient fade -->
+				<div class="h-16 bg-gradient-to-t from-white dark:from-gray-900 to-transparent"></div>
+				<!-- Button -->
+				<div class="flex justify-center pb-3 bg-white dark:bg-gray-900">
+					<div class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+						<span>Scroll for more</span>
+						<svg class="w-3.5 h-3.5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+						</svg>
+					</div>
+				</div>
 			</div>
-		</div>
+		{/if}
 	</div>
 {/if}
 
