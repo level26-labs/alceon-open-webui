@@ -977,7 +977,7 @@
 
 <!-- Expanded View Modal -->
 {#if showExpandedView}
-	<div class="absolute inset-0 top-12 bottom-16 sm:bottom-0 bg-white dark:bg-gray-900 z-50 flex flex-col overflow-hidden rounded-t-xl" in:fade={{ duration: 200 }}>
+	<div class="absolute inset-0 top-12 bottom-20 bg-white dark:bg-gray-900 z-50 flex flex-col overflow-hidden rounded-xl" in:fade={{ duration: 200 }}>
 		<!-- Header -->
 		<div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
 			<h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">What would you like to do?</h2>
