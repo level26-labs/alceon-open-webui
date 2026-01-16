@@ -257,7 +257,20 @@
 	};	
 	
 	const onSelect = async (e) => {
-		const { type, data, features, autoSubmit, files: inputFiles } = e;
+		const { type, data, features, autoSubmit, modelId, files: inputFiles } = e;
+		
+		// Switch model if specified
+		if (modelId) {
+			// Check if the model exists
+			const modelExists = $models.find((m) => m.id === modelId);
+			if (modelExists) {
+				selectedModels = [modelId];
+				await tick();
+			} else {
+				toast.error($i18n.t('Model {{modelId}} not found', { modelId }));
+				// Continue without switching model
+			}
+		}
 		
 		// Apply features if provided
 		if (features) {

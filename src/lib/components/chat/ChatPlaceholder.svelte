@@ -52,11 +52,11 @@
 	) {
 		// If prompt is empty or undefined, just focus the input without submitting
 		if (!prompt) {
-			onSelect({ type: 'focus', features });
+			onSelect({ type: 'focus', features, modelId });
 			return;
 		}
-		// Otherwise, set the prompt in the input with optional features, autoSubmit flag, and files
-		onSelect({ type: 'prompt', data: prompt, features, autoSubmit: autoSubmit ?? false, files });
+		// Otherwise, set the prompt in the input with optional features, autoSubmit flag, modelId, and files
+		onSelect({ type: 'prompt', data: prompt, features, autoSubmit: autoSubmit ?? false, modelId, files });
 	}
 </script>
 

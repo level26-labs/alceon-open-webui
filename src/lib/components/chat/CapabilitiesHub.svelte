@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getContext, createEventDispatcher, onMount } from 'svelte';
+	import { getContext, createEventDispatcher, onMount, tick } from 'svelte';
 	import { fade, fly, slide } from 'svelte/transition';
 	import { models as _models, user } from '$lib/stores';
 
@@ -18,6 +18,7 @@
 			prompt: string;
 			features?: PromptFeatures;
 			autoSubmit?: boolean;
+			modelId?: string;  // Added: support modelId in workflow prompts too
 		}>;
 	}
 
@@ -30,8 +31,8 @@
 	interface FileUploadConfig {
 		enabled?: boolean;
 		multiple?: boolean;
-		accept?: string;  // e.g., ".pdf,.docx,image/*"
-		label?: string;   // e.g., "Upload documents"
+		accept?: string;
+		label?: string;
 	}
 
 	interface Capability {
@@ -44,7 +45,7 @@
 		capabilityType: CapabilityType;
 		action: {
 			type: 'model' | 'prompt' | 'route' | 'url' | 'workflow';
-			modelId?: string;
+			modelId?: string;  // Now available for all action types
 			prompt?: string;
 			route?: string;
 			url?: string;
@@ -57,22 +58,20 @@
 		};
 		tags?: string[];
 		enabled?: boolean;
-		// Visibility: 'all' for everyone, or array of group IDs for restricted access
 		visibility?: 'all' | string[];
-		// New fields for user-friendly features
-		examples?: string[];  // Example prompts/uses shown in help tooltip
-		difficulty?: 'basic' | 'advanced';  // For basic/advanced mode filtering
-		helpText?: string;  // Additional help text for the tooltip
+		examples?: string[];
+		difficulty?: 'basic' | 'advanced';
+		helpText?: string;
 	}
 
 	interface Category {
 		id: string;
 		label: string;
-		default?: boolean;  // If true, this category is selected by default
+		default?: boolean;
 	}
 
 	interface FeaturedTile {
-		id: string;  // Unique ID to track dismissals (change ID to show to all users again)
+		id: string;
 		title: string;
 		subtitle: string;
 		description: string;
@@ -95,19 +94,17 @@
 	let configLoaded = false;
 	let configError: string | null = null;
 
-	// Config can be passed directly as a prop (inline) OR loaded from URL
 	export let config: { categories: Category[]; capabilities: Capability[]; featuredTile?: FeaturedTile } | null = null;
-	export let configUrl: string = '';  // Optional URL to load config from
+	export let configUrl: string = '';
 	export let onSelect: (prompt: string, modelId?: string, features?: PromptFeatures, autoSubmit?: boolean, files?: File[]) => void = () => {};
 	export let onNavigate: (route: string) => void = () => {};
-	// User's group IDs from Open WebUI - pass this in from parent component
 	export let userGroups: string[] = [];
 
-	// User preference states (persisted to localStorage)
+	// User preference states
 	let starredCapabilities: string[] = [];
 	let dismissedFeaturedTiles: string[] = [];
 	
-	// Responsive layout - track window height
+	// Responsive layout
 	let windowHeight = 800;
 	$: visibleRows = windowHeight < 625 ? 1 : windowHeight < 800 ? 2 : 3;
 	$: showFeaturedOnHeight = windowHeight >= 800;
@@ -117,7 +114,6 @@
 	let tooltipContent: string = '';
 	let tooltipPosition = { x: 0, y: 0 };
 	
-	// Show tooltip on hover
 	function showTooltip(content: string, event: MouseEvent) {
 		const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
 		tooltipContent = content;
@@ -132,11 +128,9 @@
 		activeHelpTooltip = null;
 	}
 	
-	// LocalStorage keys
 	const STORAGE_KEY_STARRED = 'capabilities-hub-starred';
 	const STORAGE_KEY_DISMISSED_FEATURED = 'capabilities-hub-dismissed-featured';
 	
-	// Load user preferences from localStorage
 	function loadUserPreferences() {
 		try {
 			const savedStarred = localStorage.getItem(STORAGE_KEY_STARRED);
@@ -152,7 +146,6 @@
 		}
 	}
 	
-	// Dismiss featured tile
 	function dismissFeaturedTile() {
 		if (featuredTile) {
 			dismissedFeaturedTiles = [...dismissedFeaturedTiles, featuredTile.id];
@@ -164,14 +157,11 @@
 		}
 	}
 	
-	// Check if featured tile should be shown
 	$: showFeaturedTile = featuredTile?.enabled && 
 		!dismissedFeaturedTiles.includes(featuredTile?.id || '') && 
 		selectedCategory === 'all' &&
 		showFeaturedOnHeight;
 	
-	
-	// Toggle starred status for a capability
 	function toggleStarred(capabilityId: string, event: Event) {
 		event.stopPropagation();
 		if (starredCapabilities.includes(capabilityId)) {
@@ -186,26 +176,21 @@
 		}
 	}
 	
-	// Check if a capability is starred
 	function isStarred(capabilityId: string): boolean {
 		return starredCapabilities.includes(capabilityId);
 	}
 	
-	// Toggle help tooltip
 	function toggleHelpTooltip(capabilityId: string, event: Event) {
 		event.stopPropagation();
 		activeHelpTooltip = activeHelpTooltip === capabilityId ? null : capabilityId;
 	}
 	
-	// Close help tooltip when clicking elsewhere
 	function closeHelpTooltip() {
 		activeHelpTooltip = null;
 	}
 
-	// Load configuration from JSON file or use inline config
 	async function loadConfig() {
 		try {
-			// If config is passed as prop, use it directly
 			if (config) {
 				capabilities = config.capabilities || [];
 				categories = config.categories || [];
@@ -216,7 +201,6 @@
 				return;
 			}
 
-			// If configUrl is provided, fetch from URL
 			if (configUrl) {
 				const response = await fetch(configUrl);
 				if (!response.ok) {
@@ -232,7 +216,6 @@
 				return;
 			}
 
-			// No config provided - use empty defaults
 			capabilities = [];
 			categories = [{ id: 'all', label: 'All' }];
 			featuredTile = null;
@@ -248,7 +231,6 @@
 		}
 	}
 
-	// React to config prop changes
 	$: if (config) {
 		capabilities = config.capabilities || [];
 		categories = config.categories || [];
@@ -257,7 +239,6 @@
 		configError = null;
 	}
 
-	// Set the initial category based on starred items and config default
 	function setInitialCategory() {
 		if (starredCapabilities.length > 0) {
 			selectedCategory = 'starred';
@@ -268,50 +249,42 @@
 	}
 
 	onMount(async () => {
-		loadUserPreferences();  // Load starred items first
-		await loadConfig();     // Then load config
-		setInitialCategory();   // Set category based on starred items
+		loadUserPreferences();
+		await loadConfig();
+		setInitialCategory();
 	});
 
-	// Helper function to check if user can see a capability
 	function canUserSeeCapability(capability: Capability): boolean {
-		// If no visibility set or set to 'all', everyone can see it
 		if (!capability.visibility || capability.visibility === 'all') {
 			return true;
 		}
-		// If visibility is an array of group IDs, check if user is in any of them
 		if (Array.isArray(capability.visibility)) {
 			return capability.visibility.some(groupId => userGroups.includes(groupId));
 		}
 		return false;
 	}
 
-	// Get default category from config or fall back to 'all'
 	$: defaultCategory = categories.find(c => c.default)?.id || 'all';
 	let selectedCategory = 'all';
-	let previousCategory = 'all';  // Track category before expanded view
+	let previousCategory = 'all';
 	let searchQuery = '';
 	let scrollContainer: HTMLDivElement;
 	let showLeftArrow = false;
 	let showRightArrow = false;
 	
-	// Expanded view state
 	let showExpandedView = false;
 	
-	// Expanded view scroll state
 	let expandedScrollContainer: HTMLDivElement;
 	let showExpandedScrollIndicator = false;
 
 	function updateExpandedScrollIndicator() {
 		if (!expandedScrollContainer) return;
 		const { scrollTop, scrollHeight, clientHeight } = expandedScrollContainer;
-		// Only show if content is scrollable AND not near bottom
-		const isScrollable = scrollHeight > clientHeight + 10; // Add small buffer
+		const isScrollable = scrollHeight > clientHeight + 10;
 		const isNearBottom = scrollTop >= scrollHeight - clientHeight - 50;
 		showExpandedScrollIndicator = isScrollable && !isNearBottom;
 	}
 
-	// Reset scroll indicator when opening expanded view
 	function openExpandedView() {
 		previousCategory = selectedCategory;
 		selectedCategory = 'all';
@@ -319,16 +292,12 @@
 		showExpandedScrollIndicator = false;
 	}
 
-	// Re-check scroll indicator when displayed capabilities change or expanded view opens
 	$: if (showExpandedView && expandedScrollContainer) {
-		// Track selectedCategory and displayCapabilities to re-trigger
 		selectedCategory;
 		displayCapabilities;
-		// Need a small delay for DOM to update after category change
 		setTimeout(updateExpandedScrollIndicator, 100);
 	}
 	
-	// Close expanded view (restores previous category)
 	function closeExpandedView() {
 		selectedCategory = previousCategory;
 		showExpandedView = false;
@@ -338,6 +307,7 @@
 	let currentCapability: Capability | null = null;
 	let currentFeatures: PromptFeatures | null = null;
 	let currentAutoSubmit: boolean = true;
+	let currentModelId: string | undefined = undefined;  // Added: track current modelId
 	let inputVariables: Array<{
 		name: string;
 		type: string;
@@ -348,62 +318,90 @@
 		value: any;
 	}> = [];
 
-	// File upload state
 	let uploadedFiles: File[] = [];
 	let fileInputElement: HTMLInputElement | null = null;
 
 	let showWorkflowModal = false;
 	let currentWorkflow: Capability | null = null;
 	let selectedStageId: string | null = null;
-	let selectedStagePrompt: { stage: WorkflowStage; prompt: { title: string; prompt: string; features?: PromptFeatures; autoSubmit?: boolean } } | null = null;
+	let selectedStagePrompt: { stage: WorkflowStage; prompt: { title: string; prompt: string; features?: PromptFeatures; autoSubmit?: boolean; modelId?: string } } | null = null;
 
 	$: enabledCapabilities = capabilities.filter((c) => c.enabled !== false && canUserSeeCapability(c));
 	
-	// Get starred capabilities for the starred section
 	$: starredItems = enabledCapabilities.filter((c) => starredCapabilities.includes(c.id));
 	
-	// Filter by category and search
+	// Track which workflow prompt matched the search (for auto-navigation and display)
+	let matchedWorkflowPrompts: Map<string, { stageId: string; promptTitle: string; matchedTerm: string }> = new Map();
+
+	// Helper function to check if capability matches search
+	function matchesSearchQuery(c: Capability, query: string): boolean {
+		if (!query) return true;
+		
+		const q = query.toLowerCase();
+		
+		// Search in main tile fields
+		if (c.title.toLowerCase().includes(q)) return true;
+		if (c.subtitle?.toLowerCase().includes(q)) return true;
+		if (c.description?.toLowerCase().includes(q)) return true;
+		
+		// Search in workflow prompts if this is a workflow
+		if (c.capabilityType === 'Workflow' && c.workflow?.stages) {
+			for (const stage of c.workflow.stages) {
+				if (stage.name.toLowerCase().includes(q)) {
+					matchedWorkflowPrompts.set(c.id, { stageId: stage.id, promptTitle: '', matchedTerm: stage.name });
+					return true;
+				}
+				for (const prompt of stage.prompts) {
+					if (prompt.title.toLowerCase().includes(q)) {
+						matchedWorkflowPrompts.set(c.id, { stageId: stage.id, promptTitle: prompt.title, matchedTerm: prompt.title });
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	// Filter by category and search (including workflow prompts)
+	$: {
+		// Clear matched prompts when search changes
+		matchedWorkflowPrompts = new Map();
+	}
+
 	$: filteredCapabilities = enabledCapabilities.filter((c) => {
 		const matchesCategory = selectedCategory === 'all' || 
 			selectedCategory === 'starred' || 
 			c.tags?.includes(selectedCategory);
-		const matchesSearch = !searchQuery || c.title.toLowerCase().includes(searchQuery.toLowerCase());
+		const matchesSearch = matchesSearchQuery(c, searchQuery);
 		return matchesCategory && matchesSearch;
 	});
 	
-	// When showing starred category, only show starred items
 	$: displayCapabilities = selectedCategory === 'starred' 
 		? starredItems 
 		: filteredCapabilities;
 
-	// Calculate how many tiles fit in one row based on container width
 	let containerWidth = 0;
 	let tilesPerRow = 4;
 	
 	$: {
-		// Estimate tiles per row: tile width ~280px + gap ~16px = ~296px per tile
 		tilesPerRow = Math.max(1, Math.floor((containerWidth || 1000) / 296));
 	}
 
-	// Split into three rows: fill first row completely, then second, then third
 	$: row1 = displayCapabilities.slice(0, tilesPerRow);
 	$: row2 = displayCapabilities.slice(tilesPerRow, tilesPerRow * 2);
 	$: row3 = displayCapabilities.slice(tilesPerRow * 2, tilesPerRow * 3);
 	$: remainingTiles = displayCapabilities.slice(tilesPerRow * 3);
 	
-	// Distribute remaining tiles across all three rows for horizontal scroll
 	$: row1WithRemaining = [...row1, ...remainingTiles.filter((_, i) => i % 3 === 0)];
 	$: row2WithRemaining = [...row2, ...remainingTiles.filter((_, i) => i % 3 === 1)];
 	$: row3WithRemaining = [...row3, ...remainingTiles.filter((_, i) => i % 3 === 2)];
 
-	// Filter categories to only show those with matching capabilities
-	// Add starred category if there are starred items
 	$: visibleCategories = [
 		...categories.filter(cat => {
 			if (cat.id === 'all') return true;
 			return enabledCapabilities.some(c => c.tags?.includes(cat.id));
 		}),
-		// Add starred category if user has starred items
 		...(starredCapabilities.length > 0 ? [{ id: 'starred', label: '⭐ Starred' }] : [])
 	];
 
@@ -487,7 +485,6 @@
 		return result;
 	}
 
-	// Handle file selection
 	function handleFileSelect(event: Event) {
 		const input = event.target as HTMLInputElement;
 		if (input.files) {
@@ -495,16 +492,13 @@
 		}
 	}
 
-	// Remove a file from the upload list
 	function removeFile(index: number) {
 		uploadedFiles = uploadedFiles.filter((_, i) => i !== index);
-		// Reset the file input
 		if (fileInputElement) {
 			fileInputElement.value = '';
 		}
 	}
 
-	// Format file size for display
 	function formatFileSize(bytes: number): string {
 		if (bytes < 1024) return bytes + ' B';
 		if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
@@ -514,7 +508,28 @@
 	async function handleCapabilityClick(capability: Capability) {
 		if (capability.action.type === 'workflow' && capability.workflow) {
 			currentWorkflow = capability;
-			selectedStageId = capability.workflow.stages[0]?.id || null;
+			
+			// Check if we have a matched prompt from search
+			const matched = matchedWorkflowPrompts.get(capability.id);
+			if (matched && searchQuery) {
+				selectedStageId = matched.stageId;
+				
+				// If a specific prompt was matched, auto-select it
+				if (matched.promptTitle) {
+					const stage = capability.workflow.stages.find(s => s.id === matched.stageId);
+					const promptItem = stage?.prompts.find(p => p.title === matched.promptTitle);
+					if (stage && promptItem) {
+						// Open the workflow modal and then trigger the prompt selection
+						showWorkflowModal = true;
+						await tick();
+						handleWorkflowPromptClick(stage, promptItem);
+						return;
+					}
+				}
+			} else {
+				selectedStageId = capability.workflow.stages[0]?.id || null;
+			}
+			
 			showWorkflowModal = true;
 			return;
 		}
@@ -528,12 +543,18 @@
 				currentCapability = capability;
 				currentFeatures = capability.features || null;
 				currentAutoSubmit = capability.autoSubmit ?? true;
+				currentModelId = capability.action.modelId;  // Store the modelId
 				inputVariables = customVars;
-				uploadedFiles = [];  // Reset files
+				uploadedFiles = [];
 				showInputModal = true;
+				// Start example rotation if examples exist
+				if (capability.examples && capability.examples.length > 0) {
+					startExampleRotation(capability.examples);
+				}
 			} else {
 				const processedPrompt = await replaceSystemVariables(prompt);
-				onSelect(processedPrompt, undefined, capability.features, capability.autoSubmit ?? false);
+				// Pass modelId to onSelect
+				onSelect(processedPrompt, capability.action.modelId, capability.features, capability.autoSubmit ?? false);
 			}
 		} else if (capability.action.type === 'route') {
 			if (capability.action.route) onNavigate(capability.action.route);
@@ -551,7 +572,8 @@
 		let prompt = currentCapability.action.prompt ?? '';
 		prompt = await replaceSystemVariables(prompt);
 		prompt = replaceInputVariables(prompt, inputVariables);
-		onSelect(prompt, undefined, currentFeatures || undefined, currentAutoSubmit, uploadedFiles.length > 0 ? uploadedFiles : undefined);
+		// Pass currentModelId to onSelect
+		onSelect(prompt, currentModelId, currentFeatures || undefined, currentAutoSubmit, uploadedFiles.length > 0 ? uploadedFiles : undefined);
 		closeModal();
 	}
 
@@ -560,8 +582,10 @@
 		currentCapability = null;
 		currentFeatures = null;
 		currentAutoSubmit = true;
+		currentModelId = undefined;  // Reset modelId
 		inputVariables = [];
 		uploadedFiles = [];
+		stopExampleRotation();
 	}
 
 	function closeWorkflowModal() {
@@ -571,19 +595,22 @@
 		selectedStagePrompt = null;
 		currentFeatures = null;
 		currentAutoSubmit = true;
+		currentModelId = undefined;  // Reset modelId
 		inputVariables = [];
 	}
 
-	async function handleWorkflowPromptClick(stage: WorkflowStage, promptItem: { title: string; prompt: string; features?: PromptFeatures; autoSubmit?: boolean }) {
+	async function handleWorkflowPromptClick(stage: WorkflowStage, promptItem: { title: string; prompt: string; features?: PromptFeatures; autoSubmit?: boolean; modelId?: string }) {
 		const customVars = parseInputVariables(promptItem.prompt);
 		if (customVars.length > 0) {
 			selectedStagePrompt = { stage, prompt: promptItem };
 			currentFeatures = promptItem.features || null;
 			currentAutoSubmit = promptItem.autoSubmit ?? true;
+			currentModelId = promptItem.modelId;  // Store workflow prompt modelId
 			inputVariables = customVars;
 		} else {
 			const processedPrompt = await replaceSystemVariables(promptItem.prompt);
-			onSelect(processedPrompt, undefined, promptItem.features, promptItem.autoSubmit ?? true);
+			// Pass modelId for workflow prompts
+			onSelect(processedPrompt, promptItem.modelId, promptItem.features, promptItem.autoSubmit ?? true);
 			closeWorkflowModal();
 		}
 	}
@@ -596,7 +623,8 @@
 		let prompt = selectedStagePrompt.prompt.prompt;
 		prompt = await replaceSystemVariables(prompt);
 		prompt = replaceInputVariables(prompt, inputVariables);
-		onSelect(prompt, undefined, currentFeatures || undefined, currentAutoSubmit);
+		// Pass currentModelId for workflow form submissions
+		onSelect(prompt, currentModelId, currentFeatures || undefined, currentAutoSubmit);
 		closeWorkflowModal();
 	}
 
@@ -624,14 +652,12 @@
 		if (!scrollContainer) return;
 		if (scrollContainer.scrollWidth > scrollContainer.clientWidth) {
 			event.preventDefault();
-			// Increased sensitivity: multiply by 3 for faster scrolling
 			scrollContainer.scrollLeft += event.deltaY * 3;
 			updateScrollArrows();
 		}
 	}
 
 	function getBadgeColor(type: CapabilityType): string {
-		// Alceon brand colors for badges
 		const colors: Record<CapabilityType, string> = {
 			'Prompt': 'bg-[#2b6cb0]/10 text-[#2b6cb0] dark:bg-[#63b3ed]/20 dark:text-[#63b3ed]',
 			'Form': 'bg-[#c4a35a]/15 text-[#8b7355] dark:bg-[#c4a35a]/20 dark:text-[#d4b896]',
@@ -655,6 +681,31 @@
 
 	function renderTile(capability: Capability, idx: number) {
 		return capability;
+	}
+	
+	// Rotating placeholder for examples
+	let examplePlaceholderIndex = 0;
+	let examplePlaceholderInterval: ReturnType<typeof setInterval> | null = null;
+
+	// Start rotating placeholders when modal opens with examples
+	function startExampleRotation(examples: string[]) {
+		if (examplePlaceholderInterval) {
+			clearInterval(examplePlaceholderInterval);
+		}
+		if (examples && examples.length > 1) {
+			examplePlaceholderIndex = 0;
+			examplePlaceholderInterval = setInterval(() => {
+				examplePlaceholderIndex = (examplePlaceholderIndex + 1) % examples.length;
+			}, 1500); // Rotate every 3 seconds
+		}
+	}
+
+	function stopExampleRotation() {
+		if (examplePlaceholderInterval) {
+			clearInterval(examplePlaceholderInterval);
+			examplePlaceholderInterval = null;
+		}
+		examplePlaceholderIndex = 0;
 	}
 </script>
 
@@ -822,42 +873,43 @@
 				
 				<!-- Regular tiles in 3 rows -->
 				<div class="flex flex-col gap-3 sm:gap-4 flex-1">
-					<!-- Row 1 -->
-					<div class="flex gap-3 sm:gap-4">
-						{#each row1WithRemaining as capability, idx (capability.id)}
-							<!-- svelte-ignore a11y-no-static-element-interactions -->
-							<!-- svelte-ignore a11y-click-events-have-key-events -->
-							<div
-								class="capability-card group relative flex-shrink-0 w-[280px] rounded-xl p-3 sm:p-4 text-left cursor-pointer
-									   bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50
-									   hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-lg
-									   transform hover:-translate-y-0.5 transition-all duration-200"
-								on:click={() => handleCapabilityClick(capability)}
-								in:fly={{ x: 20, duration: 200, delay: idx * 30 }}
-							>
-								<!-- Top row: Badge left, icons right -->
-								<div class="flex items-center justify-between mb-3">
-									<span class="text-[9px] sm:text-[10px] font-medium px-1.5 py-0.5 rounded {getBadgeColor(capability.capabilityType)}">{capability.capabilityType}</span>
-									<div class="flex items-center gap-0.5">
-										{#if capability.description || capability.helpText}
-											<div
-												class="w-5 h-5 rounded-full flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors opacity-0 group-hover:opacity-100 cursor-help"
-												on:mouseenter={(e) => showTooltip(capability.description + (capability.helpText ? '\n\n' + capability.helpText : ''), e)}
-												on:mouseleave={hideTooltip}
-											>
-												<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-											</div>
-										{/if}
-										<button
-											class="w-5 h-5 rounded-full flex items-center justify-center transition-colors
-												   {isStarred(capability.id) 
-												   	? 'text-[#63b3ed]' 
-												   	: 'text-gray-300 hover:text-[#63b3ed] opacity-0 group-hover:opacity-100'}"
-											on:click|stopPropagation={(e) => toggleStarred(capability.id, e)}
-											title={isStarred(capability.id) ? 'Remove from starred' : 'Add to starred'}
+				<!-- Row 1 -->
+				<div class="flex gap-3 sm:gap-4">
+					{#each row1WithRemaining as capability, idx (capability.id)}
+						<!-- svelte-ignore a11y-no-static-element-interactions -->
+						<!-- svelte-ignore a11y-click-events-have-key-events -->
+						<div
+							class="capability-card group relative flex-shrink-0 w-[280px] rounded-xl p-3 sm:p-4 text-left cursor-pointer
+								   bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50
+								   hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-lg
+								   transform hover:-translate-y-0.5 transition-all duration-200
+								   {searchQuery && matchedWorkflowPrompts.has(capability.id) ? 'ring-2 ring-blue-500/30' : ''}"
+							on:click={() => handleCapabilityClick(capability)}
+							in:fly={{ x: 20, duration: 200, delay: idx * 30 }}
+						>
+							<!-- Top row: Badge left, icons right -->
+							<div class="flex items-center justify-between mb-3">
+								<span class="text-[9px] sm:text-[10px] font-medium px-1.5 py-0.5 rounded {getBadgeColor(capability.capabilityType)}">{capability.capabilityType}</span>
+								<div class="flex items-center gap-0.5">
+									{#if capability.description || capability.helpText}
+										<div
+											class="w-5 h-5 rounded-full flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors opacity-0 group-hover:opacity-100 cursor-help"
+											on:mouseenter={(e) => showTooltip(capability.description + (capability.helpText ? '\n\n' + capability.helpText : ''), e)}
+											on:mouseleave={hideTooltip}
 										>
-											<svg class="w-3.5 h-3.5" fill={isStarred(capability.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
-										</button>
+											<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+										</div>
+									{/if}
+									<button
+										class="w-5 h-5 rounded-full flex items-center justify-center transition-colors
+											   {isStarred(capability.id) 
+												? 'text-[#63b3ed]' 
+												: 'text-gray-300 hover:text-[#63b3ed] opacity-0 group-hover:opacity-100'}"
+										on:click|stopPropagation={(e) => toggleStarred(capability.id, e)}
+										title={isStarred(capability.id) ? 'Remove from starred' : 'Add to starred'}
+									>
+										<svg class="w-3.5 h-3.5" fill={isStarred(capability.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+									</button>
 								</div>
 							</div>
 
@@ -867,7 +919,14 @@
 								</div>
 								<div class="min-w-0 flex-1">
 									<h3 class="font-semibold text-sm text-gray-800 dark:text-gray-100 truncate leading-tight">{capability.title}</h3>
-									<p class="text-xs text-gray-500 dark:text-gray-400 truncate leading-tight mt-0.5">{capability.subtitle}</p>
+									<p class="text-xs text-gray-500 dark:text-gray-400 truncate leading-tight mt-0.5">
+										{#if searchQuery && matchedWorkflowPrompts.has(capability.id)}
+											<span class="text-blue-500 dark:text-blue-400">"{matchedWorkflowPrompts.get(capability.id)?.matchedTerm}"</span>
+											<span class="text-gray-400 dark:text-gray-500"> in workflow</span>
+										{:else}
+											{capability.subtitle}
+										{/if}
+									</p>
 								</div>
 							</div>
 						</div>
@@ -884,7 +943,8 @@
 							class="capability-card group relative flex-shrink-0 w-[280px] rounded-xl p-3 sm:p-4 text-left cursor-pointer
 								   bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50
 								   hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-lg
-								   transform hover:-translate-y-0.5 transition-all duration-200"
+								   transform hover:-translate-y-0.5 transition-all duration-200
+								   {searchQuery && matchedWorkflowPrompts.has(capability.id) ? 'ring-2 ring-blue-500/30' : ''}"
 							on:click={() => handleCapabilityClick(capability)}
 							in:fly={{ x: 20, duration: 200, delay: idx * 30 + 50 }}
 						>
@@ -904,8 +964,8 @@
 									<button
 										class="w-5 h-5 rounded-full flex items-center justify-center transition-colors
 											   {isStarred(capability.id) 
-											   	? 'text-[#63b3ed]' 
-											   	: 'text-gray-300 hover:text-[#63b3ed] opacity-0 group-hover:opacity-100'}"
+												? 'text-[#63b3ed]' 
+												: 'text-gray-300 hover:text-[#63b3ed] opacity-0 group-hover:opacity-100'}"
 										on:click|stopPropagation={(e) => toggleStarred(capability.id, e)}
 										title={isStarred(capability.id) ? 'Remove from starred' : 'Add to starred'}
 									>
@@ -920,7 +980,14 @@
 								</div>
 								<div class="min-w-0 flex-1">
 									<h3 class="font-semibold text-sm text-gray-800 dark:text-gray-100 truncate leading-tight">{capability.title}</h3>
-									<p class="text-xs text-gray-500 dark:text-gray-400 truncate leading-tight mt-0.5">{capability.subtitle}</p>
+									<p class="text-xs text-gray-500 dark:text-gray-400 truncate leading-tight mt-0.5">
+										{#if searchQuery && matchedWorkflowPrompts.has(capability.id)}
+											<span class="text-blue-500 dark:text-blue-400">"{matchedWorkflowPrompts.get(capability.id)?.matchedTerm}"</span>
+											<span class="text-gray-400 dark:text-gray-500"> in workflow</span>
+										{:else}
+											{capability.subtitle}
+										{/if}
+									</p>
 								</div>
 							</div>
 						</div>
@@ -938,7 +1005,8 @@
 							class="capability-card group relative flex-shrink-0 w-[280px] rounded-xl p-3 sm:p-4 text-left cursor-pointer
 								   bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50
 								   hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-lg
-								   transform hover:-translate-y-0.5 transition-all duration-200"
+								   transform hover:-translate-y-0.5 transition-all duration-200
+								   {searchQuery && matchedWorkflowPrompts.has(capability.id) ? 'ring-2 ring-blue-500/30' : ''}"
 							on:click={() => handleCapabilityClick(capability)}
 							in:fly={{ x: 20, duration: 200, delay: idx * 30 + 100 }}
 						>
@@ -974,7 +1042,14 @@
 								</div>
 								<div class="min-w-0 flex-1">
 									<h3 class="font-semibold text-sm text-gray-800 dark:text-gray-100 truncate leading-tight">{capability.title}</h3>
-									<p class="text-xs text-gray-500 dark:text-gray-400 truncate leading-tight mt-0.5">{capability.subtitle}</p>
+									<p class="text-xs text-gray-500 dark:text-gray-400 truncate leading-tight mt-0.5">
+										{#if searchQuery && matchedWorkflowPrompts.has(capability.id)}
+											<span class="text-blue-500 dark:text-blue-400">"{matchedWorkflowPrompts.get(capability.id)?.matchedTerm}"</span>
+											<span class="text-gray-400 dark:text-gray-500"> in workflow</span>
+										{:else}
+											{capability.subtitle}
+										{/if}
+									</p>
 								</div>
 							</div>
 						</div>
@@ -996,7 +1071,7 @@
 </p>
 
 </div>
-{/if}
+{/if}			
 
 <!-- Expanded View Modal -->
 {#if showExpandedView}
@@ -1057,7 +1132,8 @@
 						class="capability-card group relative rounded-xl p-3 sm:p-4 text-left cursor-pointer
 							   bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50
 							   hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-lg
-							   transform hover:-translate-y-0.5 transition-all duration-200"
+							   transform hover:-translate-y-0.5 transition-all duration-200
+							   {searchQuery && matchedWorkflowPrompts.has(capability.id) ? 'ring-2 ring-blue-500/30' : ''}"
 						on:click={() => { closeExpandedView(); handleCapabilityClick(capability); }}
 					>
 						<!-- Top row: Badge left, icons right -->
@@ -1076,8 +1152,8 @@
 								<button
 									class="w-5 h-5 rounded-full flex items-center justify-center transition-colors
 										   {isStarred(capability.id) 
-										   	? 'text-[#63b3ed]' 
-										   	: 'text-gray-300 hover:text-[#63b3ed] opacity-0 group-hover:opacity-100'}"
+											? 'text-[#63b3ed]' 
+											: 'text-gray-300 hover:text-[#63b3ed] opacity-0 group-hover:opacity-100'}"
 									on:click|stopPropagation={(e) => toggleStarred(capability.id, e)}
 									title={isStarred(capability.id) ? 'Remove from starred' : 'Add to starred'}
 								>
@@ -1092,7 +1168,14 @@
 							</div>
 							<div class="min-w-0 flex-1">
 								<h3 class="font-semibold text-sm text-gray-800 dark:text-gray-100 truncate leading-tight">{capability.title}</h3>
-								<p class="text-xs text-gray-500 dark:text-gray-400 truncate leading-tight mt-0.5">{capability.subtitle}</p>
+								<p class="text-xs text-gray-500 dark:text-gray-400 truncate leading-tight mt-0.5">
+									{#if searchQuery && matchedWorkflowPrompts.has(capability.id)}
+										<span class="text-blue-500 dark:text-blue-400">"{matchedWorkflowPrompts.get(capability.id)?.matchedTerm}"</span>
+										<span class="text-gray-400 dark:text-gray-500"> in workflow</span>
+									{:else}
+										{capability.subtitle}
+									{/if}
+								</p>
 							</div>
 						</div>
 					</div>
@@ -1138,11 +1221,19 @@
 			</div>
 			<div class="p-3 sm:p-4 overflow-y-auto max-h-[60vh]">
 				<form on:submit|preventDefault={handleModalSubmit} class="space-y-3">
-					{#each inputVariables as variable}
+					{#each inputVariables as variable, varIdx}
 						<div class="space-y-1">
 							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{formatLabel(variable.name)}{#if variable.required}<span class="text-red-500">*</span>{/if}</label>
 							{#if variable.type === 'textarea'}
-								<textarea bind:value={variable.value} placeholder={variable.placeholder || `e.g., Enter your ${formatLabel(variable.name).toLowerCase()} here...`} required={variable.required} rows="3" class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none" />
+								<textarea 
+									bind:value={variable.value} 
+									placeholder={currentCapability?.examples?.length && varIdx === 0 
+										? currentCapability.examples[examplePlaceholderIndex] 
+										: (variable.placeholder || `e.g., Enter your ${formatLabel(variable.name).toLowerCase()} here...`)} 
+									required={variable.required} 
+									rows="3" 
+									class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none" 
+								/>
 							{:else if variable.type === 'select'}
 								<select bind:value={variable.value} required={variable.required} class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50">
 									<option value="">Select...</option>
@@ -1153,7 +1244,15 @@
 							{:else if variable.type === 'date'}
 								<input type="date" bind:value={variable.value} required={variable.required} class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50" />
 							{:else}
-								<input type="text" bind:value={variable.value} placeholder={variable.placeholder || `e.g., Enter ${formatLabel(variable.name).toLowerCase()}...`} required={variable.required} class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50" />
+								<input 
+									type="text" 
+									bind:value={variable.value} 
+									placeholder={currentCapability?.examples?.length && varIdx === 0 
+										? currentCapability.examples[examplePlaceholderIndex] 
+										: (variable.placeholder || `e.g., Enter ${formatLabel(variable.name).toLowerCase()}...`)} 
+									required={variable.required} 
+									class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50" 
+								/>
 							{/if}
 						</div>
 					{/each}
@@ -1380,4 +1479,7 @@
 	.capability-card { backdrop-filter: blur(8px); }
 	.scrollbar-hide::-webkit-scrollbar { display: none; }
 	.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+	input::placeholder, textarea::placeholder {
+		transition: opacity 0.3s ease-in-out;
+	}
 </style>
