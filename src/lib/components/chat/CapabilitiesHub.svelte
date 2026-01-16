@@ -307,7 +307,7 @@
 		if (!expandedScrollContainer) return;
 		const { scrollTop, scrollHeight, clientHeight } = expandedScrollContainer;
 		// Only show if content is scrollable AND not near bottom
-		const isScrollable = scrollHeight > clientHeight;
+		const isScrollable = scrollHeight > clientHeight + 10; // Add small buffer
 		const isNearBottom = scrollTop >= scrollHeight - clientHeight - 50;
 		showExpandedScrollIndicator = isScrollable && !isNearBottom;
 	}
@@ -318,10 +318,11 @@
 		selectedCategory = 'all';
 		showExpandedView = true;
 		showExpandedScrollIndicator = false;
-		// Check after render if scrolling is needed
-		setTimeout(() => {
-			updateExpandedScrollIndicator();
-		}, 100);
+	}
+
+	// Re-check scroll indicator when displayed capabilities change or expanded view opens
+	$: if (showExpandedView && displayCapabilities && expandedScrollContainer) {
+		setTimeout(updateExpandedScrollIndicator, 50);
 	}
 	
 	// Close expanded view (restores previous category)
@@ -1096,21 +1097,24 @@
 			</div>
 		</div>
 		
-		<!-- Scroll indicator -->
-		{#if showExpandedScrollIndicator}
-			<div 
-				class="absolute bottom-0 left-0 right-0 flex justify-center pb-3 pointer-events-none"
-				in:fade={{ duration: 150 }}
-				out:fade={{ duration: 150 }}
-			>
-				<div class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
-					<span>Scroll for more</span>
-					<svg class="w-3.5 h-3.5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-					</svg>
-				</div>
+<!-- Scroll indicator -->
+{#if showExpandedScrollIndicator}
+	<div 
+		class="absolute bottom-0 left-0 right-0 pointer-events-none"
+		in:fade={{ duration: 150 }}
+		out:fade={{ duration: 150 }}
+	>
+		<!-- Gradient fade -->
+		<div class="h-16 bg-gradient-to-t from-white dark:from-gray-900 to-transparent"></div>
+		<!-- Button -->
+		<div class="flex justify-center pb-3 bg-white dark:bg-gray-900">
+			<div class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+				<span>Scroll for more</span>
+				<svg class="w-3.5 h-3.5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+				</svg>
 			</div>
-		{/if}
+		</div>
 	</div>
 {/if}
 
