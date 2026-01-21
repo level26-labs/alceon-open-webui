@@ -212,9 +212,66 @@
 		}
 	};
 
-	const onSelect = async (e) => {
-		const { type, data, features, autoSubmit } = e;
+	// Handle files from CapabilitiesHub
+	const handleCapabilityFiles = async (inputFiles) => {
+		for (const file of inputFiles) {
+			const tempItemId = uuidv4();
+			const fileItem = {
+				type: 'file',
+				file: '',
+				id: null,
+				url: '',
+				name: file.name,
+				collection_name: '',
+				status: 'uploading',
+				size: file.size,
+				error: '',
+				itemId: tempItemId
+			};
 
+			if (fileItem.size === 0) {
+				toast.error($i18n.t('You cannot upload an empty file.'));
+				continue;
+			}
+
+			files = [...files, fileItem];
+
+			try {
+				const uploadedFile = await uploadFile(localStorage.token, file, null);
+
+				if (uploadedFile) {
+					fileItem.status = 'uploaded';
+					fileItem.file = uploadedFile;
+					fileItem.id = uploadedFile.id;
+					fileItem.collection_name = uploadedFile?.meta?.collection_name || uploadedFile?.collection_name;
+					fileItem.url = `${uploadedFile.id}`;
+					files = files;
+				} else {
+					files = files.filter((item) => item?.itemId !== tempItemId);
+				}
+			} catch (e) {
+				toast.error(`${e}`);
+				files = files.filter((item) => item?.itemId !== tempItemId);
+			}
+		}
+	};	
+	
+	const onSelect = async (e) => {
+		const { type, data, features, autoSubmit, modelId, files: inputFiles } = e;
+		
+		// Switch model if specified
+		if (modelId) {
+			// Check if the model exists
+			const modelExists = $models.find((m) => m.id === modelId);
+			if (modelExists) {
+				selectedModels = [modelId];
+				await tick();
+			} else {
+				toast.error($i18n.t('Model {{modelId}} not found', { modelId }));
+				// Continue without switching model
+			}
+		}
+		
 		// Apply features if provided
 		if (features) {
 			if (features.webSearch !== undefined) {
@@ -227,15 +284,27 @@
 				codeInterpreterEnabled = features.codeInterpreter;
 			}
 		}
-
+		
+		// Handle files from CapabilitiesHub if provided
+		if (inputFiles && inputFiles.length > 0) {
+			await handleCapabilityFiles(inputFiles);
+		}
+		
 		if (type === 'focus') {
 			const chatInput = document.getElementById('chat-input');
 			chatInput?.focus();
 		} else if (type === 'prompt') {
 			if (autoSubmit && data) {
-				// Auto-submit: send the prompt directly without setting input
+				// Wait for any file uploads to complete before submitting
+				const waitForUploads = async () => {
+					while (files.some(f => f.status === 'uploading')) {
+						await new Promise(r => setTimeout(r, 100));
+					}
+				};
+				await waitForUploads();
+				
+				// Auto-submit: send the prompt directly
 				submitPrompt(data);
-				// Input stays empty since we didn't set it
 			} else {
 				// Not auto-submit: load prompt into input for user to edit
 				messageInput?.setText(data);

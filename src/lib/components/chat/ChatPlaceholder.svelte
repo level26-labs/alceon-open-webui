@@ -47,15 +47,16 @@
 		prompt: string, 
 		modelId?: string, 
 		features?: { webSearch?: boolean; imageGeneration?: boolean; codeInterpreter?: boolean },
-		autoSubmit?: boolean
+		autoSubmit?: boolean,
+		files?: File[]
 	) {
 		// If prompt is empty or undefined, just focus the input without submitting
 		if (!prompt) {
-			onSelect({ type: 'focus', features });
+			onSelect({ type: 'focus', features, modelId });
 			return;
 		}
-		// Otherwise, set the prompt in the input with optional features and autoSubmit flag
-		onSelect({ type: 'prompt', data: prompt, features, autoSubmit: autoSubmit ?? false });
+		// Otherwise, set the prompt in the input with optional features, autoSubmit flag, modelId, and files
+		onSelect({ type: 'prompt', data: prompt, features, autoSubmit: autoSubmit ?? false, modelId, files });
 	}
 </script>
 
