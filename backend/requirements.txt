@@ -153,4 +153,4 @@ opentelemetry-instrumentation-httpx==0.60b1
 opentelemetry-instrumentation-aiohttp-client==0.60b1
 
 ##GPT-Researcher
-gpt-researcher
+gpt-researcher>=0.14.5
