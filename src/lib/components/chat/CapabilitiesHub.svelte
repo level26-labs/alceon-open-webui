@@ -18,7 +18,8 @@
 			prompt: string;
 			features?: PromptFeatures;
 			autoSubmit?: boolean;
-			modelId?: string;  // Added: support modelId in workflow prompts too
+			modelId?: string;
+			fileUpload?: FileUploadConfig;
 		}>;
 	}
 
@@ -33,6 +34,7 @@
 		multiple?: boolean;
 		accept?: string;
 		label?: string;
+		required?: boolean;
 	}
 
 	interface Capability {
@@ -87,14 +89,21 @@
 		enabled: boolean;
 	}
 
+	interface DashboardMeta {
+		version?: string;
+		description?: string;
+		changelog?: string;
+	}
+
 	// Configuration loaded from JSON or passed as prop
 	let capabilities: Capability[] = [];
 	let categories: Category[] = [];
 	let featuredTile: FeaturedTile | null = null;
+	let dashboardMeta: DashboardMeta = {};
 	let configLoaded = false;
 	let configError: string | null = null;
 
-	export let config: { categories: Category[]; capabilities: Capability[]; featuredTile?: FeaturedTile } | null = null;
+	export let config: { categories: Category[]; capabilities: Capability[]; featuredTile?: FeaturedTile; meta?: DashboardMeta } | null = null;
 	export let configUrl: string = '';
 	export let onSelect: (prompt: string, modelId?: string, features?: PromptFeatures, autoSubmit?: boolean, files?: File[]) => void = () => {};
 	export let onNavigate: (route: string) => void = () => {};
@@ -195,6 +204,7 @@
 				capabilities = config.capabilities || [];
 				categories = config.categories || [];
 				featuredTile = config.featuredTile || null;
+				dashboardMeta = config.meta || {};
 				configLoaded = true;
 				configError = null;
 				setTimeout(updateScrollArrows, 100);
@@ -210,6 +220,7 @@
 				capabilities = loadedConfig.capabilities || [];
 				categories = loadedConfig.categories || [];
 				featuredTile = loadedConfig.featuredTile || null;
+				dashboardMeta = loadedConfig.meta || {};
 				configLoaded = true;
 				configError = null;
 				setTimeout(updateScrollArrows, 100);
@@ -217,16 +228,18 @@
 			}
 
 			capabilities = [];
-			categories = [{ id: 'all', label: 'All' }];
+			categories = [{ id: 'all', label: 'Trending' }];
 			featuredTile = null;
+			dashboardMeta = {};
 			configLoaded = true;
 			configError = 'No configuration provided. Pass config prop or configUrl.';
 		} catch (error) {
 			console.error('Error loading capabilities config:', error);
 			configError = error instanceof Error ? error.message : 'Unknown error';
 			capabilities = [];
-			categories = [{ id: 'all', label: 'All' }];
+			categories = [{ id: 'all', label: 'Trending' }];
 			featuredTile = null;
+			dashboardMeta = {};
 			configLoaded = true;
 		}
 	}
@@ -235,6 +248,7 @@
 		capabilities = config.capabilities || [];
 		categories = config.categories || [];
 		featuredTile = config.featuredTile || null;
+		dashboardMeta = config.meta || {};
 		configLoaded = true;
 		configError = null;
 	}
@@ -324,7 +338,11 @@
 	let showWorkflowModal = false;
 	let currentWorkflow: Capability | null = null;
 	let selectedStageId: string | null = null;
-	let selectedStagePrompt: { stage: WorkflowStage; prompt: { title: string; prompt: string; features?: PromptFeatures; autoSubmit?: boolean; modelId?: string } } | null = null;
+	let selectedStagePrompt: { stage: WorkflowStage; prompt: { title: string; prompt: string; features?: PromptFeatures; autoSubmit?: boolean; modelId?: string; fileUpload?: FileUploadConfig } } | null = null;
+
+	// Workflow file upload state
+	let workflowUploadedFiles: File[] = [];
+	let workflowFileInputElement: HTMLInputElement | null = null;
 
 	$: enabledCapabilities = capabilities.filter((c) => c.enabled !== false && canUserSeeCapability(c));
 	
@@ -371,15 +389,21 @@
 
 	$: filteredCapabilities = enabledCapabilities.filter((c) => {
 		const matchesCategory = selectedCategory === 'all' || 
+			selectedCategory === 'a-z' ||
 			selectedCategory === 'starred' || 
 			c.tags?.includes(selectedCategory);
 		const matchesSearch = matchesSearchQuery(c, searchQuery);
 		return matchesCategory && matchesSearch;
 	});
 	
+	// Sort alphabetically for A-Z category
+	$: sortedCapabilities = selectedCategory === 'a-z' 
+		? [...filteredCapabilities].sort((a, b) => a.title.localeCompare(b.title))
+		: filteredCapabilities;
+	
 	$: displayCapabilities = selectedCategory === 'starred' 
 		? starredItems 
-		: filteredCapabilities;
+		: sortedCapabilities;
 
 	let containerWidth = 0;
 	let tilesPerRow = 4;
@@ -398,10 +422,16 @@
 	$: row3WithRemaining = [...row3, ...remainingTiles.filter((_, i) => i % 3 === 2)];
 
 	$: visibleCategories = [
+		// First: Trending (was "All") - shows JSON order
+		...categories.filter(cat => cat.id === 'all').map(cat => ({ ...cat, label: 'Trending' })),
+		// Second: A-Z - alphabetically sorted
+		{ id: 'a-z', label: 'A-Z' },
+		// Then: other categories from config
 		...categories.filter(cat => {
-			if (cat.id === 'all') return true;
+			if (cat.id === 'all') return false;
 			return enabledCapabilities.some(c => c.tags?.includes(cat.id));
 		}),
+		// Finally: Starred if there are starred items
 		...(starredCapabilities.length > 0 ? [{ id: 'starred', label: '⭐ Starred' }] : [])
 	];
 
@@ -499,6 +529,21 @@
 		}
 	}
 
+	// Workflow file upload handlers
+	function handleWorkflowFileSelect(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (input.files) {
+			workflowUploadedFiles = Array.from(input.files);
+		}
+	}
+
+	function removeWorkflowFile(index: number) {
+		workflowUploadedFiles = workflowUploadedFiles.filter((_, i) => i !== index);
+		if (workflowFileInputElement) {
+			workflowFileInputElement.value = '';
+		}
+	}
+
 	function formatFileSize(bytes: number): string {
 		if (bytes < 1024) return bytes + ' B';
 		if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
@@ -568,6 +613,11 @@
 		if (!currentCapability) return;
 		const missingRequired = inputVariables.filter(v => v.required && !v.value && v.value !== false);
 		if (missingRequired.length > 0) return;
+		
+		// Check if file upload is required but no files uploaded
+		if (currentCapability.fileUpload?.enabled && currentCapability.fileUpload?.required && uploadedFiles.length === 0) {
+			return;
+		}
 
 		let prompt = currentCapability.action.prompt ?? '';
 		prompt = await replaceSystemVariables(prompt);
@@ -597,16 +647,19 @@
 		currentAutoSubmit = true;
 		currentModelId = undefined;  // Reset modelId
 		inputVariables = [];
+		workflowUploadedFiles = [];  // Reset workflow files
 	}
 
-	async function handleWorkflowPromptClick(stage: WorkflowStage, promptItem: { title: string; prompt: string; features?: PromptFeatures; autoSubmit?: boolean; modelId?: string }) {
+	async function handleWorkflowPromptClick(stage: WorkflowStage, promptItem: { title: string; prompt: string; features?: PromptFeatures; autoSubmit?: boolean; modelId?: string; fileUpload?: FileUploadConfig }) {
 		const customVars = parseInputVariables(promptItem.prompt);
-		if (customVars.length > 0) {
+		// Show form if there are input variables OR file upload is enabled
+		if (customVars.length > 0 || promptItem.fileUpload?.enabled) {
 			selectedStagePrompt = { stage, prompt: promptItem };
 			currentFeatures = promptItem.features || null;
 			currentAutoSubmit = promptItem.autoSubmit ?? true;
 			currentModelId = promptItem.modelId;  // Store workflow prompt modelId
 			inputVariables = customVars;
+			workflowUploadedFiles = [];  // Reset files when selecting new prompt
 		} else {
 			const processedPrompt = await replaceSystemVariables(promptItem.prompt);
 			// Pass modelId for workflow prompts
@@ -619,12 +672,17 @@
 		if (!selectedStagePrompt) return;
 		const missingRequired = inputVariables.filter(v => v.required && !v.value && v.value !== false);
 		if (missingRequired.length > 0) return;
+		
+		// Check if file upload is required but no files uploaded
+		if (selectedStagePrompt.prompt.fileUpload?.enabled && selectedStagePrompt.prompt.fileUpload?.required && workflowUploadedFiles.length === 0) {
+			return;
+		}
 
 		let prompt = selectedStagePrompt.prompt.prompt;
 		prompt = await replaceSystemVariables(prompt);
 		prompt = replaceInputVariables(prompt, inputVariables);
-		// Pass currentModelId for workflow form submissions
-		onSelect(prompt, currentModelId, currentFeatures || undefined, currentAutoSubmit);
+		// Pass currentModelId and files for workflow form submissions
+		onSelect(prompt, currentModelId, currentFeatures || undefined, currentAutoSubmit, workflowUploadedFiles.length > 0 ? workflowUploadedFiles : undefined);
 		closeWorkflowModal();
 	}
 
@@ -768,6 +826,32 @@
 				<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
 				</svg>
+			</div>
+			<!-- Info button -->
+			<div class="relative hidden sm:block">
+				<button
+					class="p-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 transition-colors flex items-center justify-center"
+					on:mouseenter={(e) => {
+						let infoLines = [];
+						if (dashboardMeta.version) {
+							infoLines.push(`Version: ${dashboardMeta.version}`);
+						}
+						if (dashboardMeta.changelog) {
+							if (infoLines.length > 0) infoLines.push('');
+							infoLines.push('Changelog:');
+							infoLines.push(dashboardMeta.changelog);
+						}
+						if (infoLines.length === 0) {
+							infoLines.push('No version info available');
+						}
+						showTooltip(infoLines.join('\n'), e);
+					}}
+					on:mouseleave={hideTooltip}
+				>
+					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+				</button>
 			</div>
 			<!-- Expand button - desktop only -->
 			<button
@@ -1223,7 +1307,7 @@
 				<form on:submit|preventDefault={handleModalSubmit} class="space-y-3">
 					{#each inputVariables as variable, varIdx}
 						<div class="space-y-1">
-							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{formatLabel(variable.name)}{#if variable.required}<span class="text-red-500">*</span>{/if}</label>
+							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{formatLabel(variable.name)} {#if variable.required}<span class="text-red-500">*</span>{:else}<span class="text-gray-400 font-normal">(optional)</span>{/if}</label>
 							{#if variable.type === 'textarea'}
 								<textarea 
 									bind:value={variable.value} 
@@ -1261,7 +1345,7 @@
 					{#if currentCapability.fileUpload?.enabled}
 						<div class="space-y-2 pt-2 border-t border-gray-100 dark:border-gray-700">
 							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-								{currentCapability.fileUpload.label || 'Upload Files'}
+								{currentCapability.fileUpload.label || 'Upload Files'} {#if currentCapability.fileUpload.required}<span class="text-red-500">*</span>{:else}<span class="text-gray-400 font-normal">(optional)</span>{/if}
 							</label>
 							
 							<!-- File input -->
@@ -1390,6 +1474,9 @@
 										>
 											<span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">{promptItem.title}</span>
 											<div class="flex items-center gap-2">
+												{#if promptItem.fileUpload?.enabled}
+													<span class="text-xs grayscale opacity-60" title="File Upload">📎</span>
+												{/if}
 												{#if promptItem.features}
 													{#each getFeatureIcons(promptItem.features) as feature}
 														<span class="text-xs grayscale opacity-60" title={feature.label}>{feature.icon}</span>
@@ -1411,7 +1498,7 @@
 				<div class="p-3 sm:p-4 overflow-y-auto max-h-[70vh]">
 					<button 
 						class="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 mb-4"
-						on:click={() => { selectedStagePrompt = null; inputVariables = []; currentFeatures = null; }}
+						on:click={() => { selectedStagePrompt = null; inputVariables = []; currentFeatures = null; workflowUploadedFiles = []; }}
 					>
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
 						Back to prompts
@@ -1437,7 +1524,7 @@
 					<form on:submit|preventDefault={handleWorkflowFormSubmit} class="space-y-3">
 						{#each inputVariables as variable}
 							<div class="space-y-1">
-								<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{formatLabel(variable.name)}{#if variable.required}<span class="text-red-500">*</span>{/if}</label>
+								<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{formatLabel(variable.name)} {#if variable.required}<span class="text-red-500">*</span>{:else}<span class="text-gray-400 font-normal">(optional)</span>{/if}</label>
 								{#if variable.type === 'textarea'}
 									<textarea bind:value={variable.value} placeholder={variable.placeholder} required={variable.required} rows="3" class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none" />
 								{:else if variable.type === 'select'}
@@ -1450,8 +1537,70 @@
 								{/if}
 							</div>
 						{/each}
+
+						<!-- Workflow File Upload Section -->
+						{#if selectedStagePrompt.prompt.fileUpload?.enabled}
+							<div class="space-y-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+								<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+									{selectedStagePrompt.prompt.fileUpload.label || 'Upload Files'} {#if selectedStagePrompt.prompt.fileUpload.required}<span class="text-red-500">*</span>{:else}<span class="text-gray-400 font-normal">(optional)</span>{/if}
+								</label>
+								
+								<!-- File input -->
+								<div class="flex items-center gap-2">
+									<input
+										bind:this={workflowFileInputElement}
+										type="file"
+										accept={selectedStagePrompt.prompt.fileUpload.accept || '*/*'}
+										multiple={selectedStagePrompt.prompt.fileUpload.multiple ?? true}
+										on:change={handleWorkflowFileSelect}
+										class="hidden"
+										id="workflow-file-upload-input"
+									/>
+									<label 
+										for="workflow-file-upload-input"
+										class="flex items-center gap-2 px-3 py-2 text-sm rounded-lg border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer transition-colors"
+									>
+										<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+										</svg>
+										<span>Choose files...</span>
+									</label>
+									{#if workflowUploadedFiles.length > 0}
+										<span class="text-xs text-gray-500">{workflowUploadedFiles.length} file{workflowUploadedFiles.length > 1 ? 's' : ''} selected</span>
+									{/if}
+								</div>
+
+								<!-- File list -->
+								{#if workflowUploadedFiles.length > 0}
+									<div class="space-y-1.5 mt-2">
+										{#each workflowUploadedFiles as file, index}
+											<div class="flex items-center justify-between px-3 py-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+												<div class="flex items-center gap-2 min-w-0 flex-1">
+													<svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+													</svg>
+													<span class="text-sm text-gray-700 dark:text-gray-300 truncate">{file.name}</span>
+													<span class="text-xs text-gray-400 flex-shrink-0">({formatFileSize(file.size)})</span>
+												</div>
+												<button
+													type="button"
+													class="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+													on:click={() => removeWorkflowFile(index)}
+													title="Remove file"
+												>
+													<svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+													</svg>
+												</button>
+											</div>
+										{/each}
+									</div>
+								{/if}
+							</div>
+						{/if}
+
 						<div class="flex justify-end gap-2 pt-4">
-							<button type="button" class="px-4 py-2 text-sm rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" on:click={() => { selectedStagePrompt = null; inputVariables = []; currentFeatures = null; }}>Cancel</button>
+							<button type="button" class="px-4 py-2 text-sm rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" on:click={() => { selectedStagePrompt = null; inputVariables = []; currentFeatures = null; workflowUploadedFiles = []; }}>Cancel</button>
 							<button type="submit" class="px-4 py-2 text-sm rounded-lg bg-blue-500 text-white hover:bg-blue-600 font-medium">
 								{currentAutoSubmit ? 'Run Prompt' : 'Load Prompt'}
 							</button>
@@ -1466,7 +1615,7 @@
 <!-- Global Tooltip Portal -->
 {#if activeHelpTooltip && tooltipContent}
 	<div 
-		class="fixed z-[99999] px-3 py-2 bg-gray-800 text-white text-xs rounded-lg shadow-xl max-w-[280px] pointer-events-none"
+		class="fixed z-[99999] px-3 py-2 bg-gray-800 text-white text-xs rounded-lg shadow-xl max-w-[320px] pointer-events-none"
 		style="left: {tooltipPosition.x}px; top: {tooltipPosition.y}px; transform: translate(-50%, -100%);"
 		in:fade={{ duration: 100 }}
 	>
