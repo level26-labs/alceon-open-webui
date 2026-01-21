@@ -34,8 +34,8 @@
 
 	// Check if current model is Kingfisher (case-insensitive)
 	$: showCapabilitiesHub = models.some(m => 
-		m?.name?.toLowerCase().includes('notkingfisher') || 
-		m?.id?.toLowerCase().includes('notkingfisher')
+		m?.name?.toLowerCase().includes('kingfisher') || 
+		m?.id?.toLowerCase().includes('kingfisher')
 	);
 
 	onMount(() => {
