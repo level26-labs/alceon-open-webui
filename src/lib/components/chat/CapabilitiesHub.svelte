@@ -1148,9 +1148,9 @@
 <!-- Help text with channel links -->
 <p class="text-xs text-gray-500 dark:text-gray-400 mt-4">
 	Help us make Kingfisher better by reporting 
-	<a href="/channels/dc28eb0c-d5ed-45e1-bd99-fd1645a877a1" class="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 hover:underline">issues</a> 
+	<a href="/channels/97f2695a-32b9-45fc-b6ea-9bd75812aaae" class="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 hover:underline">issues</a> 
 	and submitting 
-	<a href="/channels/42a93a10-16df-4bc4-a5a1-da1c25737a0a" class="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 hover:underline">ideas</a> 
+	<a href="/channels/7eb041e4-d790-4ee8-80fb-607db84a6601" class="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 hover:underline">ideas</a> 
 	for new prompts, workflows or functionality.
 </p>
 
