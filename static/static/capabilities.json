@@ -35,8 +35,8 @@
         }
     ],
     "meta": {
-        "version": "1.0.0",
-        "changelog": "• Added file upload to workflows\n• New A-Z sorting\n• Dashboard info tooltip"
+        "version": "1.0.1",
+        "changelog": "• Added 'Review and NDA' tile"
     },
     "featuredTile": {
         "id": "featured-jan-2026-v6",
@@ -163,6 +163,34 @@
             ],
             "enabled": true,
             "visibility": "all"
+        },
+        {
+            "id": "review_nda",
+            "title": "Review an NDA",
+            "subtitle": "Against our compliance policies",
+            "description": "Review a draft NDA against Alceon's compliance policies and standard NDA template, focusing only on material deviations that affect rights, obligations, or risk exposure.",
+            "icon": "FileCheck",
+            "color": "#6366F1",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "prompt": "You are a senior legal adviser familiar with Alceon Group's standard NDA provisions, compliance policies, and IT governance.\n\nYour task is to review the **uploaded NDA** and identify any **material deviations** from Alceon's standard terms.\n\nYou must:\n- Use the user's inputs and the uploaded NDA as context\n- Focus only on **substantive differences** — ignore stylistic or minor definitional changes\n- Reference clause numbers and propose clear, actionable changes\n- Include a **compliance checklist**, **summary snapshot**, **material deviations**, and **risk table**\n- Generate a **counterparty reply email** if the user requests it\n- Return only the output — no commentary, no explanations\n\n---\n\n## Inputs\n\n**NDA Type:** {{nda_type|select:required:options=[\"One-way\",\"Mutual\"]:default=\"One-way\"}}\n\n**Who drafted the NDA?** {{drafter|select:required:options=[\"Alceon\",\"Counterparty\"]:default=\"Counterparty\"}}\n\n**Include reply email to counterparty?** {{draft_reply_email|select:required:options=[\"Yes - draft a reply to the counterparty\",\"No - just review against compliance policy\"]:default=\"Yes - draft a reply to the counterparty\"}}\n\n---\n\n## Output Structure\n\n### 1. Summary Snapshot\n\n**NDA Type:** [From input]\n**Drafted By:** [From input]\n**Purpose:** [Purpose of the agreement]\n**Duration:** [e.g. 2 years – see Clause X]\n\n---\n\n### 2. Alceon Compliance Checklist\n\nReview the NDA against Alceon's mandatory compliance requirements.\n\n| Requirement | Complies? | Clause Reference | Notes or Required Action |\n|-------------|-----------|------------------|-------------------------|\n| Max 1-year term | Yes/No | Clause X.X: \"[Quote]\" | [Action if non-compliant] |\n| No indemnity to discloser | Yes/No | Clause X.X: \"[Quote]\" | [Action if non-compliant] |\n| Carveout for off-site/cloud retention per IT policy | Yes/No | Clause X.X: \"[Quote]\" | [Action if non-compliant] |\n| Allow disclosure if required by law | Yes/No | Clause X.X: \"[Quote]\" | [Action if non-compliant] |\n\n---\n\n### 3. Material Deviations from Alceon Standard NDA\n\nFocus exclusively on **substantive differences**.\n\n#### A. Core Obligation Variances\n...\n\n#### B. Term & Termination\n...\n\n#### C. Use Restrictions\n...\n\n#### D. Disclosure Parameters\n...\n\n#### E. Non-Solicit / Non-Compete\n...\n\n#### F. Remedies & Enforcement\n...\n\n---\n\n### 4. Critical Risk Assessment & Negotiation Priorities\n\n| Priority | Issue | Risk Level | Recommended Action |\n|----------|-------|------------|-------------------|\n| 1 | [Issue] | High/Medium/Low | [Action] |\n| 2 | [Issue] | High/Medium/Low | [Action] |\n| 3 | [Issue] | High/Medium/Low | [Action] |\n\n---\n\n### 5. Counterparty Reply Email (If Requested)\n\nIf reply email was requested, generate:\n\n**Subject:** NDA Feedback and Requested Amendments\n\nDear [Counterparty Name],\n\nThank you for sharing the draft Non-Disclosure Agreement. We've completed our review and appreciate the opportunity to move quickly toward finalisation.\n\nTo ensure alignment with Alceon Group's internal policies and standard legal position, we kindly request the following amendments:\n\n#### Requested Changes\n\n1. **[Issue] – Clause [X]**\n   - **Current:** \"[Quote from NDA]\"\n   - **Proposed:** \"[Suggested amendment]\"\n   - **Reason:** [Brief justification]\n\n2. **[Issue] – Clause [Y]**\n   - **Current:** \"[Quote from NDA]\"\n   - **Proposed:** \"[Suggested amendment]\"\n   - **Reason:** [Brief justification]\n\n[Continue for all material issues]\n\nWe're happy to discuss any of the above and appreciate your cooperation.\n\nWarm regards,\n**[Your Name]**\n[Your Position]\nAlceon Group"
+            },
+            "autoSubmit": true,
+            "fileUpload": {
+                "enabled": true,
+                "multiple": false,
+                "accept": ".pdf,.docx,.doc",
+                "label": "Upload NDA document",
+                "required": true
+            },
+            "tags": [
+                "review"
+            ],
+            "enabled": true,
+            "visibility": "all",
+            "difficulty": "intermediate",
+            "helpText": "Upload a draft NDA (PDF or Word) to review against Alceon's standard terms and compliance requirements.",
         },
         {
             "id": "improve_draft",
