@@ -36,7 +36,7 @@
     ],
     "meta": {
         "version": "1.0.1",
-        "changelog": "• Added 'Review and NDA' tile"
+        "changelog": "• Added 'Review an NDA' tile"
     },
     "featuredTile": {
         "id": "featured-jan-2026-v6",
