@@ -190,7 +190,7 @@
             "enabled": true,
             "visibility": "all",
             "difficulty": "intermediate",
-            "helpText": "Upload a draft NDA (PDF or Word) to review against Alceon's standard terms and compliance requirements.",
+            "helpText": "Upload a draft NDA (PDF or Word) to review against Alceon's standard terms and compliance requirements."
         },
         {
             "id": "improve_draft",
