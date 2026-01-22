@@ -170,7 +170,7 @@
             "subtitle": "Against our compliance policies",
             "description": "Review a draft NDA against Alceon's compliance policies and standard NDA template, focusing only on material deviations that affect rights, obligations, or risk exposure.",
             "icon": "📝",
-            "color": "#6366F1",
+            "color": "from-[#c4a35a] to-[#d4b896]",
             "capabilityType": "Form",
             "action": {
                 "type": "prompt",
