@@ -35,8 +35,8 @@
         }
     ],
     "meta": {
-        "version": "1.0.1",
-        "changelog": "• Added 'Review an NDA' tile"
+        "version": "1.0.2",
+        "changelog": "• Removed Alceon AI Survey featured tile."
     },
     "featuredTile": {
         "id": "featured-jan-2026-v6",
@@ -50,7 +50,7 @@
             "url": "https://survey.alceon.cloud",
             "label": "Take the Survey"
         },
-        "enabled": true
+        "enabled": false
     },
     "capabilities": [
         {
