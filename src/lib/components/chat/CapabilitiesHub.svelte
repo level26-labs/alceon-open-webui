@@ -81,11 +81,12 @@
 		icon: string;
 		color: string;
 		action?: {
-			type: 'prompt' | 'route' | 'url';
+			type: 'prompt' | 'route' | 'url' | 'capability';
 			prompt?: string;
 			route?: string;
 			url?: string;
 			label?: string;
+			capabilityId?: string;
 		};
 		enabled: boolean;
 	}

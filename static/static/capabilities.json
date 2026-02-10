@@ -56,7 +56,7 @@
         "id": "featured-feb-2026-policy-search",
         "title": "Policy Search",
         "subtitle": "New Capability",
-        "description": "Instantly search across all 27 Alceon policies. Ask questions in plain English and get answers with source references.",
+        "description": "Instantly search across all Alceon policies. Ask questions in plain English and get answers with source references.",
         "icon": "🔍",
         "color": "from-[#1a365d] to-[#2b6cb0]",
         "action": {
@@ -128,7 +128,7 @@
             "title": "Policy Search",
             "subtitle": "Alceon Policy Library",
             "description": "Search Alceon's policy library to find answers about company policies including leave, compliance, risk management, workplace conduct, and more.",
-            "icon": "📜",
+            "icon": "🔍",
             "color": "from-[#1a365d] to-[#c4a35a]",
             "capabilityType": "Form",
             "action": {
