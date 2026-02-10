@@ -27,6 +27,7 @@
 		webSearch?: boolean;
 		imageGeneration?: boolean;
 		codeInterpreter?: boolean;
+		knowledge?: Array<{ id: string; name: string }>;
 	}
 
 	interface FileUploadConfig {
@@ -80,11 +81,12 @@
 		icon: string;
 		color: string;
 		action?: {
-			type: 'prompt' | 'route' | 'url';
+			type: 'prompt' | 'route' | 'url' | 'capability';
 			prompt?: string;
 			route?: string;
 			url?: string;
 			label?: string;
+			capabilityId?: string;
 		};
 		enabled: boolean;
 	}
@@ -597,7 +599,7 @@
 					startExampleRotation(capability.examples);
 				}
 			} else {
-				const processedPrompt = await replaceSystemVariables(prompt);
+				let processedPrompt = await replaceSystemVariables(prompt);
 				// Pass modelId to onSelect
 				onSelect(processedPrompt, capability.action.modelId, capability.features, capability.autoSubmit ?? false);
 			}
@@ -661,7 +663,7 @@
 			inputVariables = customVars;
 			workflowUploadedFiles = [];  // Reset files when selecting new prompt
 		} else {
-			const processedPrompt = await replaceSystemVariables(promptItem.prompt);
+			let processedPrompt = await replaceSystemVariables(promptItem.prompt);
 			// Pass modelId for workflow prompts
 			onSelect(processedPrompt, promptItem.modelId, promptItem.features, promptItem.autoSubmit ?? true);
 			closeWorkflowModal();
@@ -734,6 +736,7 @@
 		if (features.webSearch) icons.push({ icon: '🌐', label: 'Web Search' });
 		if (features.imageGeneration) icons.push({ icon: '🎨', label: 'Image Generation' });
 		if (features.codeInterpreter) icons.push({ icon: '▶️', label: 'Code Interpreter' });
+		if (features.knowledge && features.knowledge.length > 0) icons.push({ icon: '📚', label: 'Knowledge' });
 		return icons;
 	}
 
@@ -939,7 +942,10 @@
 								<button
 									class="mt-4 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors"
 									on:click|stopPropagation={() => {
-										if (featuredTile?.action?.type === 'prompt' && featuredTile.action.prompt) {
+										if (featuredTile?.action?.type === 'capability' && featuredTile.action.capabilityId) {
+											const cap = enabledCapabilities.find(c => c.id === featuredTile.action.capabilityId);
+											if (cap) handleCapabilityClick(cap);
+										} else if (featuredTile?.action?.type === 'prompt' && featuredTile.action.prompt) {
 											onSelect(featuredTile.action.prompt, undefined, undefined, false);
 										} else if (featuredTile?.action?.type === 'route' && featuredTile.action.route) {
 											onNavigate(featuredTile.action.route);
