@@ -35,8 +35,8 @@
         }
     ],
     "meta": {
-        "version": "1.0.2",
-        "changelog": "• Removed Alceon AI Survey featured tile."
+        "version": "1.0.3",
+        "changelog": "• Added Policy Search."
     },
     "featuredTile": {
         "id": "featured-jan-2026-v6",
@@ -128,7 +128,7 @@
             },
             "autoSubmit": true,
             "tags": [
-                "research"
+                "lookup"
             ],
             "enabled": true,
             "visibility": "all",
