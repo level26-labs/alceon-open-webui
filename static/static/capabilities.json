@@ -35,7 +35,7 @@
         }
     ],
     "meta": {
-        "version": "1.0.3",
+        "version": "1.0.4",
         "changelog": "• Added Policy Search tile to lookup category."
     },
     "featuredTile": {
@@ -61,7 +61,7 @@
         "color": "from-[#1a365d] to-[#2b6cb0]",
         "action": {
             "type": "capability",
-            "capabilityId": "policy-search",
+            "capabilityId": "policy_search",
             "label": "Try Policy Search"
         },
         "enabled": true
