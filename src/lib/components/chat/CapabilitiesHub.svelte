@@ -27,7 +27,7 @@
 		webSearch?: boolean;
 		imageGeneration?: boolean;
 		codeInterpreter?: boolean;
-		knowledge?: string[];
+		knowledge?: Array<{ id: string; name: string }>;
 	}
 
 	interface FileUploadConfig {
@@ -599,11 +599,6 @@
 				}
 			} else {
 				let processedPrompt = await replaceSystemVariables(prompt);
-				// Prepend knowledge collection references if specified
-				if (capability.features?.knowledge && capability.features.knowledge.length > 0) {
-					const knowledgeTags = capability.features.knowledge.map(k => `#${k}`).join(' ');
-					processedPrompt = `${knowledgeTags}\n\n${processedPrompt}`;
-				}
 				// Pass modelId to onSelect
 				onSelect(processedPrompt, capability.action.modelId, capability.features, capability.autoSubmit ?? false);
 			}
@@ -628,11 +623,6 @@
 		let prompt = currentCapability.action.prompt ?? '';
 		prompt = await replaceSystemVariables(prompt);
 		prompt = replaceInputVariables(prompt, inputVariables);
-		// Prepend knowledge collection references if specified
-		if (currentFeatures?.knowledge && currentFeatures.knowledge.length > 0) {
-			const knowledgeTags = currentFeatures.knowledge.map(k => `#${k}`).join(' ');
-			prompt = `${knowledgeTags}\n\n${prompt}`;
-		}
 		// Pass currentModelId to onSelect
 		onSelect(prompt, currentModelId, currentFeatures || undefined, currentAutoSubmit, uploadedFiles.length > 0 ? uploadedFiles : undefined);
 		closeModal();
@@ -673,11 +663,6 @@
 			workflowUploadedFiles = [];  // Reset files when selecting new prompt
 		} else {
 			let processedPrompt = await replaceSystemVariables(promptItem.prompt);
-			// Prepend knowledge collection references if specified
-			if (promptItem.features?.knowledge && promptItem.features.knowledge.length > 0) {
-				const knowledgeTags = promptItem.features.knowledge.map(k => `#${k}`).join(' ');
-				processedPrompt = `${knowledgeTags}\n\n${processedPrompt}`;
-			}
 			// Pass modelId for workflow prompts
 			onSelect(processedPrompt, promptItem.modelId, promptItem.features, promptItem.autoSubmit ?? true);
 			closeWorkflowModal();
@@ -697,11 +682,6 @@
 		let prompt = selectedStagePrompt.prompt.prompt;
 		prompt = await replaceSystemVariables(prompt);
 		prompt = replaceInputVariables(prompt, inputVariables);
-		// Prepend knowledge collection references if specified
-		if (currentFeatures?.knowledge && currentFeatures.knowledge.length > 0) {
-			const knowledgeTags = currentFeatures.knowledge.map(k => `#${k}`).join(' ');
-			prompt = `${knowledgeTags}\n\n${prompt}`;
-		}
 		// Pass currentModelId and files for workflow form submissions
 		onSelect(prompt, currentModelId, currentFeatures || undefined, currentAutoSubmit, workflowUploadedFiles.length > 0 ? workflowUploadedFiles : undefined);
 		closeWorkflowModal();
@@ -961,7 +941,10 @@
 								<button
 									class="mt-4 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors"
 									on:click|stopPropagation={() => {
-										if (featuredTile?.action?.type === 'prompt' && featuredTile.action.prompt) {
+										if (featuredTile?.action?.type === 'capability' && featuredTile.action.capabilityId) {
+											const cap = enabledCapabilities.find(c => c.id === featuredTile.action.capabilityId);
+											if (cap) handleCapabilityClick(cap);
+										} else if (featuredTile?.action?.type === 'prompt' && featuredTile.action.prompt) {
 											onSelect(featuredTile.action.prompt, undefined, undefined, false);
 										} else if (featuredTile?.action?.type === 'route' && featuredTile.action.route) {
 											onNavigate(featuredTile.action.route);

@@ -36,7 +36,7 @@
     ],
     "meta": {
         "version": "1.0.3",
-        "changelog": "• Added Policy Search."
+        "changelog": "• Added Policy Search tile to lookup category."
     },
     "featuredTile": {
         "id": "featured-jan-2026-v6",
@@ -51,6 +51,20 @@
             "label": "Take the Survey"
         },
         "enabled": false
+    },
+    "featuredTile": {
+        "id": "featured-feb-2026-policy-search",
+        "title": "Policy Search",
+        "subtitle": "New Capability",
+        "description": "Instantly search across all 27 Alceon policies. Ask questions in plain English and get answers with source references.",
+        "icon": "🔍",
+        "color": "from-[#1a365d] to-[#2b6cb0]",
+        "action": {
+            "type": "capability",
+            "capabilityId": "policy-search",
+            "label": "Try Policy Search"
+        },
+        "enabled": true
     },
     "capabilities": [
         {
@@ -123,7 +137,7 @@
             },
             "features": {
                 "knowledge": [
-                    "Alceon Policy Library"
+                    { "id": "1417caab-de74-4ca6-8bed-becec6e73d93", "name": "Alceon Policy Library" }
                 ]
             },
             "autoSubmit": true,
@@ -133,7 +147,6 @@
             "enabled": true,
             "visibility": "all",
             "difficulty": "basic",
-            "helpText": "Ask any question about Alceon's policies and procedures. The AI will search the policy library and cite relevant documents.",
             "examples": [
                 "How much annual leave am I entitled to?",
                 "What is the whistleblower reporting process?",

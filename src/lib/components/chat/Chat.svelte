@@ -261,14 +261,12 @@
 		
 		// Switch model if specified
 		if (modelId) {
-			// Check if the model exists
 			const modelExists = $models.find((m) => m.id === modelId);
 			if (modelExists) {
 				selectedModels = [modelId];
 				await tick();
 			} else {
 				toast.error($i18n.t('Model {{modelId}} not found', { modelId }));
-				// Continue without switching model
 			}
 		}
 		
@@ -285,6 +283,23 @@
 			}
 		}
 		
+		// Handle knowledge collections from CapabilitiesHub
+		if (features?.knowledge && features.knowledge.length > 0) {
+			for (const k of features.knowledge) {
+				const alreadyAttached = files.some(f => f.type === 'collection' && f.id === k.id);
+				if (!alreadyAttached) {
+					files = [...files, {
+						type: 'collection',
+						name: k.name,
+						collection_name: k.name,
+						id: k.id,
+						status: 'processed',
+						error: ''
+					}];
+				}
+			}
+		}
+		
 		// Handle files from CapabilitiesHub if provided
 		if (inputFiles && inputFiles.length > 0) {
 			await handleCapabilityFiles(inputFiles);
@@ -295,18 +310,14 @@
 			chatInput?.focus();
 		} else if (type === 'prompt') {
 			if (autoSubmit && data) {
-				// Wait for any file uploads to complete before submitting
 				const waitForUploads = async () => {
 					while (files.some(f => f.status === 'uploading')) {
 						await new Promise(r => setTimeout(r, 100));
 					}
 				};
 				await waitForUploads();
-				
-				// Auto-submit: send the prompt directly
 				submitPrompt(data);
 			} else {
-				// Not auto-submit: load prompt into input for user to edit
 				messageInput?.setText(data);
 				await tick();
 				const chatInput = document.getElementById('chat-input');
