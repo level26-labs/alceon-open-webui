@@ -110,6 +110,38 @@
             "visibility": "all"
         },
         {
+            "id": "policy_search",
+            "title": "Policy Search",
+            "subtitle": "Alceon Policy Library",
+            "description": "Search Alceon's policy library to find answers about company policies including leave, compliance, risk management, workplace conduct, and more.",
+            "icon": "📜",
+            "color": "from-[#1a365d] to-[#c4a35a]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "prompt": "You are Alceon's internal policy assistant. Your role is to answer questions about Alceon Group's policies and procedures using the attached knowledge base.\n\n## Question\n{{question|textarea:required:placeholder=\"e.g., How much annual leave am I entitled to? What is the whistleblower process? What are the travel expense limits?\"}}\n\n## Policy Topic\n{{topic|select:options=[\"All Policies\",\"Leave & Entitlements\",\"Workplace & Conduct\",\"Compliance & AML/CTF\",\"Risk Management\",\"Privacy & Disclosure\",\"Outsourcing\",\"Training & Study\",\"Travel & Expenses\",\"Share Trading\",\"ESG & Modern Slavery\",\"AI Policy\",\"Whistleblower\",\"Conflicts of Interest\",\"Parental Leave\",\"Novated Lease\"]:default=\"All Policies\"}}\n\n## Instructions\n- Search the Alceon Policy Library knowledge base to find the relevant policy or procedure\n- Provide a clear, direct answer to the question\n- Always cite the specific policy document name and relevant section\n- If the topic filter is set to something other than \"All Policies\", focus your search on that area\n- If the answer spans multiple policies, reference all relevant ones\n- If the policy library does not contain information to answer the question, say so clearly\n- Use plain language — avoid unnecessary legal jargon\n- If there are important caveats, exceptions, or conditions, mention them\n\n## Output Format\n\n### Answer\n[Clear, direct answer to the question]\n\n### Source\n**Policy:** [Document name and date]\n**Section:** [Relevant section or clause]\n\n### Additional Context\n[Any important caveats, related policies, or next steps the user should be aware of]"
+            },
+            "features": {
+                "knowledge": [
+                    "Alceon Policy Library"
+                ]
+            },
+            "autoSubmit": true,
+            "tags": [
+                "research"
+            ],
+            "enabled": true,
+            "visibility": "all",
+            "difficulty": "basic",
+            "helpText": "Ask any question about Alceon's policies and procedures. The AI will search the policy library and cite relevant documents.",
+            "examples": [
+                "How much annual leave am I entitled to?",
+                "What is the whistleblower reporting process?",
+                "What are the rules around share trading?",
+                "What's covered under the travel expenses policy?"
+            ]
+        },
+        {
             "id": "image_gen",
             "title": "Generate Image",
             "subtitle": "AI image creation",
