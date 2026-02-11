@@ -38,34 +38,50 @@
         "version": "1.0.4",
         "changelog": "• Added Policy Search tile to lookup category."
     },
-    "featuredTile": {
-        "id": "featured-jan-2026-v6",
-        "title": "2025 AI Survey",
-        "subtitle": "Your Input Needed",
-        "description": "Your responses directly shape what we build, fix, and focus on in 2026.",
-        "icon": "📝",
-        "color": "from-[#1a365d] to-[#2b6cb0]",
-        "action": {
-            "type": "url",
-            "url": "https://survey.alceon.cloud",
-            "label": "Take the Survey"
+    "featuredTile": [
+        {
+            "id": "featured-jan-2026-v6",
+            "title": "2025 AI Survey",
+            "subtitle": "Your Input Needed",
+            "description": "Your responses directly shape what we build, fix, and focus on in 2026.",
+            "icon": "📝",
+            "color": "from-[#1a365d] to-[#2b6cb0]",
+            "action": {
+                "type": "url",
+                "url": "https://survey.alceon.cloud",
+                "label": "Take the Survey"
+            },
+            "enabled": false
         },
-        "enabled": false
-    },
-    "featuredTile": {
-        "id": "featured-feb-2026-policy-search",
-        "title": "Policy Search",
-        "subtitle": "New Capability",
-        "description": "Instantly search across all Alceon policies. Ask questions in plain English and get answers with source references.",
-        "icon": "🔍",
+        {
+            "id": "featured-feb-2026-policy-search_1",
+            "title": "Policy Search",
+            "subtitle": "New Capability",
+            "description": "Instantly search across all Alceon policies. Ask questions in plain English and get answers with source references.",
+            "icon": "🔍",
+            "color": "from-[#1a365d] to-[#2b6cb0]",
+            "action": {
+                "type": "capability",
+                "capabilityId": "policy_search",
+                "label": "Try Policy Search"
+            },
+            "enabled": true
+        },
+        {
+        "id": "featured-feb-2026-deep-research",
+        "title": "Deep Research",
+        "subtitle": "Upgraded",
+        "description": "Now more stable and detailed — powered by GPT-5, with connections to Alceon data, Google Maps, and live market feeds.",
+        "icon": "🔬",
         "color": "from-[#1a365d] to-[#2b6cb0]",
         "action": {
             "type": "capability",
-            "capabilityId": "policy_search",
-            "label": "Try Policy Search"
+            "capabilityId": "research",
+            "label": "Try Deep Research"
         },
         "enabled": true
-    },
+        }
+    ],
     "capabilities": [
         {
             "id": "web_search",
@@ -133,7 +149,7 @@
             "capabilityType": "Form",
             "action": {
                 "type": "prompt",
-                "prompt": "You are Alceon's internal policy assistant. Your role is to answer questions about Alceon Group's policies and procedures using the attached knowledge base.\n\n## Question\n{{question|textarea:required:placeholder=\"e.g., How much annual leave am I entitled to? What is the whistleblower process? What are the travel expense limits?\"}}\n\n## Policy Topic\n{{topic|select:options=[\"All Policies\",\"Leave & Entitlements\",\"Workplace & Conduct\",\"Compliance & AML/CTF\",\"Risk Management\",\"Privacy & Disclosure\",\"Outsourcing\",\"Training & Study\",\"Travel & Expenses\",\"Share Trading\",\"ESG & Modern Slavery\",\"AI Policy\",\"Whistleblower\",\"Conflicts of Interest\",\"Parental Leave\",\"Novated Lease\"]:default=\"All Policies\"}}\n\n## Instructions\n- Search the Alceon Policy Library knowledge base to find the relevant policy or procedure\n- Provide a clear, direct answer to the question\n- Always cite the specific policy document name and relevant section\n- If the topic filter is set to something other than \"All Policies\", focus your search on that area\n- If the answer spans multiple policies, reference all relevant ones\n- If the policy library does not contain information to answer the question, say so clearly\n- Use plain language — avoid unnecessary legal jargon\n- If there are important caveats, exceptions, or conditions, mention them\n\n## Output Format\n\n### Answer\n[Clear, direct answer to the question]\n\n### Source\n**Policy:** [Document name and date]\n**Section:** [Relevant section or clause]\n\n### Additional Context\n[Any important caveats, related policies, or next steps the user should be aware of]"
+                "prompt": "You are Alceon's internal policy assistant. Answer questions about Alceon Group's policies using the attached knowledge base.\n\n## Question\n{{question|textarea:required:placeholder=\"What's covered under the travel expenses policy?\"}}\n\n## Topic\n{{topic|select:options=[\"All Policies\",\"Leave & Entitlements\",\"Workplace & Conduct\",\"Compliance & AML/CTF\",\"Risk Management\",\"Privacy & Disclosure\",\"Outsourcing\",\"Training & Study\",\"Travel & Expenses\",\"Share Trading\",\"ESG & Modern Slavery\",\"AI Policy\",\"Whistleblower\",\"Conflicts of Interest\",\"Parental Leave\",\"Novated Lease\"]:default=\"All Policies\"}}\n\n## Instructions\n- Search the Alceon Policy Library for the relevant policy\n- Give a clear, direct answer without inline citations\n- If the topic filter is not \"All Policies\", focus on that area\n- If the answer spans multiple policies, reference all relevant ones\n- If the policy library doesn't cover the question, say so clearly\n- Use plain language\n\n## Output Format\n\n### Answer\n[Direct answer to the question]\n\n### Source\nSourced from [Policy Document Name (date)]. Refer to [sections/pages].\n\n### Good to Know\n- [Bullet points only — brief caveats, exceptions, related policies, or next steps]\n- [No long sentences or paragraphs]\n\n### Contact\nChoose the appropriate contact based on the policy topic:\n- Compliance-related topics (share trading, AML/CTF, conflicts of interest, whistleblower, risk management, disclosure): \"Further questions? Please contact Compliance (compliance@alceon.com.au).\"\n- People & Culture topics (leave, parental leave, workplace conduct, training, travel expenses, novated lease): \"Further questions? Please contact People and Culture (peopleandculture@alceon.com.au).\"\n- If the question spans both areas, list both contacts."
             },
             "features": {
                 "knowledge": [
