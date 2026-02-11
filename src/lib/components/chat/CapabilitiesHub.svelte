@@ -322,6 +322,15 @@
 		loadUserPreferences();
 		await loadConfig();
 		setInitialCategory();
+
+		// Auto-open capability from URL param
+		const params = new URLSearchParams(window.location.search);
+		const capParam = params.get('capability');
+		if (capParam) {
+			await tick();
+			const cap = enabledCapabilities.find(c => c.id === capParam);
+			if (cap) handleCapabilityClick(cap);
+		}
 	});
 
 	onDestroy(() => {
