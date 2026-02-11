@@ -38,48 +38,50 @@
         "version": "1.0.4",
         "changelog": "• Added Policy Search tile to lookup category."
     },
-    "featuredTile": {
-        "id": "featured-jan-2026-v6",
-        "title": "2025 AI Survey",
-        "subtitle": "Your Input Needed",
-        "description": "Your responses directly shape what we build, fix, and focus on in 2026.",
-        "icon": "📝",
-        "color": "from-[#1a365d] to-[#2b6cb0]",
-        "action": {
-            "type": "url",
-            "url": "https://survey.alceon.cloud",
-            "label": "Take the Survey"
+    "featuredTile": [
+        {
+            "id": "featured-jan-2026-v6",
+            "title": "2025 AI Survey",
+            "subtitle": "Your Input Needed",
+            "description": "Your responses directly shape what we build, fix, and focus on in 2026.",
+            "icon": "📝",
+            "color": "from-[#1a365d] to-[#2b6cb0]",
+            "action": {
+                "type": "url",
+                "url": "https://survey.alceon.cloud",
+                "label": "Take the Survey"
+            },
+            "enabled": false
         },
-        "enabled": false
-    },
-    "featuredTile": {
-        "id": "featured-feb-2026-policy-search_1",
-        "title": "Policy Search",
-        "subtitle": "New Capability",
-        "description": "Instantly search across all Alceon policies. Ask questions in plain English and get answers with source references.",
-        "icon": "🔍",
+        {
+            "id": "featured-feb-2026-policy-search_1",
+            "title": "Policy Search",
+            "subtitle": "New Capability",
+            "description": "Instantly search across all Alceon policies. Ask questions in plain English and get answers with source references.",
+            "icon": "🔍",
+            "color": "from-[#1a365d] to-[#2b6cb0]",
+            "action": {
+                "type": "capability",
+                "capabilityId": "policy_search",
+                "label": "Try Policy Search"
+            },
+            "enabled": true
+        },
+        {
+        "id": "featured-feb-2026-deep-research",
+        "title": "Deep Research",
+        "subtitle": "Upgraded",
+        "description": "Now more stable and detailed — powered by GPT-5, with connections to Alceon data, Google Maps, and live market feeds.",
+        "icon": "🔬",
         "color": "from-[#1a365d] to-[#2b6cb0]",
         "action": {
             "type": "capability",
-            "capabilityId": "policy_search",
-            "label": "Try Policy Search"
+            "capabilityId": "research",
+            "label": "Try Deep Research"
         },
         "enabled": true
-    },
-    "featuredTile": {
-    "id": "featured-feb-2026-deep-research",
-    "title": "Deep Research",
-    "subtitle": "Upgraded",
-    "description": "Now more stable and detailed — powered by GPT-5, with connections to Alceon data, Google Maps, and live market feeds.",
-    "icon": "🔬",
-    "color": "from-[#1a365d] to-[#2b6cb0]",
-    "action": {
-        "type": "capability",
-        "capabilityId": "research",
-        "label": "Try Deep Research"
-    },
-    "enabled": true
-    },
+        }
+    ],
     "capabilities": [
         {
             "id": "web_search",
