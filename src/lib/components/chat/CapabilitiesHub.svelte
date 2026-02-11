@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getContext, createEventDispatcher, onMount, tick } from 'svelte';
+	import { getContext, createEventDispatcher, onMount, onDestroy, tick } from 'svelte';
 	import { fade, fly, slide } from 'svelte/transition';
 	import { models as _models, user } from '$lib/stores';
 
@@ -27,7 +27,7 @@
 		webSearch?: boolean;
 		imageGeneration?: boolean;
 		codeInterpreter?: boolean;
-		knowledge?: Array<{ id: string; name: string }>;
+		knowledge?: string[];
 	}
 
 	interface FileUploadConfig {
@@ -81,12 +81,11 @@
 		icon: string;
 		color: string;
 		action?: {
-			type: 'prompt' | 'route' | 'url' | 'capability';
+			type: 'prompt' | 'route' | 'url';
 			prompt?: string;
 			route?: string;
 			url?: string;
 			label?: string;
-			capabilityId?: string;
 		};
 		enabled: boolean;
 	}
@@ -100,12 +99,17 @@
 	// Configuration loaded from JSON or passed as prop
 	let capabilities: Capability[] = [];
 	let categories: Category[] = [];
-	let featuredTile: FeaturedTile | null = null;
+	let featuredTiles: FeaturedTile[] = [];
 	let dashboardMeta: DashboardMeta = {};
 	let configLoaded = false;
 	let configError: string | null = null;
 
-	export let config: { categories: Category[]; capabilities: Capability[]; featuredTile?: FeaturedTile; meta?: DashboardMeta } | null = null;
+	// Featured tile rotation state
+	let activeFeaturedIndex = 0;
+	let featuredInterval: ReturnType<typeof setInterval> | null = null;
+	let featuredTransitioning = false;
+
+	export let config: { categories: Category[]; capabilities: Capability[]; featuredTile?: FeaturedTile | FeaturedTile[]; meta?: DashboardMeta } | null = null;
 	export let configUrl: string = '';
 	export let onSelect: (prompt: string, modelId?: string, features?: PromptFeatures, autoSubmit?: boolean, files?: File[]) => void = () => {};
 	export let onNavigate: (route: string) => void = () => {};
@@ -157,21 +161,64 @@
 		}
 	}
 	
-	function dismissFeaturedTile() {
-		if (featuredTile) {
-			dismissedFeaturedTiles = [...dismissedFeaturedTiles, featuredTile.id];
-			try {
-				localStorage.setItem(STORAGE_KEY_DISMISSED_FEATURED, JSON.stringify(dismissedFeaturedTiles));
-			} catch (e) {
-				console.warn('Failed to save dismissed featured tiles:', e);
-			}
-		}
-	}
-	
-	$: showFeaturedTile = featuredTile?.enabled && 
-		!dismissedFeaturedTiles.includes(featuredTile?.id || '') && 
+	// Featured tiles: filter to visible (enabled + not dismissed)
+	$: visibleFeaturedTiles = featuredTiles.filter(
+		t => t.enabled && !dismissedFeaturedTiles.includes(t.id)
+	);
+
+	$: activeFeaturedTile = visibleFeaturedTiles[activeFeaturedIndex] || null;
+
+	$: showFeaturedTile = visibleFeaturedTiles.length > 0 && 
 		selectedCategory === 'all' &&
 		showFeaturedOnHeight;
+
+	function startFeaturedRotation() {
+		stopFeaturedRotation();
+		if (visibleFeaturedTiles.length > 1) {
+			featuredInterval = setInterval(() => {
+				featuredTransitioning = true;
+				setTimeout(() => {
+					activeFeaturedIndex = (activeFeaturedIndex + 1) % visibleFeaturedTiles.length;
+					featuredTransitioning = false;
+				}, 300);
+			}, 8000);
+		}
+	}
+
+	function stopFeaturedRotation() {
+		if (featuredInterval) {
+			clearInterval(featuredInterval);
+			featuredInterval = null;
+		}
+	}
+
+	function goToFeaturedTile(index: number) {
+		if (index === activeFeaturedIndex) return;
+		featuredTransitioning = true;
+		stopFeaturedRotation();
+		setTimeout(() => {
+			activeFeaturedIndex = index;
+			featuredTransitioning = false;
+			startFeaturedRotation();
+		}, 300);
+	}
+
+	function dismissCurrentFeaturedTile() {
+		if (!activeFeaturedTile) return;
+		dismissedFeaturedTiles = [...dismissedFeaturedTiles, activeFeaturedTile.id];
+		try {
+			localStorage.setItem(STORAGE_KEY_DISMISSED_FEATURED, JSON.stringify(dismissedFeaturedTiles));
+		} catch (e) {
+			console.warn('Failed to save dismissed featured tiles:', e);
+		}
+		if (visibleFeaturedTiles.length > 0) {
+			activeFeaturedIndex = activeFeaturedIndex % visibleFeaturedTiles.length;
+		} else {
+			activeFeaturedIndex = 0;
+		}
+		stopFeaturedRotation();
+		startFeaturedRotation();
+	}
 	
 	function toggleStarred(capabilityId: string, event: Event) {
 		event.stopPropagation();
@@ -200,16 +247,22 @@
 		activeHelpTooltip = null;
 	}
 
+	function parseFeaturedTiles(raw: FeaturedTile | FeaturedTile[] | undefined | null): FeaturedTile[] {
+		if (!raw) return [];
+		return Array.isArray(raw) ? raw : [raw];
+	}
+
 	async function loadConfig() {
 		try {
 			if (config) {
 				capabilities = config.capabilities || [];
 				categories = config.categories || [];
-				featuredTile = config.featuredTile || null;
+				featuredTiles = parseFeaturedTiles(config.featuredTile);
 				dashboardMeta = config.meta || {};
 				configLoaded = true;
 				configError = null;
 				setTimeout(updateScrollArrows, 100);
+				startFeaturedRotation();
 				return;
 			}
 
@@ -221,17 +274,18 @@
 				const loadedConfig = await response.json();
 				capabilities = loadedConfig.capabilities || [];
 				categories = loadedConfig.categories || [];
-				featuredTile = loadedConfig.featuredTile || null;
+				featuredTiles = parseFeaturedTiles(loadedConfig.featuredTile);
 				dashboardMeta = loadedConfig.meta || {};
 				configLoaded = true;
 				configError = null;
 				setTimeout(updateScrollArrows, 100);
+				startFeaturedRotation();
 				return;
 			}
 
 			capabilities = [];
 			categories = [{ id: 'all', label: 'Trending' }];
-			featuredTile = null;
+			featuredTiles = [];
 			dashboardMeta = {};
 			configLoaded = true;
 			configError = 'No configuration provided. Pass config prop or configUrl.';
@@ -240,7 +294,7 @@
 			configError = error instanceof Error ? error.message : 'Unknown error';
 			capabilities = [];
 			categories = [{ id: 'all', label: 'Trending' }];
-			featuredTile = null;
+			featuredTiles = [];
 			dashboardMeta = {};
 			configLoaded = true;
 		}
@@ -249,7 +303,7 @@
 	$: if (config) {
 		capabilities = config.capabilities || [];
 		categories = config.categories || [];
-		featuredTile = config.featuredTile || null;
+		featuredTiles = parseFeaturedTiles(config.featuredTile);
 		dashboardMeta = config.meta || {};
 		configLoaded = true;
 		configError = null;
@@ -268,6 +322,11 @@
 		loadUserPreferences();
 		await loadConfig();
 		setInitialCategory();
+	});
+
+	onDestroy(() => {
+		stopFeaturedRotation();
+		stopExampleRotation();
 	});
 
 	function canUserSeeCapability(capability: Capability): boolean {
@@ -600,6 +659,11 @@
 				}
 			} else {
 				let processedPrompt = await replaceSystemVariables(prompt);
+				// Prepend knowledge collection references if specified
+				if (capability.features?.knowledge && capability.features.knowledge.length > 0) {
+					const knowledgeTags = capability.features.knowledge.map(k => `#${k}`).join(' ');
+					processedPrompt = `${knowledgeTags}\n\n${processedPrompt}`;
+				}
 				// Pass modelId to onSelect
 				onSelect(processedPrompt, capability.action.modelId, capability.features, capability.autoSubmit ?? false);
 			}
@@ -624,6 +688,11 @@
 		let prompt = currentCapability.action.prompt ?? '';
 		prompt = await replaceSystemVariables(prompt);
 		prompt = replaceInputVariables(prompt, inputVariables);
+		// Prepend knowledge collection references if specified
+		if (currentFeatures?.knowledge && currentFeatures.knowledge.length > 0) {
+			const knowledgeTags = currentFeatures.knowledge.map(k => `#${k}`).join(' ');
+			prompt = `${knowledgeTags}\n\n${prompt}`;
+		}
 		// Pass currentModelId to onSelect
 		onSelect(prompt, currentModelId, currentFeatures || undefined, currentAutoSubmit, uploadedFiles.length > 0 ? uploadedFiles : undefined);
 		closeModal();
@@ -664,6 +733,11 @@
 			workflowUploadedFiles = [];  // Reset files when selecting new prompt
 		} else {
 			let processedPrompt = await replaceSystemVariables(promptItem.prompt);
+			// Prepend knowledge collection references if specified
+			if (promptItem.features?.knowledge && promptItem.features.knowledge.length > 0) {
+				const knowledgeTags = promptItem.features.knowledge.map(k => `#${k}`).join(' ');
+				processedPrompt = `${knowledgeTags}\n\n${processedPrompt}`;
+			}
 			// Pass modelId for workflow prompts
 			onSelect(processedPrompt, promptItem.modelId, promptItem.features, promptItem.autoSubmit ?? true);
 			closeWorkflowModal();
@@ -683,6 +757,11 @@
 		let prompt = selectedStagePrompt.prompt.prompt;
 		prompt = await replaceSystemVariables(prompt);
 		prompt = replaceInputVariables(prompt, inputVariables);
+		// Prepend knowledge collection references if specified
+		if (currentFeatures?.knowledge && currentFeatures.knowledge.length > 0) {
+			const knowledgeTags = currentFeatures.knowledge.map(k => `#${k}`).join(' ');
+			prompt = `${knowledgeTags}\n\n${prompt}`;
+		}
 		// Pass currentModelId and files for workflow form submissions
 		onSelect(prompt, currentModelId, currentFeatures || undefined, currentAutoSubmit, workflowUploadedFiles.length > 0 ? workflowUploadedFiles : undefined);
 		closeWorkflowModal();
@@ -767,6 +846,20 @@
 			examplePlaceholderInterval = null;
 		}
 		examplePlaceholderIndex = 0;
+	}
+
+	function handleFeaturedTileAction(tile: FeaturedTile) {
+		if (!tile.action) return;
+		if (tile.action.type === 'capability' && tile.action.capabilityId) {
+			const cap = enabledCapabilities.find(c => c.id === tile.action!.capabilityId);
+			if (cap) handleCapabilityClick(cap);
+		} else if (tile.action.type === 'prompt' && tile.action.prompt) {
+			onSelect(tile.action.prompt, undefined, undefined, false);
+		} else if (tile.action.type === 'route' && tile.action.route) {
+			onNavigate(tile.action.route);
+		} else if (tile.action.type === 'url' && tile.action.url) {
+			window.open(tile.action.url, '_blank');
+		}
 	}
 </script>
 
@@ -909,52 +1002,55 @@
 			class="overflow-x-auto overflow-y-visible px-1 scroll-smooth scrollbar-hide h-full"
 		>
 			<div class="flex gap-3 sm:gap-4 h-full pt-1">
-				<!-- Featured Tile - spans all 3 rows when on "All" category -->
-				{#if showFeaturedTile && featuredTile}
+				<!-- Featured Tile with rotation -->
+				{#if showFeaturedTile && activeFeaturedTile}
 					<div 
 						class="featured-tile flex-shrink-0 w-[280px] rounded-xl p-4 sm:p-5 relative
-							   bg-gradient-to-br {featuredTile.color} text-white
-							   border border-white/20"
+							   bg-gradient-to-br {activeFeaturedTile.color} text-white
+							   border border-white/20 featured-tile-container"
 						style="height: calc(100% - 4px);"
 						in:fly={{ x: -20, duration: 300 }}
+						on:mouseenter={stopFeaturedRotation}
+						on:mouseleave={startFeaturedRotation}
 					>
 						<!-- Dismiss button -->
 						<button
-							class="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-							on:click|stopPropagation={dismissFeaturedTile}
+							class="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors z-10"
+							on:click|stopPropagation={dismissCurrentFeaturedTile}
 							title="Dismiss"
 						>
 							<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
 						</button>
 						
-						<!-- Content -->
-						<div class="flex flex-col h-full">
+						<!-- Content with fade transition -->
+						<div class="flex flex-col h-full featured-tile-content" class:featured-tile-fade-out={featuredTransitioning}>
 							<div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-white/20 mb-4">
-								<span class="text-2xl sm:text-3xl">{featuredTile.icon}</span>
+								<span class="text-2xl sm:text-3xl">{activeFeaturedTile.icon}</span>
 							</div>
 							
-							<h3 class="font-bold text-lg sm:text-xl mb-1">{featuredTile.title}</h3>
-							<p class="text-sm text-white/80 mb-3">{featuredTile.subtitle}</p>
+							<h3 class="font-bold text-lg sm:text-xl mb-1">{activeFeaturedTile.title}</h3>
+							<p class="text-sm text-white/80 mb-3">{activeFeaturedTile.subtitle}</p>
 							
-							<p class="text-sm text-white/70 flex-1">{featuredTile.description}</p>
+							<p class="text-sm text-white/70 flex-1">{activeFeaturedTile.description}</p>
 							
-							{#if featuredTile.action}
+							<!-- Dots indicator -->
+							{#if visibleFeaturedTiles.length > 1}
+								<div class="flex items-center justify-center gap-1.5 mt-3">
+									{#each visibleFeaturedTiles as _, i}
+										<button
+											class="rounded-full transition-all duration-300 {i === activeFeaturedIndex ? 'bg-white w-4 h-1.5' : 'bg-white/40 hover:bg-white/60 w-1.5 h-1.5'}"
+											on:click|stopPropagation={() => goToFeaturedTile(i)}
+										/>
+									{/each}
+								</div>
+							{/if}
+
+							{#if activeFeaturedTile.action}
 								<button
-									class="mt-4 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors"
-									on:click|stopPropagation={() => {
-										if (featuredTile?.action?.type === 'capability' && featuredTile.action.capabilityId) {
-											const cap = enabledCapabilities.find(c => c.id === featuredTile.action.capabilityId);
-											if (cap) handleCapabilityClick(cap);
-										} else if (featuredTile?.action?.type === 'prompt' && featuredTile.action.prompt) {
-											onSelect(featuredTile.action.prompt, undefined, undefined, false);
-										} else if (featuredTile?.action?.type === 'route' && featuredTile.action.route) {
-											onNavigate(featuredTile.action.route);
-										} else if (featuredTile?.action?.type === 'url' && featuredTile.action.url) {
-											window.open(featuredTile.action.url, '_blank');
-										}
-									}}
+									class="mt-3 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors"
+									on:click|stopPropagation={() => handleFeaturedTileAction(activeFeaturedTile)}
 								>
-									{featuredTile.action.label || 'Learn More'} →
+									{activeFeaturedTile.action.label || 'Learn More'} →
 								</button>
 							{/if}
 						</div>
@@ -1636,5 +1732,14 @@
 	.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 	input::placeholder, textarea::placeholder {
 		transition: opacity 0.3s ease-in-out;
+	}
+	.featured-tile-content {
+		transition: opacity 0.3s ease-in-out;
+	}
+	.featured-tile-fade-out {
+		opacity: 0;
+	}
+	.featured-tile-container {
+		transition: background 0.5s ease-in-out;
 	}
 </style>
