@@ -35,8 +35,8 @@
         }
     ],
     "meta": {
-        "version": "1.0.5",
-        "changelog": "• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade."
+        "version": "1.0.6",
+        "changelog": "• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile."
     },
     "featuredTile": [
         {
@@ -56,8 +56,8 @@
         {
             "id": "featured-feb-2026-ai-help-me",
             "title": "How Can AI Help Me?",
-            "subtitle": "Personalised for You",
-            "description": "Tell us your role and get tailored ideas and ready-to-use prompts to help you work smarter, not harder.",
+            "subtitle": "Discover AI opportunities for your role",
+            "description": "Tell Kingfisher about your role and get tailored ideas and ready-to-use prompts to help you work smarter, not harder.",
             "icon": "🚀",
             "color": "from-[#1a365d] to-[#2b6cb0]",
             "action": {
@@ -704,7 +704,6 @@
             "enabled": true,
             "visibility": "all",
             "difficulty": "basic",
-            "helpText": "Get personalised AI ideas for your specific role at Alceon.",
             "examples": [
                 "I'm a PE associate that reviews IMs and builds models",
                 "I work in finance and spend hours on end-of-month reporting",
