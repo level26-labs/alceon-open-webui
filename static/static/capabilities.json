@@ -54,6 +54,20 @@
             "enabled": false
         },
         {
+            "id": "featured-feb-2026-ai-help-me",
+            "title": "How Can AI Help Me?",
+            "subtitle": "Personalised for You",
+            "description": "Tell us your role and get tailored ideas and ready-to-use prompts to help you work smarter, not harder.",
+            "icon": "🚀",
+            "color": "from-[#1a365d] to-[#2b6cb0]",
+            "action": {
+                "type": "capability",
+                "capabilityId": "ai_help_me",
+                "label": "Get Started"
+            },
+            "enabled": true
+        },
+        {
             "id": "featured-feb-2026-policy-search_1",
             "title": "Policy Search",
             "subtitle": "New Capability",
@@ -165,7 +179,6 @@
             "difficulty": "basic",
             "examples": [
                 "How much annual leave am I entitled to?",
-                "What is the whistleblower reporting process?",
                 "What are the rules around share trading?",
                 "What's covered under the travel expenses policy?"
             ]
@@ -671,6 +684,32 @@
             ],
             "enabled": true,
             "visibility": "all"
+        },
+        {
+            "id": "ai_help_me",
+            "title": "How Can AI Help Me?",
+            "subtitle": "Discover AI opportunities for your role",
+            "description": "Get personalised ideas for how AI can save you time and improve your work. Select your team, describe what you do, and get practical suggestions with ready-to-use prompts.",
+            "icon": "🚀",
+            "color": "from-[#1a365d] to-[#c4a35a]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "prompt": "You are an AI adoption specialist helping Alceon Group employees discover practical ways AI can help them in their daily work.\n\n## About You\n- **Team:** {{team|select:required:options=[\"Private Equity\",\"Hybrid Solutions\",\"Real Estate\",\"Finance & Operations\",\"Marketing & Investor Relations\",\"Legal & Compliance\",\"People & Culture\",\"Technology\",\"Executive / Leadership\"]}}\n- **Your Role:** {{role|textarea:required:placeholder=\"Describe what you do day-to-day. e.g., I'm an analyst who builds financial models, reviews IMs, and prepares IC papers. I spend a lot of time on data entry and formatting slides.\"}}\n- **Biggest Time Drains:** {{time_drains|textarea:placeholder=\"What takes up too much of your time? e.g., Formatting documents, chasing information, writing emails, manual research...\"}}\n- **Experience with AI:** {{experience|select:options=[\"New to AI - show me the basics\",\"I've used it a bit - show me more\",\"Comfortable - show me advanced uses\"]:default=\"I've used it a bit - show me more\"}}\n\n## Instructions\n\nBased on the person's team, role, and pain points, generate 8-12 specific, practical ways they can use Kingfisher (GPT-5 on Open WebUI) to work faster and smarter.\n\n**Rules:**\n- Every suggestion must be achievable right now by typing a prompt into Kingfisher or using an existing Kingfisher capability\n- Do NOT recommend external tools, plugins, or software\n- Do NOT suggest things that require API access, code, or technical setup\n- Focus on tasks they likely do weekly or daily\n- Include a ready-to-use example prompt for each idea\n- Group by impact level\n- Be specific to their role — generic tips like \"summarise documents\" are not helpful without context\n- Match complexity to their experience level\n\n## Output Format\n\n### 🚀 AI Opportunities for Your Role\n\nBased on what you've told me, here are practical ways Kingfisher can help you right now.\n\n---\n\n### High Impact — Start Here\n*These will save you the most time immediately.*\n\n**1. [Specific task name]**\n[One sentence explaining what this replaces or speeds up]\n\n> **Try this prompt:**\n> *[Ready-to-paste prompt they can use immediately — keep it under 3 sentences]*\n\n⏱️ **Time saved:** ~[X] mins per [frequency]\n\n---\n\n**2. [Specific task name]**\n...\n\n---\n\n### Medium Impact — Build Into Your Routine\n*Useful for recurring tasks throughout the week.*\n\n**[Continue numbering]**\n...\n\n---\n\n### Worth Trying — Quick Wins\n*Small but satisfying time-savers.*\n\n**[Continue numbering]**\n...\n\n---\n\n### 💡 Tips for Your Team\n- [1-2 team-specific tips on getting better results from AI]\n- [Reminder about any existing Kingfisher capabilities that are particularly relevant to their team, e.g., \"Your team already has access to the IC Deal Summary capability — try it next time you receive an IM\"]\n\n---\n\n### What's Next?\nPick one idea from the **High Impact** section and try it today. Once it clicks, work your way down the list.\n\n*All suggestions work in Kingfisher right now — just paste the prompt and go.*"
+            },
+            "autoSubmit": true,
+            "tags": [
+                "research"
+            ],
+            "enabled": true,
+            "visibility": "all",
+            "difficulty": "basic",
+            "helpText": "Get personalised AI ideas for your specific role at Alceon.",
+            "examples": [
+                "I'm a PE associate that reviews IMs and builds models",
+                "I work in finance and spend hours on end-of-month reporting",
+                "I'm in marketing and need help with content generation"
+            ]
         },
         {
             "id": "diligent_shareholders",
