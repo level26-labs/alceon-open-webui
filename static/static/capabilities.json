@@ -35,8 +35,8 @@
         }
     ],
     "meta": {
-        "version": "1.0.5",
-        "changelog": "• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade."
+        "version": "1.0.7",
+        "changelog": "• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile."
     },
     "featuredTile": [
         {
@@ -56,8 +56,8 @@
         {
             "id": "featured-feb-2026-ai-help-me",
             "title": "How Can AI Help Me?",
-            "subtitle": "Personalised for You",
-            "description": "Tell us your role and get tailored ideas and ready-to-use prompts to help you work smarter, not harder.",
+            "subtitle": "Discover AI opportunities for your role",
+            "description": "Tell Kingfisher about your role and get tailored ideas and ready-to-use prompts to help you work smarter, not harder.",
             "icon": "🚀",
             "color": "from-[#1a365d] to-[#2b6cb0]",
             "action": {
@@ -78,6 +78,20 @@
                 "type": "capability",
                 "capabilityId": "policy_search",
                 "label": "Try Policy Search"
+            },
+            "enabled": true
+        },
+        {
+            "id": "featured-feb-2026-news-search",
+            "title": "News Search",
+            "subtitle": "New Capability",
+            "description": "Search for the latest news on portfolio companies, industries, competitors, and real estate markets — curated for Alceon.",
+            "icon": "📰",
+            "color": "from-[#1a365d] to-[#2b6cb0]",
+            "action": {
+                "type": "capability",
+                "capabilityId": "news_search",
+                "label": "Search News"
             },
             "enabled": true
         },
@@ -704,7 +718,6 @@
             "enabled": true,
             "visibility": "all",
             "difficulty": "basic",
-            "helpText": "Get personalised AI ideas for your specific role at Alceon.",
             "examples": [
                 "I'm a PE associate that reviews IMs and builds models",
                 "I work in finance and spend hours on end-of-month reporting",
@@ -822,6 +835,35 @@
             ],
             "enabled": true,
             "visibility": "all"
+        },
+        {
+            "id": "news_search",
+            "title": "News Search",
+            "subtitle": "Industry & portfolio news",
+            "description": "Search for the latest news on industries, companies, portfolio companies, competitors, or real estate markets. Get a curated briefing with key takeaways.",
+            "icon": "📰",
+            "color": "from-[#1a365d] to-[#63b3ed]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "prompt": "You are a senior research analyst at Alceon Group conducting a targeted news search.\n\n## Search Parameters\n- **What to search for:** {{query|textarea:required:placeholder=\"e.g., Acme Industries recent news, Australian aged care sector, Brisbane apartment developments, private credit market Australia\"}}\n- **Category:** {{category|select:required:options=[\"Portfolio company news\",\"Industry / sector news\",\"Competitor intelligence\",\"Real estate market / development news\",\"M&A and deal activity\",\"Regulatory and policy changes\",\"Macroeconomic and market conditions\",\"General company research\"]}}\n- **Time Period:** {{period|select:options=[\"Last 24 hours\",\"Last 7 days\",\"Last 30 days\",\"Last 3 months\"]:default=\"Last 7 days\"}}\n- **Geography:** {{geography|select:options=[\"Australia\",\"Australia & NZ\",\"Asia-Pacific\",\"Global\",\"Other\"]:default=\"Australia\"}}\n\n## Instructions\n\nSearch the web for the most relevant and recent news matching the query. Focus on credible sources — major publications, industry outlets, company announcements, and regulatory bodies.\n\n**Guidelines:**\n- Prioritise material news that would affect investment decisions or business strategy\n- Lead with the most important and recent items\n- Include source and date for every item\n- Distinguish between confirmed news and speculation/opinion\n- Flag anything that may require immediate attention or action\n- Use Australian English\n\n## Output Format\n\n### News Briefing: [Search Topic]\n**Period:** [Time range] | **As at:** [Today's date]\n\n---\n\n### 🔴 Urgent / Material\n*Items requiring immediate attention (if any)*\n\n**[Headline]**\n[2-3 sentence summary of what happened and why it matters]\n**Source:** [Publication] | **Date:** [Date]\n**Implication:** [What this means for Alceon / the portfolio / the deal]\n\n---\n\n### Key Stories\n\n**1. [Headline]**\n[2-3 sentence summary]\n**Source:** [Publication] | **Date:** [Date]\n**Relevance:** [Why this matters]\n\n**2. [Headline]**\n[2-3 sentence summary]\n**Source:** [Publication] | **Date:** [Date]\n**Relevance:** [Why this matters]\n\n**3. [Headline]**\n...\n\n---\n\n### Other Notable Mentions\n\n| Date | Headline | Source | Summary |\n|------|----------|--------|---------|\n| [Date] | [Title] | [Source] | [One-line summary] |\n\n---\n\n### Key Takeaways\n1. [Most important insight]\n2. [Second insight]\n3. [Third insight]\n\n### Suggested Follow-Up\n- [Any deeper research worth doing]\n- [People to notify or discuss with]\n\n---\n\n*Sources verified as at [today]. Confirm material items before acting.*"
+            },
+            "features": {
+                "webSearch": true
+            },
+            "autoSubmit": true,
+            "tags": [
+                "research"
+            ],
+            "enabled": true,
+            "visibility": "all",
+            "difficulty": "basic",
+            "examples": [
+                "Latest news on [portfolio company]",
+                "Australian private credit market",
+                "Brisbane apartment development pipeline",
+                "Recent PE deals in healthcare"
+            ]
         },
         {
             "id": "trading-approvals",
