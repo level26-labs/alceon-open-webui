@@ -35,7 +35,7 @@
         }
     ],
     "meta": {
-        "version": "1.0.6",
+        "version": "1.0.7",
         "changelog": "• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile."
     },
     "featuredTile": [
