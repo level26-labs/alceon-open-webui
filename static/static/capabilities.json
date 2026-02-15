@@ -174,7 +174,7 @@
                 "label": "Upload reference files (optional)",
                 "required": false
             },
-            "autoSubmit": false,
+            "autoSubmit": true,
             "tags": [
                 "create"
             ],
@@ -197,7 +197,7 @@
             "action": {
                 "type": "prompt",
                 "modelId": "claude.claude_docs",
-                "prompt": "Create a Word document (.docx) with the following requirements:\n\n{{description|textarea:required:placeholder=\"Describe what the document should contain, e.g., 'Write an investment memo summarizing the key terms and risks of the attached deal'\"}}"
+                "prompt": "Create a Word document (.docx) using the attached Alceon Word Template as the base. Apply the template's styles, headers, and formatting. Requirements:\n\n{{description|textarea:required:placeholder=\"Describe what the document should contain, e.g., 'Write an investment memo summarizing the key terms and risks of the attached deal'\"}}"
             },
             "features": {
                 "knowledge": [
@@ -214,7 +214,7 @@
                 "label": "Upload reference files (optional)",
                 "required": false
             },
-            "autoSubmit": false,
+            "autoSubmit": true,
             "tags": [
                 "create"
             ],
@@ -237,7 +237,7 @@
             "action": {
                 "type": "prompt",
                 "modelId": "claude.claude_docs",
-                "prompt": "Create a PowerPoint presentation (.pptx) with the following requirements:\n\n{{description|textarea:required:placeholder=\"Describe what the presentation should contain, e.g., 'Create an IC presentation summarizing the investment thesis, financials, and key risks'\"}}"
+                "prompt": "Create a PowerPoint presentation (.pptx) using the attached Alceon PowerPoint Template as the base. Use the template's slide layouts, colors, and branding. Requirements:\n\n{{description|textarea:required:placeholder=\"Describe what the presentation should contain, e.g., 'Create an IC presentation summarizing the investment thesis, financials, and key risks'\"}}"
             },
             "features": {
                 "knowledge": [
@@ -254,7 +254,7 @@
                 "label": "Upload reference files (optional)",
                 "required": false
             },
-            "autoSubmit": false,
+            "autoSubmit": true,
             "tags": [
                 "create"
             ],
@@ -286,7 +286,7 @@
                 "label": "Upload PDF files",
                 "required": true
             },
-            "autoSubmit": false,
+            "autoSubmit": true,
             "tags": [
                 "create"
             ],
