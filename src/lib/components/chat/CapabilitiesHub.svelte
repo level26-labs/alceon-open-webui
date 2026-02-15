@@ -1063,7 +1063,7 @@
 								<div class="mt-3 flex flex-wrap gap-2">
 									{#each activeFeaturedTile.actions as action}
 										<button
-											class="flex-1 min-w-0 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5"
+											class="flex-1 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap"
 											on:click|stopPropagation={() => handleFeaturedAction(action)}
 										>
 											{#if action.icon}
