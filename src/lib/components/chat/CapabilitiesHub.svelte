@@ -1058,18 +1058,6 @@
 							<p class="text-sm text-white/80 mb-3">{activeFeaturedTile.subtitle}</p>
 							
 							<p class="text-sm text-white/70 flex-1">{activeFeaturedTile.description}</p>
-							
-							<!-- Dots indicator -->
-							{#if visibleFeaturedTiles.length > 1}
-								<div class="flex items-center justify-center gap-1.5 mt-3">
-									{#each visibleFeaturedTiles as _, i}
-										<button
-											class="rounded-full transition-all duration-300 {i === activeFeaturedIndex ? 'bg-white w-4 h-1.5' : 'bg-white/40 hover:bg-white/60 w-1.5 h-1.5'}"
-											on:click|stopPropagation={() => goToFeaturedTile(i)}
-										/>
-									{/each}
-								</div>
-							{/if}
 
 							{#if activeFeaturedTile.actions && activeFeaturedTile.actions.length > 0}
 								<div class="mt-3 flex flex-wrap gap-2">
@@ -1096,6 +1084,18 @@
 								>
 									{activeFeaturedTile.action.label || 'Learn More'} →
 								</button>
+							{/if}
+
+							<!-- Dots indicator -->
+							{#if visibleFeaturedTiles.length > 1}
+								<div class="flex items-center justify-center gap-1.5 mt-3">
+									{#each visibleFeaturedTiles as _, i}
+										<button
+											class="rounded-full transition-all duration-300 {i === activeFeaturedIndex ? 'bg-white w-4 h-1.5' : 'bg-white/40 hover:bg-white/60 w-1.5 h-1.5'}"
+											on:click|stopPropagation={() => goToFeaturedTile(i)}
+										/>
+									{/each}
+								</div>
 							{/if}
 						</div>
 					</div>
