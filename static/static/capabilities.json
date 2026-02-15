@@ -171,7 +171,7 @@
                 "enabled": true,
                 "multiple": true,
                 "accept": ".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.md",
-                "label": "Upload reference files (optional)",
+                "label": "Upload reference files",
                 "required": false
             },
             "autoSubmit": true,
@@ -211,7 +211,7 @@
                 "enabled": true,
                 "multiple": true,
                 "accept": ".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.md",
-                "label": "Upload reference files (optional)",
+                "label": "Upload reference files",
                 "required": false
             },
             "autoSubmit": true,
@@ -251,7 +251,7 @@
                 "enabled": true,
                 "multiple": true,
                 "accept": ".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.csv,.txt,.md",
-                "label": "Upload reference files (optional)",
+                "label": "Upload reference files",
                 "required": false
             },
             "autoSubmit": true,
