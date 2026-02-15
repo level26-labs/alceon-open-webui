@@ -257,6 +257,10 @@
 		return Array.isArray(raw) ? raw : [raw];
 	}
 
+	function isSvgIcon(icon: string | undefined): boolean {
+		return !!icon && icon.trim().startsWith('<svg');
+	}
+
 	async function loadConfig() {
 		try {
 			if (config) {
@@ -1070,7 +1074,13 @@
 											class="px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5"
 											on:click|stopPropagation={() => handleFeaturedAction(action)}
 										>
-											{#if action.icon}<span>{action.icon}</span>{/if}
+											{#if action.icon}
+												{#if isSvgIcon(action.icon)}
+													<span class="w-4 h-4 flex items-center justify-center">{@html action.icon}</span>
+												{:else}
+													<span>{action.icon}</span>
+												{/if}
+											{/if}
 											{action.label || 'Open'}
 										</button>
 									{/each}
