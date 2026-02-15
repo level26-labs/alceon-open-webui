@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(python:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: Add document generation capabilities\n\n- Add Excel, Word, PowerPoint generators with corporate templates\n- Add PDF Tools for extraction, merging, and form filling\n- Add featured tiles with multi-action button support\n- Add brand SVG icons for MS Office and Adobe products\n- Reorder capabilities to show new features first\n- Update changelog to v1.0.8\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }
