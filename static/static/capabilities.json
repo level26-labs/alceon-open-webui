@@ -87,8 +87,8 @@
             "title": "PDF Tools",
             "subtitle": "New Capability",
             "description": "Extract tables and text, merge or split documents, fill forms, and manipulate PDF files.",
-            "icon": "📄",
-            "color": "from-[#ff0000] to-[#cc0000]",
+            "icon": "<svg viewBox='0 0 24 24' fill='none'><rect width='24' height='24' rx='4' fill='white' fill-opacity='0.2'/><path d='M12 4L6 20h3l1.5-4h5l1.5 4h3L12 4zm0 5l1.8 5h-3.6L12 9z' fill='white'/></svg>",
+            "color": "from-[#b31b1b] to-[#8b0000]",
             "action": {
                 "type": "capability",
                 "capabilityId": "pdf_tools",
