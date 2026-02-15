@@ -197,21 +197,13 @@
             "action": {
                 "type": "prompt",
                 "modelId": "claude.claude_docs",
-                "prompt": "I need a Word document (.docx) created using the attached Alceon Word Template as the base. Apply the template's styles, headers, and formatting.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the document should contain, e.g., 'Write an investment memo summarizing the key terms and risks of the attached deal'\"}}\n\nBefore creating the document, please:\n1. Review my requirements and consider best practices for this type of document\n2. Ask any clarifying questions about content, structure, tone, or audience\n3. Once clarified, proceed with creation using the template"
-            },
-            "features": {
-                "knowledge": [
-                    {
-                        "id": "workspace/knowledge/fb6f4a4a-b0af-40b2-81d1-3cf4748ef11e",
-                        "name": "Alceon Word Template"
-                    }
-                ]
+                "prompt": "I need a Word document (.docx) created with professional Alceon formatting.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the document should contain, e.g., 'Write an investment memo summarizing the key terms and risks of the attached deal'\"}}\n\nBefore creating the document, please:\n1. Review my requirements and consider best practices for this type of document\n2. Ask any clarifying questions about content, structure, tone, or audience\n3. Once clarified, proceed with creation"
             },
             "fileUpload": {
                 "enabled": true,
                 "multiple": true,
                 "accept": ".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.md",
-                "label": "Upload reference files",
+                "label": "Upload reference files or template",
                 "required": false
             },
             "autoSubmit": true,
@@ -237,21 +229,13 @@
             "action": {
                 "type": "prompt",
                 "modelId": "claude.claude_docs",
-                "prompt": "I need a PowerPoint presentation (.pptx) created using the attached Alceon PowerPoint Template as the base. Use the template's slide layouts, colors, and branding.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the presentation should contain, e.g., 'Create an IC presentation summarizing the investment thesis, financials, and key risks'\"}}\n\nBefore creating the presentation, please:\n1. Review my requirements and consider best practices for this type of presentation\n2. Ask any clarifying questions about slide count, key messages, audience, or visual elements\n3. Once clarified, proceed with creation using the template"
-            },
-            "features": {
-                "knowledge": [
-                    {
-                        "id": "workspace/knowledge/fb6f4a4a-b0af-40b2-81d1-3cf4748ef11e",
-                        "name": "Alceon PowerPoint Template"
-                    }
-                ]
+                "prompt": "I need a PowerPoint presentation (.pptx) created with Alceon branding (Navy #1E2761, Ice Blue #CADCFC, White).\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the presentation should contain, e.g., 'Create an IC presentation summarizing the investment thesis, financials, and key risks'\"}}\n\nBefore creating the presentation, please:\n1. Review my requirements and consider best practices for this type of presentation\n2. Ask any clarifying questions about slide count, key messages, audience, or visual elements\n3. Once clarified, proceed with creation"
             },
             "fileUpload": {
                 "enabled": true,
                 "multiple": true,
                 "accept": ".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.csv,.txt,.md",
-                "label": "Upload reference files",
+                "label": "Upload reference files or template",
                 "required": false
             },
             "autoSubmit": true,
