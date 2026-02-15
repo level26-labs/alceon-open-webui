@@ -1047,7 +1047,11 @@
 						<!-- Content with fade transition -->
 						<div class="flex flex-col h-full featured-tile-content" class:featured-tile-fade-out={featuredTransitioning}>
 							<div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-white/20 mb-4">
-								<span class="text-2xl sm:text-3xl">{activeFeaturedTile.icon}</span>
+								{#if isSvgIcon(activeFeaturedTile.icon)}
+									<span class="w-8 h-8 flex items-center justify-center">{@html activeFeaturedTile.icon}</span>
+								{:else}
+									<span class="text-2xl sm:text-3xl">{activeFeaturedTile.icon}</span>
+								{/if}
 							</div>
 							
 							<h3 class="font-bold text-lg sm:text-xl mb-1">{activeFeaturedTile.title}</h3>
