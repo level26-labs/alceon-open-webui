@@ -679,7 +679,7 @@
 				let processedPrompt = await replaceSystemVariables(prompt);
 				// Prepend knowledge collection references if specified
 				if (capability.features?.knowledge && capability.features.knowledge.length > 0) {
-					const knowledgeTags = capability.features.knowledge.map(k => `#${k}`).join(' ');
+					const knowledgeTags = capability.features.knowledge.map(k => `#${typeof k === 'string' ? k : k.id}`).join(' ');
 					processedPrompt = `${knowledgeTags}\n\n${processedPrompt}`;
 				}
 				// Pass modelId to onSelect
@@ -708,7 +708,7 @@
 		prompt = replaceInputVariables(prompt, inputVariables);
 		// Prepend knowledge collection references if specified
 		if (currentFeatures?.knowledge && currentFeatures.knowledge.length > 0) {
-			const knowledgeTags = currentFeatures.knowledge.map(k => `#${k}`).join(' ');
+			const knowledgeTags = currentFeatures.knowledge.map(k => `#${typeof k === 'string' ? k : k.id}`).join(' ');
 			prompt = `${knowledgeTags}\n\n${prompt}`;
 		}
 		// Pass currentModelId to onSelect
@@ -753,7 +753,7 @@
 			let processedPrompt = await replaceSystemVariables(promptItem.prompt);
 			// Prepend knowledge collection references if specified
 			if (promptItem.features?.knowledge && promptItem.features.knowledge.length > 0) {
-				const knowledgeTags = promptItem.features.knowledge.map(k => `#${k}`).join(' ');
+				const knowledgeTags = promptItem.features.knowledge.map(k => `#${typeof k === 'string' ? k : k.id}`).join(' ');
 				processedPrompt = `${knowledgeTags}\n\n${processedPrompt}`;
 			}
 			// Pass modelId for workflow prompts
@@ -777,7 +777,7 @@
 		prompt = replaceInputVariables(prompt, inputVariables);
 		// Prepend knowledge collection references if specified
 		if (currentFeatures?.knowledge && currentFeatures.knowledge.length > 0) {
-			const knowledgeTags = currentFeatures.knowledge.map(k => `#${k}`).join(' ');
+			const knowledgeTags = currentFeatures.knowledge.map(k => `#${typeof k === 'string' ? k : k.id}`).join(' ');
 			prompt = `${knowledgeTags}\n\n${prompt}`;
 		}
 		// Pass currentModelId and files for workflow form submissions
