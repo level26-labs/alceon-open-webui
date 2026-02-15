@@ -165,7 +165,7 @@
             "action": {
                 "type": "prompt",
                 "modelId": "claude.claude_docs",
-                "prompt": "Create an Excel spreadsheet (.xlsx) with the following requirements:\n\n{{description|textarea:required:placeholder=\"Describe what the spreadsheet should contain, e.g., 'Build a 5-year forecast model with revenue projections, operating costs, and EBITDA calculations'\"}}"
+                "prompt": "I need an Excel spreadsheet (.xlsx) created.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the spreadsheet should contain, e.g., 'Build a 5-year forecast model with revenue projections, operating costs, and EBITDA calculations'\"}}\n\nBefore creating the spreadsheet, please:\n1. Review my requirements and consider best practices for this type of spreadsheet\n2. Ask any clarifying questions about structure, formulas, data layout, or assumptions\n3. Once clarified, proceed with creation"
             },
             "fileUpload": {
                 "enabled": true,
@@ -197,7 +197,7 @@
             "action": {
                 "type": "prompt",
                 "modelId": "claude.claude_docs",
-                "prompt": "Create a Word document (.docx) using the attached Alceon Word Template as the base. Apply the template's styles, headers, and formatting. Requirements:\n\n{{description|textarea:required:placeholder=\"Describe what the document should contain, e.g., 'Write an investment memo summarizing the key terms and risks of the attached deal'\"}}"
+                "prompt": "I need a Word document (.docx) created using the attached Alceon Word Template as the base. Apply the template's styles, headers, and formatting.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the document should contain, e.g., 'Write an investment memo summarizing the key terms and risks of the attached deal'\"}}\n\nBefore creating the document, please:\n1. Review my requirements and consider best practices for this type of document\n2. Ask any clarifying questions about content, structure, tone, or audience\n3. Once clarified, proceed with creation using the template"
             },
             "features": {
                 "knowledge": [
@@ -237,7 +237,7 @@
             "action": {
                 "type": "prompt",
                 "modelId": "claude.claude_docs",
-                "prompt": "Create a PowerPoint presentation (.pptx) using the attached Alceon PowerPoint Template as the base. Use the template's slide layouts, colors, and branding. Requirements:\n\n{{description|textarea:required:placeholder=\"Describe what the presentation should contain, e.g., 'Create an IC presentation summarizing the investment thesis, financials, and key risks'\"}}"
+                "prompt": "I need a PowerPoint presentation (.pptx) created using the attached Alceon PowerPoint Template as the base. Use the template's slide layouts, colors, and branding.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the presentation should contain, e.g., 'Create an IC presentation summarizing the investment thesis, financials, and key risks'\"}}\n\nBefore creating the presentation, please:\n1. Review my requirements and consider best practices for this type of presentation\n2. Ask any clarifying questions about slide count, key messages, audience, or visual elements\n3. Once clarified, proceed with creation using the template"
             },
             "features": {
                 "knowledge": [
@@ -277,7 +277,7 @@
             "action": {
                 "type": "prompt",
                 "modelId": "claude.claude_docs",
-                "prompt": "Work with the attached PDF files as requested:\n\n{{description|textarea:required:placeholder=\"Describe what you need, e.g., 'Extract all tables to Excel', 'Merge these PDFs in order', 'Fill out this form with company details', 'Split into separate pages'\"}}"
+                "prompt": "I need help with the attached PDF files.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what you need, e.g., 'Extract all tables to Excel', 'Merge these PDFs in order', 'Fill out this form with company details', 'Split into separate pages'\"}}\n\nBefore proceeding, please:\n1. Review the attached PDFs and my requirements\n2. Ask any clarifying questions about the desired output format or specific pages\n3. Once clarified, proceed with the task"
             },
             "fileUpload": {
                 "enabled": true,
