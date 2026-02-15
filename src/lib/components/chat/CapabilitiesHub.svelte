@@ -73,6 +73,16 @@
 		default?: boolean;
 	}
 
+	interface FeaturedTileAction {
+		type: 'prompt' | 'route' | 'url' | 'capability';
+		prompt?: string;
+		route?: string;
+		url?: string;
+		capabilityId?: string;
+		label?: string;
+		icon?: string;
+	}
+
 	interface FeaturedTile {
 		id: string;
 		title: string;
@@ -80,13 +90,8 @@
 		description: string;
 		icon: string;
 		color: string;
-		action?: {
-			type: 'prompt' | 'route' | 'url';
-			prompt?: string;
-			route?: string;
-			url?: string;
-			label?: string;
-		};
+		action?: FeaturedTileAction;
+		actions?: FeaturedTileAction[];
 		enabled: boolean;
 	}
 
@@ -857,18 +862,22 @@
 		examplePlaceholderIndex = 0;
 	}
 
+	function handleFeaturedAction(action: FeaturedTileAction) {
+		if (action.type === 'capability' && action.capabilityId) {
+			const cap = enabledCapabilities.find(c => c.id === action.capabilityId);
+			if (cap) handleCapabilityClick(cap);
+		} else if (action.type === 'prompt' && action.prompt) {
+			onSelect(action.prompt, undefined, undefined, false);
+		} else if (action.type === 'route' && action.route) {
+			onNavigate(action.route);
+		} else if (action.type === 'url' && action.url) {
+			window.open(action.url, '_blank');
+		}
+	}
+
 	function handleFeaturedTileAction(tile: FeaturedTile) {
 		if (!tile.action) return;
-		if (tile.action.type === 'capability' && tile.action.capabilityId) {
-			const cap = enabledCapabilities.find(c => c.id === tile.action!.capabilityId);
-			if (cap) handleCapabilityClick(cap);
-		} else if (tile.action.type === 'prompt' && tile.action.prompt) {
-			onSelect(tile.action.prompt, undefined, undefined, false);
-		} else if (tile.action.type === 'route' && tile.action.route) {
-			onNavigate(tile.action.route);
-		} else if (tile.action.type === 'url' && tile.action.url) {
-			window.open(tile.action.url, '_blank');
-		}
+		handleFeaturedAction(tile.action);
 	}
 </script>
 
@@ -1054,7 +1063,19 @@
 								</div>
 							{/if}
 
-							{#if activeFeaturedTile.action}
+							{#if activeFeaturedTile.actions && activeFeaturedTile.actions.length > 0}
+								<div class="mt-3 grid grid-cols-2 gap-2">
+									{#each activeFeaturedTile.actions as action}
+										<button
+											class="px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5"
+											on:click|stopPropagation={() => handleFeaturedAction(action)}
+										>
+											{#if action.icon}<span>{action.icon}</span>{/if}
+											{action.label || 'Open'}
+										</button>
+									{/each}
+								</div>
+							{:else if activeFeaturedTile.action}
 								<button
 									class="mt-3 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors"
 									on:click|stopPropagation={() => handleFeaturedTileAction(activeFeaturedTile)}

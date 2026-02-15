@@ -35,8 +35,8 @@
         }
     ],
     "meta": {
-        "version": "1.0.7",
-        "changelog": "• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile."
+        "version": "1.0.8",
+        "changelog": "• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile.\n• Added document generation capabilities: Excel, Word, PowerPoint with corporate templates.\n• Added PDF Tools for extraction, merging, and form filling."
     },
     "featuredTile": [
         {
@@ -52,6 +52,21 @@
                 "label": "Take the Survey"
             },
             "enabled": false
+        },
+        {
+            "id": "featured-feb-2026-doc-generator",
+            "title": "Document Generator",
+            "subtitle": "New Capability",
+            "description": "Create professional Excel, Word, PowerPoint, and PDF documents with AI assistance.",
+            "icon": "📑",
+            "color": "from-[#1a365d] to-[#2b6cb0]",
+            "actions": [
+                { "type": "capability", "capabilityId": "excel_generator", "label": "Excel", "icon": "📊" },
+                { "type": "capability", "capabilityId": "word_generator", "label": "Word", "icon": "📝" },
+                { "type": "capability", "capabilityId": "powerpoint_generator", "label": "PowerPoint", "icon": "📽️" },
+                { "type": "capability", "capabilityId": "pdf_tools", "label": "PDF", "icon": "📄" }
+            ],
+            "enabled": true
         },
         {
             "id": "featured-feb-2026-ai-help-me",
@@ -1657,6 +1672,136 @@
             ],
             "enabled": true,
             "visibility": "all"
+        },
+        {
+            "id": "excel_generator",
+            "title": "Excel Spreadsheet",
+            "subtitle": "Create professional spreadsheets",
+            "description": "Generate Excel spreadsheets with formulas, financial models, and data analysis using Alceon standards.",
+            "icon": "📊",
+            "color": "from-[#217346] to-[#185c37]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "modelId": "claude.claude_docs",
+                "prompt": "Create an Excel spreadsheet (.xlsx) with the following requirements:\n\n{{description|textarea:required:placeholder=\"Describe what the spreadsheet should contain, e.g., 'Build a 5-year forecast model with revenue projections, operating costs, and EBITDA calculations'\"}}"
+            },
+            "fileUpload": {
+                "enabled": true,
+                "multiple": true,
+                "accept": ".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.md",
+                "label": "Upload reference files (optional)",
+                "required": false
+            },
+            "autoSubmit": false,
+            "tags": ["create"],
+            "enabled": true,
+            "visibility": "all",
+            "examples": [
+                "Build a 5-year forecast model using the attached IM",
+                "Create a DCF valuation with sensitivity analysis",
+                "Generate a monthly cash flow tracker with formulas"
+            ]
+        },
+        {
+            "id": "word_generator",
+            "title": "Word Document",
+            "subtitle": "Create professional documents",
+            "description": "Generate Word documents with proper formatting, headers, and Alceon branding using corporate templates.",
+            "icon": "📝",
+            "color": "from-[#2b579a] to-[#1e3f6f]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "modelId": "claude.claude_docs",
+                "prompt": "Create a Word document (.docx) with the following requirements:\n\n{{description|textarea:required:placeholder=\"Describe what the document should contain, e.g., 'Write an investment memo summarizing the key terms and risks of the attached deal'\"}}"
+            },
+            "features": {
+                "knowledge": [
+                    { "id": "workspace/knowledge/fb6f4a4a-b0af-40b2-81d1-3cf4748ef11e", "name": "Alceon Word Template" }
+                ]
+            },
+            "fileUpload": {
+                "enabled": true,
+                "multiple": true,
+                "accept": ".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.md",
+                "label": "Upload reference files (optional)",
+                "required": false
+            },
+            "autoSubmit": false,
+            "tags": ["create"],
+            "enabled": true,
+            "visibility": "all",
+            "examples": [
+                "Write an investment memo based on the attached term sheet",
+                "Create a due diligence report summarizing findings",
+                "Draft a briefing note on market conditions"
+            ]
+        },
+        {
+            "id": "powerpoint_generator",
+            "title": "PowerPoint Presentation",
+            "subtitle": "Create professional presentations",
+            "description": "Generate PowerPoint presentations with Alceon branding, compelling visuals, and speaker notes.",
+            "icon": "📽️",
+            "color": "from-[#d24726] to-[#b7472a]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "modelId": "claude.claude_docs",
+                "prompt": "Create a PowerPoint presentation (.pptx) with the following requirements:\n\n{{description|textarea:required:placeholder=\"Describe what the presentation should contain, e.g., 'Create an IC presentation summarizing the investment thesis, financials, and key risks'\"}}"
+            },
+            "features": {
+                "knowledge": [
+                    { "id": "workspace/knowledge/fb6f4a4a-b0af-40b2-81d1-3cf4748ef11e", "name": "Alceon PowerPoint Template" }
+                ]
+            },
+            "fileUpload": {
+                "enabled": true,
+                "multiple": true,
+                "accept": ".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.csv,.txt,.md",
+                "label": "Upload reference files (optional)",
+                "required": false
+            },
+            "autoSubmit": false,
+            "tags": ["create"],
+            "enabled": true,
+            "visibility": "all",
+            "examples": [
+                "Create an IC presentation from the attached investment memo",
+                "Build a market overview deck with charts and insights",
+                "Generate a deal summary presentation for the board"
+            ]
+        },
+        {
+            "id": "pdf_tools",
+            "title": "PDF Tools",
+            "subtitle": "Extract, merge, and edit PDFs",
+            "description": "Extract text and tables from PDFs, merge or split documents, fill forms, add watermarks, and manipulate existing PDF files.",
+            "icon": "📄",
+            "color": "from-[#ff0000] to-[#cc0000]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "modelId": "claude.claude_docs",
+                "prompt": "Work with the attached PDF files as requested:\n\n{{description|textarea:required:placeholder=\"Describe what you need, e.g., 'Extract all tables to Excel', 'Merge these PDFs in order', 'Fill out this form with company details', 'Split into separate pages'\"}}"
+            },
+            "fileUpload": {
+                "enabled": true,
+                "multiple": true,
+                "accept": ".pdf",
+                "label": "Upload PDF files",
+                "required": true
+            },
+            "autoSubmit": false,
+            "tags": ["create"],
+            "enabled": true,
+            "visibility": "all",
+            "examples": [
+                "Extract all tables from this PDF to Excel",
+                "Merge these PDFs into a single document",
+                "Fill out this form with the following details..."
+            ]
         }
     ]
 }
