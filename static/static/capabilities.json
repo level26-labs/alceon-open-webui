@@ -51,12 +51,13 @@
                 "url": "https://survey.alceon.cloud",
                 "label": "Take the Survey"
             },
+            "visibility": "all",
             "enabled": false
         },
         {
             "id": "featured-feb-2026-doc-generator",
             "title": "Document Generator",
-            "subtitle": "New Capability",
+            "subtitle": "Experimental Feature",
             "description": "Create professional Alceon branded Excel, Word, and PowerPoint documents.",
             "icon": "📑",
             "color": "from-[#1a365d] to-[#2b6cb0]",
@@ -80,6 +81,7 @@
                     "icon": "<svg viewBox='0 0 24 24' fill='currentColor' class='w-full h-full'><rect width='24' height='24' rx='4' fill='#d24726'/><path d='M8 6h5c2.2 0 4 1.8 4 4s-1.8 4-4 4h-2.5v4H8V6zm2.5 6H13c.8 0 1.5-.7 1.5-1.5S13.8 9 13 9h-2.5v3z' fill='white'/></svg>"
                 }
             ],
+            "visibility": ["Technology"],
             "enabled": false
         },
         {
@@ -94,12 +96,13 @@
                 "capabilityId": "excel_generator",
                 "label": "Create Spreadsheet"
             },
+            "visibility": "all",
             "enabled": true
         },
         {
             "id": "featured-feb-2026-pdf-tools",
             "title": "PDF Tools",
-            "subtitle": "New Capability",
+            "subtitle": "Experimental Feature",
             "description": "Extract tables and text, merge or split documents, fill forms, and manipulate PDF files.",
             "icon": "<svg viewBox='0 0 24 24' fill='none'><rect width='24' height='24' rx='4' fill='white' fill-opacity='0.2'/><path d='M12 4L6 20h3l1.5-4h5l1.5 4h3L12 4zm0 5l1.8 5h-3.6L12 9z' fill='white'/></svg>",
             "color": "from-[#b31b1b] to-[#8b0000]",
@@ -108,6 +111,7 @@
                 "capabilityId": "pdf_tools",
                 "label": "Open PDF Tools"
             },
+            "visibility": ["Technology"],
             "enabled": false
         },
         {
@@ -122,6 +126,7 @@
                 "capabilityId": "ai_help_me",
                 "label": "Get Started"
             },
+            "visibility": "all",
             "enabled": true
         },
         {
@@ -136,6 +141,7 @@
                 "capabilityId": "policy_search",
                 "label": "Try Policy Search"
             },
+            "visibility": "all",
             "enabled": true
         },
         {
@@ -150,6 +156,7 @@
                 "capabilityId": "news_search",
                 "label": "Search News"
             },
+            "visibility": "all",
             "enabled": true
         },
         {
@@ -164,6 +171,7 @@
                 "capabilityId": "research",
                 "label": "Try Deep Research"
             },
+            "visibility": "all",
             "enabled": true
         }
     ],
@@ -204,7 +212,7 @@
             "id": "word_generator",
             "title": "Word (Experimental)",
             "subtitle": "Create professional documents",
-            "description": "Generate Word documents with proper formatting, headers, and Alceon branding using corporate templates.",
+            "description": "Generate Word documents with proper formatting, headers, and Alceon branding using the Alceon template.",
             "icon": "📝",
             "color": "from-[#2b579a] to-[#1e3f6f]",
             "capabilityType": "Form",
@@ -225,7 +233,7 @@
                 "create"
             ],
             "enabled": true,
-            "visibility": ["test group"],
+            "visibility": ["Technology"],
             "examples": [
                 "Write an investment memo based on the attached term sheet",
                 "Create a due diligence report summarizing findings",
@@ -257,7 +265,7 @@
                 "create"
             ],
             "enabled": true,
-            "visibility": "all",
+            "visibility": ["Technology"],
             "examples": [
                 "Create an IC presentation from the attached investment memo",
                 "Build a market overview deck with charts and insights",
@@ -289,7 +297,7 @@
                 "create"
             ],
             "enabled": true,
-            "visibility": "all",
+            "visibility": ["Technology"],
             "examples": [
                 "Extract all tables from this PDF to Excel",
                 "Merge these PDFs into a single document",
