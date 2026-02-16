@@ -11,9 +11,10 @@
 	import { sanitizeResponseContent } from '$lib/utils';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 	import EyeSlash from '$lib/components/icons/EyeSlash.svelte';
-	
+
 	import CapabilitiesHub from './CapabilitiesHub.svelte';
 	import { goto } from '$app/navigation';
+	import { getUserGroups } from '$lib/apis/users';
 
 	const i18n = getContext('i18n');
 
@@ -25,6 +26,7 @@
 
 	let mounted = false;
 	let selectedModelIdx = 0;
+	let userGroups: string[] = [];
 
 	$: if (modelIds.length > 0) {
 		selectedModelIdx = models.length - 1;
@@ -38,16 +40,23 @@
 		m?.id?.toLowerCase().includes('kingfisher')
 	);
 
-	// Debug: Log user groups
-	$: {
-		if ($user?.groups) {
-			console.log('[ChatPlaceholder Debug] Raw user groups:', $user.groups);
-			console.log('[ChatPlaceholder Debug] Mapped userGroups:', $user.groups.flatMap(g => [g.id, g.name].filter(Boolean)));
-		}
-	}
-
-	onMount(() => {
+	// Fetch user groups on mount
+	onMount(async () => {
 		mounted = true;
+
+		// Fetch user's groups from API
+		if (localStorage.token) {
+			try {
+				const groups = await getUserGroups(localStorage.token);
+				if (groups && Array.isArray(groups)) {
+					// Flatten to include both IDs and names for backward compatibility
+					userGroups = groups.flatMap(g => [g.id, g.name].filter(Boolean));
+					console.log('[ChatPlaceholder] Fetched user groups:', userGroups);
+				}
+			} catch (error) {
+				console.error('[ChatPlaceholder] Failed to fetch user groups:', error);
+			}
+		}
 	});
 
 	// Handle capability selection - wraps prompt in expected format with features and autoSubmit
@@ -165,7 +174,7 @@
 				  configUrl="/static/capabilities.json"
 				  onSelect={handleCapabilitySelect}
 				  onNavigate={(route) => goto(route)}
-				  userGroups={$user?.groups?.flatMap(g => [g.id, g.name].filter(Boolean)) || []} 
+				  userGroups={userGroups}
 				/>
 			{:else}
 				<!-- Show default Suggestions for other models -->
