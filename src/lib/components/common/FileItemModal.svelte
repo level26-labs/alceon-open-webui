@@ -6,7 +6,6 @@
 
 	import { formatFileSize, getLineCount } from '$lib/utils';
 	import { WEBUI_API_BASE_URL } from '$lib/constants';
-	import { settings } from '$lib/stores';
 	import { getKnowledgeById } from '$lib/apis/knowledge';
 	import { getFileById, getFileContentById } from '$lib/apis/files';
 
@@ -14,9 +13,6 @@
 	import Markdown from '$lib/components/chat/Messages/Markdown.svelte';
 
 	const i18n = getContext('i18n');
-
-	const CONTENT_PREVIEW_LIMIT = 10000;
-	let expandedContent = false;
 
 	import Modal from './Modal.svelte';
 	import XMark from '../icons/XMark.svelte';
@@ -34,7 +30,6 @@
 
 	let isPDF = false;
 	let isAudio = false;
-	let isImage = false;
 	let isExcel = false;
 
 	let selectedTab = '';
@@ -83,18 +78,6 @@
 		(item?.name && item?.name.toLowerCase().endsWith('.ogg')) ||
 		(item?.name && item?.name.toLowerCase().endsWith('.m4a')) ||
 		(item?.name && item?.name.toLowerCase().endsWith('.webm'));
-
-	$: isImage =
-		(item?.meta?.content_type ?? '').startsWith('image/') ||
-		(item?.name &&
-			(item.name.toLowerCase().endsWith('.png') ||
-				item.name.toLowerCase().endsWith('.jpg') ||
-				item.name.toLowerCase().endsWith('.jpeg') ||
-				item.name.toLowerCase().endsWith('.gif') ||
-				item.name.toLowerCase().endsWith('.webp') ||
-				item.name.toLowerCase().endsWith('.svg') ||
-				item.name.toLowerCase().endsWith('.bmp') ||
-				item.name.toLowerCase().endsWith('.ico')));
 
 	$: isExcel =
 		item?.meta?.content_type === 'application/vnd.ms-excel' ||
@@ -151,7 +134,6 @@
 
 	const loadContent = async () => {
 		selectedTab = '';
-		expandedContent = false;
 		if (item?.type === 'collection') {
 			loading = true;
 
@@ -359,80 +341,15 @@
 					</div>
 				{/if}
 
-				{#if isImage}
-					<div class="w-full max-h-[70vh] overflow-auto">
-						<img
-							src={`${WEBUI_API_BASE_URL}/files/${item.id}/content`}
-							alt={item?.name ?? 'Image'}
-							class="w-full object-contain rounded-lg"
-							loading="lazy"
-						/>
-					</div>
-				{:else if selectedTab === ''}
+				{#if selectedTab === ''}
 					{#if item?.file?.data}
-						{@const rawContent = (item?.file?.data?.content ?? '').trim() || 'No content'}
-						{@const isTruncated =
-							($settings?.renderMarkdownInPreviews ?? true) &&
-							rawContent.length > CONTENT_PREVIEW_LIMIT &&
-							!expandedContent}
-						{#if $settings?.renderMarkdownInPreviews ?? true}
-							<div
-								class="max-h-96 overflow-scroll scrollbar-hidden text-sm prose dark:prose-invert max-w-full"
-							>
-								<Markdown
-									content={isTruncated ? rawContent.slice(0, CONTENT_PREVIEW_LIMIT) : rawContent}
-									id="file-preview"
-								/>
-							</div>
-							{#if isTruncated}
-								<button
-									class="mt-1 text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition"
-									on:click={() => {
-										expandedContent = true;
-									}}
-								>
-									{$i18n.t('Show all ({{COUNT}} characters)', {
-										COUNT: rawContent.length.toLocaleString()
-									})}
-								</button>
-							{/if}
-						{:else}
-							<div class="max-h-96 overflow-scroll scrollbar-hidden text-xs whitespace-pre-wrap">
-								{rawContent}
-							</div>
-						{/if}
+						<div class="max-h-96 overflow-scroll scrollbar-hidden text-xs whitespace-pre-wrap">
+							{(item?.file?.data?.content ?? '').trim() || 'No content'}
+						</div>
 					{:else if item?.content}
-						{@const rawContent = (item?.content ?? '').trim() || 'No content'}
-						{@const isTruncated =
-							($settings?.renderMarkdownInPreviews ?? true) &&
-							rawContent.length > CONTENT_PREVIEW_LIMIT &&
-							!expandedContent}
-						{#if $settings?.renderMarkdownInPreviews ?? true}
-							<div
-								class="max-h-96 overflow-scroll scrollbar-hidden text-sm prose dark:prose-invert max-w-full"
-							>
-								<Markdown
-									content={isTruncated ? rawContent.slice(0, CONTENT_PREVIEW_LIMIT) : rawContent}
-									id="file-preview-content"
-								/>
-							</div>
-							{#if isTruncated}
-								<button
-									class="mt-1 text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition"
-									on:click={() => {
-										expandedContent = true;
-									}}
-								>
-									{$i18n.t('Show all ({{COUNT}} characters)', {
-										COUNT: rawContent.length.toLocaleString()
-									})}
-								</button>
-							{/if}
-						{:else}
-							<div class="max-h-96 overflow-scroll scrollbar-hidden text-xs whitespace-pre-wrap">
-								{rawContent}
-							</div>
-						{/if}
+						<div class="max-h-96 overflow-scroll scrollbar-hidden text-xs whitespace-pre-wrap">
+							{(item?.content ?? '').trim() || 'No content'}
+						</div>
 					{/if}
 				{:else if selectedTab === 'preview'}
 					{#if isAudio}

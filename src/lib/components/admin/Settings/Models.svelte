@@ -160,7 +160,7 @@
 				name: model.name,
 				base_model_id: null,
 				params: {},
-				access_grants: [],
+				access_control: {},
 				...model
 			}).catch((error) => {
 				return null;
@@ -188,7 +188,7 @@
 				base_model_id: null,
 				meta: {},
 				params: {},
-				access_grants: [],
+				access_control: {},
 				is_active: model.is_active
 			}).catch((error) => {
 				return null;

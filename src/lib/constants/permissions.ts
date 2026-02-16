@@ -21,8 +21,6 @@ export const DEFAULT_PERMISSIONS = {
 		public_prompts: false,
 		tools: false,
 		public_tools: false,
-		skills: false,
-		public_skills: false,
 		notes: false,
 		public_notes: false
 	},

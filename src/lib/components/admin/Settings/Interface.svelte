@@ -152,15 +152,7 @@
 								if (taskConfig.TASK_MODEL) {
 									const model = models.find((m) => m.id === taskConfig.TASK_MODEL);
 									if (model) {
-										if (
-											model?.access_grants &&
-											!model.access_grants.some(
-												(g) =>
-													g.principal_type === 'user' &&
-													g.principal_id === '*' &&
-													g.permission === 'read'
-											)
-										) {
+										if (model?.access_control !== null) {
 											toast.error(
 												$i18n.t(
 													'This model is not publicly available. Please select another model.'
@@ -195,15 +187,7 @@
 								if (taskConfig.TASK_MODEL_EXTERNAL) {
 									const model = models.find((m) => m.id === taskConfig.TASK_MODEL_EXTERNAL);
 									if (model) {
-										if (
-											model?.access_grants &&
-											!model.access_grants.some(
-												(g) =>
-													g.principal_type === 'user' &&
-													g.principal_id === '*' &&
-													g.permission === 'read'
-											)
-										) {
+										if (model?.access_control !== null) {
 											toast.error(
 												$i18n.t(
 													'This model is not publicly available. Please select another model.'

@@ -365,13 +365,8 @@
 
 		await tick();
 
-		const messagesContainer = document.getElementById('messages-container');
-		const savedScrollTop = messagesContainer?.scrollTop;
-
 		editTextAreaElement.style.height = '';
 		editTextAreaElement.style.height = `${editTextAreaElement.scrollHeight}px`;
-
-		if (messagesContainer) messagesContainer.scrollTop = savedScrollTop;
 	};
 
 	const editMessageConfirmHandler = async () => {
@@ -702,13 +697,8 @@
 									class=" bg-transparent outline-hidden w-full resize-none"
 									bind:value={editedContent}
 									on:input={(e) => {
-										const messagesContainer = document.getElementById('messages-container');
-										const savedScrollTop = messagesContainer?.scrollTop;
-
 										e.target.style.height = '';
 										e.target.style.height = `${e.target.scrollHeight}px`;
-
-										if (messagesContainer) messagesContainer.scrollTop = savedScrollTop;
 									}}
 									on:keydown={(e) => {
 										if (e.key === 'Escape') {
