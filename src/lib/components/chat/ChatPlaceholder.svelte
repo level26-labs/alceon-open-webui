@@ -153,11 +153,11 @@
 		<div class=" w-full font-primary" in:fade={{ duration: 200, delay: 300 }}>
 			{#if showCapabilitiesHub}
 				<!-- Show CapabilitiesHubWithConfig for Kingfisher model -->
-				<CapabilitiesHub 
+				<CapabilitiesHub
 				  configUrl="/static/capabilities.json"
-				  onSelect={handleCapabilitySelect} 
-				  onNavigate={(route) => goto(route)} 
-				  userGroups={$user?.groups?.map(g => g.id) || []} 
+				  onSelect={handleCapabilitySelect}
+				  onNavigate={(route) => goto(route)}
+				  userGroups={$user?.groups?.flatMap(g => [g.id, g.name].filter(Boolean)) || []} 
 				/>
 			{:else}
 				<!-- Show default Suggestions for other models -->
