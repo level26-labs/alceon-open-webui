@@ -225,7 +225,7 @@
                 "create"
             ],
             "enabled": true,
-            "visibility": "all",
+            "visibility": "test group",
             "examples": [
                 "Write an investment memo based on the attached term sheet",
                 "Create a due diligence report summarizing findings",
