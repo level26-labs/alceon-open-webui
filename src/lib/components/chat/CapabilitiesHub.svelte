@@ -73,6 +73,16 @@
 		default?: boolean;
 	}
 
+	interface FeaturedTileAction {
+		type: 'prompt' | 'route' | 'url' | 'capability';
+		prompt?: string;
+		route?: string;
+		url?: string;
+		capabilityId?: string;
+		label?: string;
+		icon?: string;
+	}
+
 	interface FeaturedTile {
 		id: string;
 		title: string;
@@ -80,14 +90,10 @@
 		description: string;
 		icon: string;
 		color: string;
-		action?: {
-			type: 'prompt' | 'route' | 'url';
-			prompt?: string;
-			route?: string;
-			url?: string;
-			label?: string;
-		};
+		action?: FeaturedTileAction;
+		actions?: FeaturedTileAction[];
 		enabled: boolean;
+		visibility?: 'all' | string[];
 	}
 
 	interface DashboardMeta {
@@ -161,9 +167,9 @@
 		}
 	}
 	
-	// Featured tiles: filter to visible (enabled + not dismissed)
+	// Featured tiles: filter to visible (enabled + not dismissed + user has access)
 	$: visibleFeaturedTiles = featuredTiles.filter(
-		t => t.enabled && !dismissedFeaturedTiles.includes(t.id)
+		t => t.enabled && !dismissedFeaturedTiles.includes(t.id) && canUserSeeFeaturedTile(t)
 	);
 
 	$: activeFeaturedTile = visibleFeaturedTiles[activeFeaturedIndex] || null;
@@ -250,6 +256,10 @@
 	function parseFeaturedTiles(raw: FeaturedTile | FeaturedTile[] | undefined | null): FeaturedTile[] {
 		if (!raw) return [];
 		return Array.isArray(raw) ? raw : [raw];
+	}
+
+	function isSvgIcon(icon: string | undefined): boolean {
+		return !!icon && icon.trim().startsWith('<svg');
 	}
 
 	async function loadConfig() {
@@ -343,7 +353,23 @@
 			return true;
 		}
 		if (Array.isArray(capability.visibility)) {
-			return capability.visibility.some(groupId => userGroups.includes(groupId));
+			// Case-insensitive match with trimmed whitespace
+			const normalizedUserGroups = userGroups.map(g => g?.toString().trim().toLowerCase());
+			const normalizedVisibility = capability.visibility.map(v => v?.toString().trim().toLowerCase());
+			return normalizedVisibility.some(groupId => normalizedUserGroups.includes(groupId));
+		}
+		return false;
+	}
+
+	function canUserSeeFeaturedTile(tile: FeaturedTile): boolean {
+		if (!tile.visibility || tile.visibility === 'all') {
+			return true;
+		}
+		if (Array.isArray(tile.visibility)) {
+			// Case-insensitive match with trimmed whitespace
+			const normalizedUserGroups = userGroups.map(g => g?.toString().trim().toLowerCase());
+			const normalizedVisibility = tile.visibility.map(v => v?.toString().trim().toLowerCase());
+			return normalizedVisibility.some(groupId => normalizedUserGroups.includes(groupId));
 		}
 		return false;
 	}
@@ -670,7 +696,7 @@
 				let processedPrompt = await replaceSystemVariables(prompt);
 				// Prepend knowledge collection references if specified
 				if (capability.features?.knowledge && capability.features.knowledge.length > 0) {
-					const knowledgeTags = capability.features.knowledge.map(k => `#${k}`).join(' ');
+					const knowledgeTags = capability.features.knowledge.map(k => `#${typeof k === 'string' ? k : k.id}`).join(' ');
 					processedPrompt = `${knowledgeTags}\n\n${processedPrompt}`;
 				}
 				// Pass modelId to onSelect
@@ -699,7 +725,7 @@
 		prompt = replaceInputVariables(prompt, inputVariables);
 		// Prepend knowledge collection references if specified
 		if (currentFeatures?.knowledge && currentFeatures.knowledge.length > 0) {
-			const knowledgeTags = currentFeatures.knowledge.map(k => `#${k}`).join(' ');
+			const knowledgeTags = currentFeatures.knowledge.map(k => `#${typeof k === 'string' ? k : k.id}`).join(' ');
 			prompt = `${knowledgeTags}\n\n${prompt}`;
 		}
 		// Pass currentModelId to onSelect
@@ -744,7 +770,7 @@
 			let processedPrompt = await replaceSystemVariables(promptItem.prompt);
 			// Prepend knowledge collection references if specified
 			if (promptItem.features?.knowledge && promptItem.features.knowledge.length > 0) {
-				const knowledgeTags = promptItem.features.knowledge.map(k => `#${k}`).join(' ');
+				const knowledgeTags = promptItem.features.knowledge.map(k => `#${typeof k === 'string' ? k : k.id}`).join(' ');
 				processedPrompt = `${knowledgeTags}\n\n${processedPrompt}`;
 			}
 			// Pass modelId for workflow prompts
@@ -768,7 +794,7 @@
 		prompt = replaceInputVariables(prompt, inputVariables);
 		// Prepend knowledge collection references if specified
 		if (currentFeatures?.knowledge && currentFeatures.knowledge.length > 0) {
-			const knowledgeTags = currentFeatures.knowledge.map(k => `#${k}`).join(' ');
+			const knowledgeTags = currentFeatures.knowledge.map(k => `#${typeof k === 'string' ? k : k.id}`).join(' ');
 			prompt = `${knowledgeTags}\n\n${prompt}`;
 		}
 		// Pass currentModelId and files for workflow form submissions
@@ -857,18 +883,22 @@
 		examplePlaceholderIndex = 0;
 	}
 
+	function handleFeaturedAction(action: FeaturedTileAction) {
+		if (action.type === 'capability' && action.capabilityId) {
+			const cap = enabledCapabilities.find(c => c.id === action.capabilityId);
+			if (cap) handleCapabilityClick(cap);
+		} else if (action.type === 'prompt' && action.prompt) {
+			onSelect(action.prompt, undefined, undefined, false);
+		} else if (action.type === 'route' && action.route) {
+			onNavigate(action.route);
+		} else if (action.type === 'url' && action.url) {
+			window.open(action.url, '_blank');
+		}
+	}
+
 	function handleFeaturedTileAction(tile: FeaturedTile) {
 		if (!tile.action) return;
-		if (tile.action.type === 'capability' && tile.action.capabilityId) {
-			const cap = enabledCapabilities.find(c => c.id === tile.action!.capabilityId);
-			if (cap) handleCapabilityClick(cap);
-		} else if (tile.action.type === 'prompt' && tile.action.prompt) {
-			onSelect(tile.action.prompt, undefined, undefined, false);
-		} else if (tile.action.type === 'route' && tile.action.route) {
-			onNavigate(tile.action.route);
-		} else if (tile.action.type === 'url' && tile.action.url) {
-			window.open(tile.action.url, '_blank');
-		}
+		handleFeaturedAction(tile.action);
 	}
 </script>
 
@@ -907,6 +937,7 @@
 		<h1 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100">What would you like to do?</h1>
 	</div>
 
+	<!-- Debug Panel -->
 	<!-- Categories + Search -->
 	<div class="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
 		<div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
@@ -1034,14 +1065,45 @@
 						<!-- Content with fade transition -->
 						<div class="flex flex-col h-full featured-tile-content" class:featured-tile-fade-out={featuredTransitioning}>
 							<div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-white/20 mb-4">
-								<span class="text-2xl sm:text-3xl">{activeFeaturedTile.icon}</span>
+								{#if isSvgIcon(activeFeaturedTile.icon)}
+									<span class="w-8 h-8 flex items-center justify-center">{@html activeFeaturedTile.icon}</span>
+								{:else}
+									<span class="text-2xl sm:text-3xl">{activeFeaturedTile.icon}</span>
+								{/if}
 							</div>
 							
 							<h3 class="font-bold text-lg sm:text-xl mb-1">{activeFeaturedTile.title}</h3>
 							<p class="text-sm text-white/80 mb-3">{activeFeaturedTile.subtitle}</p>
 							
 							<p class="text-sm text-white/70 flex-1">{activeFeaturedTile.description}</p>
-							
+
+							{#if activeFeaturedTile.actions && activeFeaturedTile.actions.length > 0}
+								<div class="mt-3 flex flex-wrap gap-2">
+									{#each activeFeaturedTile.actions as action}
+										<button
+											class="flex-1 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap"
+											on:click|stopPropagation={() => handleFeaturedAction(action)}
+										>
+											{#if action.icon}
+												{#if isSvgIcon(action.icon)}
+													<span class="w-4 h-4 flex items-center justify-center">{@html action.icon}</span>
+												{:else}
+													<span>{action.icon}</span>
+												{/if}
+											{/if}
+											{action.label || 'Open'}
+										</button>
+									{/each}
+								</div>
+							{:else if activeFeaturedTile.action}
+								<button
+									class="mt-3 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors"
+									on:click|stopPropagation={() => handleFeaturedTileAction(activeFeaturedTile)}
+								>
+									{activeFeaturedTile.action.label || 'Learn More'} →
+								</button>
+							{/if}
+
 							<!-- Dots indicator -->
 							{#if visibleFeaturedTiles.length > 1}
 								<div class="flex items-center justify-center gap-1.5 mt-3">
@@ -1052,15 +1114,6 @@
 										/>
 									{/each}
 								</div>
-							{/if}
-
-							{#if activeFeaturedTile.action}
-								<button
-									class="mt-3 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors"
-									on:click|stopPropagation={() => handleFeaturedTileAction(activeFeaturedTile)}
-								>
-									{activeFeaturedTile.action.label || 'Learn More'} →
-								</button>
 							{/if}
 						</div>
 					</div>

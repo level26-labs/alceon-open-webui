@@ -35,8 +35,8 @@
         }
     ],
     "meta": {
-        "version": "1.0.7",
-        "changelog": "• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile."
+        "version": "1.0.8",
+        "changelog": "• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile.\n• Added document generation capabilities: Excel, Word, PowerPoint with corporate templates.\n• Added PDF Tools for extraction, merging, and form filling."
     },
     "featuredTile": [
         {
@@ -51,7 +51,72 @@
                 "url": "https://survey.alceon.cloud",
                 "label": "Take the Survey"
             },
+            "visibility": "all",
             "enabled": false
+        },
+        {
+            "id": "featured-feb-2026-doc-generator",
+            "title": "Document Generator",
+            "subtitle": "Experimental Feature",
+            "description": "Create professional Alceon branded Excel, Word, and PowerPoint documents.",
+            "icon": "📑",
+            "color": "from-[#1a365d] to-[#2b6cb0]",
+            "actions": [
+                {
+                    "type": "capability",
+                    "capabilityId": "excel_generator",
+                    "label": "Excel",
+                    "icon": "<svg viewBox='0 0 24 24' fill='currentColor' class='w-full h-full'><rect width='24' height='24' rx='4' fill='#217346'/><path d='M6 7l3 5-3 5h2.5l2-3.5 2 3.5H15l-3-5 3-5h-2.5l-2 3.5-2-3.5H6z' fill='white'/></svg>"
+                },
+                {
+                    "type": "capability",
+                    "capabilityId": "word_generator",
+                    "label": "Word",
+                    "icon": "<svg viewBox='0 0 24 24' fill='currentColor' class='w-full h-full'><rect width='24' height='24' rx='4' fill='#2b579a'/><path d='M7 7h2l1.5 7L12 9h2l1.5 5 1.5-7h2l-2.5 10h-2L13 11.5 11.5 17h-2L7 7z' fill='white'/></svg>"
+                },
+                {
+                    "type": "capability",
+                    "capabilityId": "powerpoint_generator",
+                    "label": "PPT",
+                    "icon": "<svg viewBox='0 0 24 24' fill='currentColor' class='w-full h-full'><rect width='24' height='24' rx='4' fill='#d24726'/><path d='M8 6h5c2.2 0 4 1.8 4 4s-1.8 4-4 4h-2.5v4H8V6zm2.5 6H13c.8 0 1.5-.7 1.5-1.5S13.8 9 13 9h-2.5v3z' fill='white'/></svg>"
+                }
+            ],
+            "visibility": [
+                "Technology"
+            ],
+            "enabled": true
+        },
+        {
+            "id": "featured-feb-2026-excel",
+            "title": "Excel Generator",
+            "subtitle": "Experimental Feature",
+            "description": "Create professional Excel spreadsheets with advanced formulas and charts",
+            "icon": "<svg viewBox='0 0 24 24' fill='currentColor' class='w-full h-full'><rect width='24' height='24' rx='4' fill='#217346'/><path d='M6 7l3 5-3 5h2.5l2-3.5 2 3.5H15l-3-5 3-5h-2.5l-2 3.5-2-3.5H6z' fill='white'/></svg>",
+            "color": "from-[#217346] to-[#185c37]",
+            "action": {
+                "type": "capability",
+                "capabilityId": "excel_generator",
+                "label": "Create Spreadsheet"
+            },
+            "visibility": "all",
+            "enabled": true
+        },
+        {
+            "id": "featured-feb-2026-pdf-tools",
+            "title": "PDF Tools",
+            "subtitle": "Experimental Feature",
+            "description": "Extract tables and text, merge or split documents, fill forms, and manipulate PDF files.",
+            "icon": "<svg viewBox='0 0 24 24' fill='none'><rect width='24' height='24' rx='4' fill='white' fill-opacity='0.2'/><path d='M12 4L6 20h3l1.5-4h5l1.5 4h3L12 4zm0 5l1.8 5h-3.6L12 9z' fill='white'/></svg>",
+            "color": "from-[#b31b1b] to-[#8b0000]",
+            "action": {
+                "type": "capability",
+                "capabilityId": "pdf_tools",
+                "label": "Open PDF Tools"
+            },
+            "visibility": [
+                "Technology"
+            ],
+            "enabled": true
         },
         {
             "id": "featured-feb-2026-ai-help-me",
@@ -65,6 +130,7 @@
                 "capabilityId": "ai_help_me",
                 "label": "Get Started"
             },
+            "visibility": "all",
             "enabled": true
         },
         {
@@ -79,6 +145,7 @@
                 "capabilityId": "policy_search",
                 "label": "Try Policy Search"
             },
+            "visibility": "all",
             "enabled": true
         },
         {
@@ -93,35 +160,204 @@
                 "capabilityId": "news_search",
                 "label": "Search News"
             },
+            "visibility": "all",
             "enabled": true
         },
         {
-        "id": "featured-feb-2026-deep-research",
-        "title": "Deep Research",
-        "subtitle": "Upgraded",
-        "description": "Now more stable and detailed — powered by GPT-5, with connections to Alceon data, Google Maps, and live market feeds.",
-        "icon": "🔬",
-        "color": "from-[#1a365d] to-[#2b6cb0]",
-        "action": {
-            "type": "capability",
-            "capabilityId": "research",
-            "label": "Try Deep Research"
-        },
-        "enabled": true
+            "id": "featured-feb-2026-deep-research",
+            "title": "Deep Research",
+            "subtitle": "Upgraded",
+            "description": "Now more stable and detailed — powered by GPT-5, with connections to Alceon data, Google Maps, and live market feeds.",
+            "icon": "🔬",
+            "color": "from-[#1a365d] to-[#2b6cb0]",
+            "action": {
+                "type": "capability",
+                "capabilityId": "research",
+                "label": "Try Deep Research"
+            },
+            "visibility": "all",
+            "enabled": true
         }
     ],
     "capabilities": [
         {
-            "id": "web_search",
-            "title": "Web Search",
-            "subtitle": "Search the internet",
-            "description": "Search the web for current information and news.",
-            "icon": "🌐",
-            "color": "from-[#63b3ed] to-[#2b6cb0]",
+            "id": "excel_generator",
+            "title": "Excel (Experimental)",
+            "subtitle": "Create professional spreadsheets",
+            "description": "Generate Excel spreadsheets with formulas, financial models, and data analysis using Alceon standards.",
+            "icon": "📊",
+            "color": "from-[#217346] to-[#185c37]",
             "capabilityType": "Form",
             "action": {
                 "type": "prompt",
-                "prompt": "Search the web for:\n\n{{search_term | text:placeholder=\"Enter your search query...\":required}}"
+                "modelId": "claude.claude_docs",
+                "prompt": "I need an Excel spreadsheet (.xlsx) created.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the spreadsheet should contain, e.g., 'Build a 5-year forecast model with revenue projections, operating costs, and EBITDA calculations'\"}}\n\nComplexity:\n{{complexity|select:options=[\"Simple (basic data)\",\"Moderate (some formulas)\",\"Complex (advanced formulas & charts)\"]:default=\"Moderate (some formulas)\":placeholder=\"Select complexity level\"}}\n\nInclude charts:\n{{include_charts|checkbox:default=false}}\n\nBefore creating the spreadsheet, please:\n1. Review my requirements and consider best practices for this type of spreadsheet\n2. Ask any clarifying questions about structure, formulas, data layout, or assumptions\n3. Once clarified, proceed with creation"
+            },
+            "fileUpload": {
+                "enabled": true,
+                "multiple": true,
+                "accept": ".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.md",
+                "label": "Upload reference files",
+                "required": false
+            },
+            "autoSubmit": true,
+            "tags": [
+                "create"
+            ],
+            "enabled": true,
+            "visibility": "all",
+            "examples": [
+                "Build a 5-year forecast model using the attached IM",
+                "Create a DCF valuation with sensitivity analysis",
+                "Generate a monthly cash flow tracker with formulas"
+            ]
+        },
+        {
+            "id": "word_generator",
+            "title": "Word (Experimental)",
+            "subtitle": "Create professional documents",
+            "description": "Generate Word documents with proper formatting, headers, and Alceon branding using the Alceon template.",
+            "icon": "📝",
+            "color": "from-[#2b579a] to-[#1e3f6f]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "modelId": "claude.claude_docs",
+                "prompt": "I need a Word document (.docx) created with professional Alceon formatting.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the document should contain, e.g., 'Write an investment memo summarizing the key terms and risks of the attached deal'\"}}\n\nEstimated length:\n{{pages|select:options=[\"1-2 pages\",\"3-5 pages\",\"6-10 pages\",\"10+ pages\"]:default=\"3-5 pages\":placeholder=\"Select approximate length\"}}\n\nTone:\n{{tone|select:options=[\"Professional\",\"Formal\",\"Executive Summary\"]:default=\"Professional\":placeholder=\"Select tone\"}}\n\nBefore creating the document, please:\n1. Review my requirements and consider best practices for this type of document\n2. Ask any clarifying questions about content, structure, tone, or audience\n3. Once clarified, proceed with creation"
+            },
+            "fileUpload": {
+                "enabled": true,
+                "multiple": true,
+                "accept": ".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.md",
+                "label": "Upload reference files",
+                "required": false
+            },
+            "autoSubmit": true,
+            "tags": [
+                "create"
+            ],
+            "enabled": true,
+            "visibility": [
+                "Technology"
+            ],
+            "examples": [
+                "Write an investment memo based on the attached term sheet",
+                "Create a due diligence report summarizing findings",
+                "Draft a briefing note on market conditions"
+            ]
+        },
+        {
+            "id": "powerpoint_generator",
+            "title": "PowerPoint (Experimental)",
+            "subtitle": "Create professional presentations",
+            "description": "Generate PowerPoint presentations with Alceon branding, compelling visuals, and speaker notes.",
+            "icon": "📽️",
+            "color": "from-[#d24726] to-[#b7472a]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "modelId": "claude.claude_docs",
+                "prompt": "I need a PowerPoint presentation (.pptx) created with Alceon branding (Navy #1E2761, Ice Blue #CADCFC, White).\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the presentation should contain, e.g., 'Create an IC presentation summarizing the investment thesis, financials, and key risks'\"}}\n\nNumber of slides:\n{{slides|number:placeholder=\"e.g., 10\":default=\"10\"}}\n\nTone:\n{{tone|select:options=[\"Professional\",\"Executive\",\"Detailed Analysis\"]:default=\"Professional\":placeholder=\"Select presentation tone\"}}\n\nInclude speaker notes:\n{{speaker_notes|checkbox:default=false}}\n\nBefore creating the presentation, please:\n1. Review my requirements and consider best practices for this type of presentation\n2. Ask any clarifying questions about slide count, key messages, audience, or visual elements\n3. Once clarified, proceed with creation"
+            },
+            "fileUpload": {
+                "enabled": true,
+                "multiple": true,
+                "accept": ".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.csv,.txt,.md",
+                "label": "Upload reference files",
+                "required": false
+            },
+            "autoSubmit": true,
+            "tags": [
+                "create"
+            ],
+            "enabled": true,
+            "visibility": [
+                "Technology"
+            ],
+            "examples": [
+                "Create an IC presentation from the attached investment memo",
+                "Build a market overview deck with charts and insights",
+                "Generate a deal summary presentation for the board"
+            ]
+        },
+        {
+            "id": "pdf_tools",
+            "title": "PDF (Experimental)",
+            "subtitle": "Extract, merge, and edit PDFs",
+            "description": "Extract text and tables from PDFs, merge or split documents, fill forms, add watermarks, and manipulate existing PDF files.",
+            "icon": "📄",
+            "color": "from-[#ff0000] to-[#cc0000]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "modelId": "claude.claude_docs",
+                "prompt": "I need help with the attached PDF files.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what you need, e.g., 'Extract all tables to Excel', 'Merge these PDFs in order', 'Fill out this form with company details', 'Split into separate pages'\"}}\n\nBefore proceeding, please:\n1. Review the attached PDFs and my requirements\n2. Ask any clarifying questions about the desired output format or specific pages\n3. Once clarified, proceed with the task"
+            },
+            "fileUpload": {
+                "enabled": true,
+                "multiple": true,
+                "accept": ".pdf",
+                "label": "Upload PDF files",
+                "required": true
+            },
+            "autoSubmit": true,
+            "tags": [
+                "create"
+            ],
+            "enabled": true,
+            "visibility": [
+                "Technology"
+            ],
+            "examples": [
+                "Extract all tables from this PDF to Excel",
+                "Merge these PDFs into a single document",
+                "Fill out this form with the following details..."
+            ]
+        },
+        {
+            "id": "policy_search",
+            "title": "Policy Search",
+            "subtitle": "Alceon Policy Library",
+            "description": "Search Alceon's policy library to find answers about company policies including leave, compliance, risk management, workplace conduct, and more.",
+            "icon": "🔍",
+            "color": "from-[#1a365d] to-[#c4a35a]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "prompt": "You are Alceon's internal policy assistant. Answer questions about Alceon Group's policies using the attached knowledge base.\n\n## Question\n{{question|textarea:required:placeholder=\"What's covered under the travel expenses policy?\"}}\n\n## Topic\n{{topic|select:options=[\"All Policies\",\"Leave & Entitlements\",\"Workplace & Conduct\",\"Compliance & AML/CTF\",\"Risk Management\",\"Privacy & Disclosure\",\"Outsourcing\",\"Training & Study\",\"Travel & Expenses\",\"Share Trading\",\"ESG & Modern Slavery\",\"AI Policy\",\"Whistleblower\",\"Conflicts of Interest\",\"Parental Leave\",\"Novated Lease\"]:default=\"All Policies\"}}\n\n## Instructions\n- Search the Alceon Policy Library for the relevant policy\n- Give a clear, direct answer without inline citations\n- If the topic filter is not \"All Policies\", focus on that area\n- If the answer spans multiple policies, reference all relevant ones\n- If the policy library doesn't cover the question, say so clearly\n- Use plain language\n\n## Output Format\n\n### Answer\n[Direct answer to the question]\n\n### Source\nSourced from [Policy Document Name (date)]. Refer to [sections/pages].\n\n### Good to Know\n- [Bullet points only — brief caveats, exceptions, related policies, or next steps]\n- [No long sentences or paragraphs]\n\n### Contact\nChoose the appropriate contact based on the policy topic:\n- Compliance-related topics (share trading, AML/CTF, conflicts of interest, whistleblower, risk management, disclosure): \"Further questions? Please contact Compliance (compliance@alceon.com.au).\"\n- People & Culture topics (leave, parental leave, workplace conduct, training, travel expenses, novated lease): \"Further questions? Please contact People and Culture (peopleandculture@alceon.com.au).\"\n- If the question spans both areas, list both contacts."
+            },
+            "features": {
+                "knowledge": [
+                    {
+                        "id": "425073d6-3a8a-4e88-b9b6-fd3e7dd23fc5",
+                        "name": "Alceon Policy Library"
+                    }
+                ]
+            },
+            "autoSubmit": true,
+            "tags": [
+                "lookup"
+            ],
+            "enabled": true,
+            "visibility": "all",
+            "difficulty": "basic",
+            "examples": [
+                "How much annual leave am I entitled to?",
+                "What are the rules around share trading?",
+                "What's covered under the travel expenses policy?"
+            ]
+        },
+        {
+            "id": "news_search",
+            "title": "News Search",
+            "subtitle": "Industry & portfolio news",
+            "description": "Search for the latest news on industries, companies, portfolio companies, competitors, or real estate markets. Get a curated briefing with key takeaways.",
+            "icon": "📰",
+            "color": "from-[#1a365d] to-[#63b3ed]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "prompt": "You are a senior research analyst at Alceon Group conducting a targeted news search.\n\n## Search Parameters\n- **What to search for:** {{query|textarea:required:placeholder=\"e.g., Acme Industries recent news, Australian aged care sector, Brisbane apartment developments, private credit market Australia\"}}\n- **Category:** {{category|select:required:options=[\"Portfolio company news\",\"Industry / sector news\",\"Competitor intelligence\",\"Real estate market / development news\",\"M&A and deal activity\",\"Regulatory and policy changes\",\"Macroeconomic and market conditions\",\"General company research\"]}}\n- **Time Period:** {{period|select:options=[\"Last 24 hours\",\"Last 7 days\",\"Last 30 days\",\"Last 3 months\"]:default=\"Last 7 days\"}}\n- **Geography:** {{geography|select:options=[\"Australia\",\"Australia & NZ\",\"Asia-Pacific\",\"Global\",\"Other\"]:default=\"Australia\"}}\n\n## Instructions\n\nSearch the web for the most relevant and recent news matching the query. Focus on credible sources — major publications, industry outlets, company announcements, and regulatory bodies.\n\n**Guidelines:**\n- Prioritise material news that would affect investment decisions or business strategy\n- Lead with the most important and recent items\n- Include source and date for every item\n- Distinguish between confirmed news and speculation/opinion\n- Flag anything that may require immediate attention or action\n- Use Australian English\n\n## Output Format\n\n### News Briefing: [Search Topic]\n**Period:** [Time range] | **As at:** [Today's date]\n\n---\n\n### 🔴 Urgent / Material\n*Items requiring immediate attention (if any)*\n\n**[Headline]**\n[2-3 sentence summary of what happened and why it matters]\n**Source:** [Publication] | **Date:** [Date]\n**Implication:** [What this means for Alceon / the portfolio / the deal]\n\n---\n\n### Key Stories\n\n**1. [Headline]**\n[2-3 sentence summary]\n**Source:** [Publication] | **Date:** [Date]\n**Relevance:** [Why this matters]\n\n**2. [Headline]**\n[2-3 sentence summary]\n**Source:** [Publication] | **Date:** [Date]\n**Relevance:** [Why this matters]\n\n**3. [Headline]**\n...\n\n---\n\n### Other Notable Mentions\n\n| Date | Headline | Source | Summary |\n|------|----------|--------|---------|\n| [Date] | [Title] | [Source] | [One-line summary] |\n\n---\n\n### Key Takeaways\n1. [Most important insight]\n2. [Second insight]\n3. [Third insight]\n\n### Suggested Follow-Up\n- [Any deeper research worth doing]\n- [People to notify or discuss with]\n\n---\n\n*Sources verified as at [today]. Confirm material items before acting.*"
             },
             "features": {
                 "webSearch": true
@@ -133,11 +369,36 @@
             "enabled": true,
             "visibility": "all",
             "difficulty": "basic",
-            "helpText": "Find current information from the web.",
             "examples": [
-                "Latest news on...",
-                "Current price of...",
-                "Recent updates about..."
+                "Latest news on [portfolio company]",
+                "Australian private credit market",
+                "Brisbane apartment development pipeline",
+                "Recent PE deals in healthcare"
+            ]
+        },
+        {
+            "id": "ai_help_me",
+            "title": "How Can AI Help Me?",
+            "subtitle": "Discover AI opportunities for your role",
+            "description": "Get personalised ideas for how AI can save you time and improve your work. Select your team, describe what you do, and get practical suggestions with ready-to-use prompts.",
+            "icon": "🚀",
+            "color": "from-[#1a365d] to-[#c4a35a]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "prompt",
+                "prompt": "You are an AI adoption specialist helping Alceon Group employees discover practical ways AI can help them in their daily work.\n\n## About You\n- **Team:** {{team|select:required:options=[\"Private Equity\",\"Hybrid Solutions\",\"Real Estate\",\"Finance & Operations\",\"Marketing & Investor Relations\",\"Legal & Compliance\",\"People & Culture\",\"Technology\",\"Executive / Leadership\"]}}\n- **Your Role:** {{role|textarea:required:placeholder=\"Describe what you do day-to-day. e.g., I'm an analyst who builds financial models, reviews IMs, and prepares IC papers. I spend a lot of time on data entry and formatting slides.\"}}\n- **Biggest Time Drains:** {{time_drains|textarea:placeholder=\"What takes up too much of your time? e.g., Formatting documents, chasing information, writing emails, manual research...\"}}\n- **Experience with AI:** {{experience|select:options=[\"New to AI - show me the basics\",\"I've used it a bit - show me more\",\"Comfortable - show me advanced uses\"]:default=\"I've used it a bit - show me more\"}}\n\n## Instructions\n\nBased on the person's team, role, and pain points, generate 8-12 specific, practical ways they can use Kingfisher (GPT-5 on Open WebUI) to work faster and smarter.\n\n**Rules:**\n- Every suggestion must be achievable right now by typing a prompt into Kingfisher or using an existing Kingfisher capability\n- Do NOT recommend external tools, plugins, or software\n- Do NOT suggest things that require API access, code, or technical setup\n- Focus on tasks they likely do weekly or daily\n- Include a ready-to-use example prompt for each idea\n- Group by impact level\n- Be specific to their role — generic tips like \"summarise documents\" are not helpful without context\n- Match complexity to their experience level\n\n## Output Format\n\n### 🚀 AI Opportunities for Your Role\n\nBased on what you've told me, here are practical ways Kingfisher can help you right now.\n\n---\n\n### High Impact — Start Here\n*These will save you the most time immediately.*\n\n**1. [Specific task name]**\n[One sentence explaining what this replaces or speeds up]\n\n> **Try this prompt:**\n> *[Ready-to-paste prompt they can use immediately — keep it under 3 sentences]*\n\n⏱️ **Time saved:** ~[X] mins per [frequency]\n\n---\n\n**2. [Specific task name]**\n...\n\n---\n\n### Medium Impact — Build Into Your Routine\n*Useful for recurring tasks throughout the week.*\n\n**[Continue numbering]**\n...\n\n---\n\n### Worth Trying — Quick Wins\n*Small but satisfying time-savers.*\n\n**[Continue numbering]**\n...\n\n---\n\n### 💡 Tips for Your Team\n- [1-2 team-specific tips on getting better results from AI]\n- [Reminder about any existing Kingfisher capabilities that are particularly relevant to their team, e.g., \"Your team already has access to the IC Deal Summary capability — try it next time you receive an IM\"]\n\n---\n\n### What's Next?\nPick one idea from the **High Impact** section and try it today. Once it clicks, work your way down the list.\n\n*All suggestions work in Kingfisher right now — just paste the prompt and go.*"
+            },
+            "autoSubmit": true,
+            "tags": [
+                "research"
+            ],
+            "enabled": true,
+            "visibility": "all",
+            "difficulty": "basic",
+            "examples": [
+                "I'm a PE associate that reviews IMs and builds models",
+                "I work in finance and spend hours on end-of-month reporting",
+                "I'm in marketing and need help with content generation"
             ]
         },
         {
@@ -168,33 +429,32 @@
             "visibility": "all"
         },
         {
-            "id": "policy_search",
-            "title": "Policy Search",
-            "subtitle": "Alceon Policy Library",
-            "description": "Search Alceon's policy library to find answers about company policies including leave, compliance, risk management, workplace conduct, and more.",
-            "icon": "🔍",
-            "color": "from-[#1a365d] to-[#c4a35a]",
+            "id": "web_search",
+            "title": "Web Search",
+            "subtitle": "Search the internet",
+            "description": "Search the web for current information and news.",
+            "icon": "🌐",
+            "color": "from-[#63b3ed] to-[#2b6cb0]",
             "capabilityType": "Form",
             "action": {
                 "type": "prompt",
-                "prompt": "You are Alceon's internal policy assistant. Answer questions about Alceon Group's policies using the attached knowledge base.\n\n## Question\n{{question|textarea:required:placeholder=\"What's covered under the travel expenses policy?\"}}\n\n## Topic\n{{topic|select:options=[\"All Policies\",\"Leave & Entitlements\",\"Workplace & Conduct\",\"Compliance & AML/CTF\",\"Risk Management\",\"Privacy & Disclosure\",\"Outsourcing\",\"Training & Study\",\"Travel & Expenses\",\"Share Trading\",\"ESG & Modern Slavery\",\"AI Policy\",\"Whistleblower\",\"Conflicts of Interest\",\"Parental Leave\",\"Novated Lease\"]:default=\"All Policies\"}}\n\n## Instructions\n- Search the Alceon Policy Library for the relevant policy\n- Give a clear, direct answer without inline citations\n- If the topic filter is not \"All Policies\", focus on that area\n- If the answer spans multiple policies, reference all relevant ones\n- If the policy library doesn't cover the question, say so clearly\n- Use plain language\n\n## Output Format\n\n### Answer\n[Direct answer to the question]\n\n### Source\nSourced from [Policy Document Name (date)]. Refer to [sections/pages].\n\n### Good to Know\n- [Bullet points only — brief caveats, exceptions, related policies, or next steps]\n- [No long sentences or paragraphs]\n\n### Contact\nChoose the appropriate contact based on the policy topic:\n- Compliance-related topics (share trading, AML/CTF, conflicts of interest, whistleblower, risk management, disclosure): \"Further questions? Please contact Compliance (compliance@alceon.com.au).\"\n- People & Culture topics (leave, parental leave, workplace conduct, training, travel expenses, novated lease): \"Further questions? Please contact People and Culture (peopleandculture@alceon.com.au).\"\n- If the question spans both areas, list both contacts."
+                "prompt": "Search the web for:\n\n{{search_term | text:placeholder=\"Enter your search query...\":required}}"
             },
             "features": {
-                "knowledge": [
-                    { "id": "425073d6-3a8a-4e88-b9b6-fd3e7dd23fc5", "name": "Alceon Policy Library" }
-                ]
+                "webSearch": true
             },
             "autoSubmit": true,
             "tags": [
-                "lookup"
+                "research"
             ],
             "enabled": true,
             "visibility": "all",
             "difficulty": "basic",
+            "helpText": "Find current information from the web.",
             "examples": [
-                "How much annual leave am I entitled to?",
-                "What are the rules around share trading?",
-                "What's covered under the travel expenses policy?"
+                "Latest news on...",
+                "Current price of...",
+                "Recent updates about..."
             ]
         },
         {
@@ -700,31 +960,6 @@
             "visibility": "all"
         },
         {
-            "id": "ai_help_me",
-            "title": "How Can AI Help Me?",
-            "subtitle": "Discover AI opportunities for your role",
-            "description": "Get personalised ideas for how AI can save you time and improve your work. Select your team, describe what you do, and get practical suggestions with ready-to-use prompts.",
-            "icon": "🚀",
-            "color": "from-[#1a365d] to-[#c4a35a]",
-            "capabilityType": "Form",
-            "action": {
-                "type": "prompt",
-                "prompt": "You are an AI adoption specialist helping Alceon Group employees discover practical ways AI can help them in their daily work.\n\n## About You\n- **Team:** {{team|select:required:options=[\"Private Equity\",\"Hybrid Solutions\",\"Real Estate\",\"Finance & Operations\",\"Marketing & Investor Relations\",\"Legal & Compliance\",\"People & Culture\",\"Technology\",\"Executive / Leadership\"]}}\n- **Your Role:** {{role|textarea:required:placeholder=\"Describe what you do day-to-day. e.g., I'm an analyst who builds financial models, reviews IMs, and prepares IC papers. I spend a lot of time on data entry and formatting slides.\"}}\n- **Biggest Time Drains:** {{time_drains|textarea:placeholder=\"What takes up too much of your time? e.g., Formatting documents, chasing information, writing emails, manual research...\"}}\n- **Experience with AI:** {{experience|select:options=[\"New to AI - show me the basics\",\"I've used it a bit - show me more\",\"Comfortable - show me advanced uses\"]:default=\"I've used it a bit - show me more\"}}\n\n## Instructions\n\nBased on the person's team, role, and pain points, generate 8-12 specific, practical ways they can use Kingfisher (GPT-5 on Open WebUI) to work faster and smarter.\n\n**Rules:**\n- Every suggestion must be achievable right now by typing a prompt into Kingfisher or using an existing Kingfisher capability\n- Do NOT recommend external tools, plugins, or software\n- Do NOT suggest things that require API access, code, or technical setup\n- Focus on tasks they likely do weekly or daily\n- Include a ready-to-use example prompt for each idea\n- Group by impact level\n- Be specific to their role — generic tips like \"summarise documents\" are not helpful without context\n- Match complexity to their experience level\n\n## Output Format\n\n### 🚀 AI Opportunities for Your Role\n\nBased on what you've told me, here are practical ways Kingfisher can help you right now.\n\n---\n\n### High Impact — Start Here\n*These will save you the most time immediately.*\n\n**1. [Specific task name]**\n[One sentence explaining what this replaces or speeds up]\n\n> **Try this prompt:**\n> *[Ready-to-paste prompt they can use immediately — keep it under 3 sentences]*\n\n⏱️ **Time saved:** ~[X] mins per [frequency]\n\n---\n\n**2. [Specific task name]**\n...\n\n---\n\n### Medium Impact — Build Into Your Routine\n*Useful for recurring tasks throughout the week.*\n\n**[Continue numbering]**\n...\n\n---\n\n### Worth Trying — Quick Wins\n*Small but satisfying time-savers.*\n\n**[Continue numbering]**\n...\n\n---\n\n### 💡 Tips for Your Team\n- [1-2 team-specific tips on getting better results from AI]\n- [Reminder about any existing Kingfisher capabilities that are particularly relevant to their team, e.g., \"Your team already has access to the IC Deal Summary capability — try it next time you receive an IM\"]\n\n---\n\n### What's Next?\nPick one idea from the **High Impact** section and try it today. Once it clicks, work your way down the list.\n\n*All suggestions work in Kingfisher right now — just paste the prompt and go.*"
-            },
-            "autoSubmit": true,
-            "tags": [
-                "research"
-            ],
-            "enabled": true,
-            "visibility": "all",
-            "difficulty": "basic",
-            "examples": [
-                "I'm a PE associate that reviews IMs and builds models",
-                "I work in finance and spend hours on end-of-month reporting",
-                "I'm in marketing and need help with content generation"
-            ]
-        },
-        {
             "id": "diligent_shareholders",
             "title": "Get Shareholders",
             "subtitle": "Diligent lookup",
@@ -835,35 +1070,6 @@
             ],
             "enabled": true,
             "visibility": "all"
-        },
-        {
-            "id": "news_search",
-            "title": "News Search",
-            "subtitle": "Industry & portfolio news",
-            "description": "Search for the latest news on industries, companies, portfolio companies, competitors, or real estate markets. Get a curated briefing with key takeaways.",
-            "icon": "📰",
-            "color": "from-[#1a365d] to-[#63b3ed]",
-            "capabilityType": "Form",
-            "action": {
-                "type": "prompt",
-                "prompt": "You are a senior research analyst at Alceon Group conducting a targeted news search.\n\n## Search Parameters\n- **What to search for:** {{query|textarea:required:placeholder=\"e.g., Acme Industries recent news, Australian aged care sector, Brisbane apartment developments, private credit market Australia\"}}\n- **Category:** {{category|select:required:options=[\"Portfolio company news\",\"Industry / sector news\",\"Competitor intelligence\",\"Real estate market / development news\",\"M&A and deal activity\",\"Regulatory and policy changes\",\"Macroeconomic and market conditions\",\"General company research\"]}}\n- **Time Period:** {{period|select:options=[\"Last 24 hours\",\"Last 7 days\",\"Last 30 days\",\"Last 3 months\"]:default=\"Last 7 days\"}}\n- **Geography:** {{geography|select:options=[\"Australia\",\"Australia & NZ\",\"Asia-Pacific\",\"Global\",\"Other\"]:default=\"Australia\"}}\n\n## Instructions\n\nSearch the web for the most relevant and recent news matching the query. Focus on credible sources — major publications, industry outlets, company announcements, and regulatory bodies.\n\n**Guidelines:**\n- Prioritise material news that would affect investment decisions or business strategy\n- Lead with the most important and recent items\n- Include source and date for every item\n- Distinguish between confirmed news and speculation/opinion\n- Flag anything that may require immediate attention or action\n- Use Australian English\n\n## Output Format\n\n### News Briefing: [Search Topic]\n**Period:** [Time range] | **As at:** [Today's date]\n\n---\n\n### 🔴 Urgent / Material\n*Items requiring immediate attention (if any)*\n\n**[Headline]**\n[2-3 sentence summary of what happened and why it matters]\n**Source:** [Publication] | **Date:** [Date]\n**Implication:** [What this means for Alceon / the portfolio / the deal]\n\n---\n\n### Key Stories\n\n**1. [Headline]**\n[2-3 sentence summary]\n**Source:** [Publication] | **Date:** [Date]\n**Relevance:** [Why this matters]\n\n**2. [Headline]**\n[2-3 sentence summary]\n**Source:** [Publication] | **Date:** [Date]\n**Relevance:** [Why this matters]\n\n**3. [Headline]**\n...\n\n---\n\n### Other Notable Mentions\n\n| Date | Headline | Source | Summary |\n|------|----------|--------|---------|\n| [Date] | [Title] | [Source] | [One-line summary] |\n\n---\n\n### Key Takeaways\n1. [Most important insight]\n2. [Second insight]\n3. [Third insight]\n\n### Suggested Follow-Up\n- [Any deeper research worth doing]\n- [People to notify or discuss with]\n\n---\n\n*Sources verified as at [today]. Confirm material items before acting.*"
-            },
-            "features": {
-                "webSearch": true
-            },
-            "autoSubmit": true,
-            "tags": [
-                "research"
-            ],
-            "enabled": true,
-            "visibility": "all",
-            "difficulty": "basic",
-            "examples": [
-                "Latest news on [portfolio company]",
-                "Australian private credit market",
-                "Brisbane apartment development pipeline",
-                "Recent PE deals in healthcare"
-            ]
         },
         {
             "id": "trading-approvals",
