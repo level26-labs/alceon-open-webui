@@ -359,11 +359,16 @@
 			return true;
 		}
 		if (Array.isArray(capability.visibility)) {
-			const hasAccess = capability.visibility.some(groupId => userGroups.includes(groupId));
+			// Case-insensitive match with trimmed whitespace
+			const normalizedUserGroups = userGroups.map(g => g?.toString().trim().toLowerCase());
+			const normalizedVisibility = capability.visibility.map(v => v?.toString().trim().toLowerCase());
+			const hasAccess = normalizedVisibility.some(groupId => normalizedUserGroups.includes(groupId));
 			console.log('[Visibility Debug]', {
 				capability: capability.id,
 				requiredGroups: capability.visibility,
+				normalizedRequired: normalizedVisibility,
 				userGroups: userGroups,
+				normalizedUserGroups: normalizedUserGroups,
 				hasAccess: hasAccess
 			});
 			return hasAccess;
@@ -376,7 +381,10 @@
 			return true;
 		}
 		if (Array.isArray(tile.visibility)) {
-			return tile.visibility.some(groupId => userGroups.includes(groupId));
+			// Case-insensitive match with trimmed whitespace
+			const normalizedUserGroups = userGroups.map(g => g?.toString().trim().toLowerCase());
+			const normalizedVisibility = tile.visibility.map(v => v?.toString().trim().toLowerCase());
+			return normalizedVisibility.some(groupId => normalizedUserGroups.includes(groupId));
 		}
 		return false;
 	}
