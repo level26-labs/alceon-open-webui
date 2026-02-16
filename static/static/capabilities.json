@@ -156,7 +156,7 @@
     "capabilities": [
         {
             "id": "excel_generator",
-            "title": "Excel Spreadsheet",
+            "title": "Excel Spreadsheet (Experimental)",
             "subtitle": "Create professional spreadsheets",
             "description": "Generate Excel spreadsheets with formulas, financial models, and data analysis using Alceon standards.",
             "icon": "📊",
@@ -165,7 +165,7 @@
             "action": {
                 "type": "prompt",
                 "modelId": "claude.claude_docs",
-                "prompt": "I need an Excel spreadsheet (.xlsx) created.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the spreadsheet should contain, e.g., 'Build a 5-year forecast model with revenue projections, operating costs, and EBITDA calculations'\"}}\n\nBefore creating the spreadsheet, please:\n1. Review my requirements and consider best practices for this type of spreadsheet\n2. Ask any clarifying questions about structure, formulas, data layout, or assumptions\n3. Once clarified, proceed with creation"
+                "prompt": "I need an Excel spreadsheet (.xlsx) created.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the spreadsheet should contain, e.g., 'Build a 5-year forecast model with revenue projections, operating costs, and EBITDA calculations'\"}}\n\nComplexity:\n{{complexity|select:options=[\"Simple (basic data)\",\"Moderate (some formulas)\",\"Complex (advanced formulas & charts)\"]:default=\"Moderate (some formulas)\":placeholder=\"Select complexity level\"}}\n\nInclude charts:\n{{include_charts|checkbox:default=true}}\n\nBefore creating the spreadsheet, please:\n1. Review my requirements and consider best practices for this type of spreadsheet\n2. Ask any clarifying questions about structure, formulas, data layout, or assumptions\n3. Once clarified, proceed with creation"
             },
             "fileUpload": {
                 "enabled": true,
@@ -188,7 +188,7 @@
         },
         {
             "id": "word_generator",
-            "title": "Word Document",
+            "title": "Word Document (Experimental)",
             "subtitle": "Create professional documents",
             "description": "Generate Word documents with proper formatting, headers, and Alceon branding using corporate templates.",
             "icon": "📝",
@@ -197,13 +197,13 @@
             "action": {
                 "type": "prompt",
                 "modelId": "claude.claude_docs",
-                "prompt": "I need a Word document (.docx) created with professional Alceon formatting.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the document should contain, e.g., 'Write an investment memo summarizing the key terms and risks of the attached deal'\"}}\n\nBefore creating the document, please:\n1. Review my requirements and consider best practices for this type of document\n2. Ask any clarifying questions about content, structure, tone, or audience\n3. Once clarified, proceed with creation"
+                "prompt": "I need a Word document (.docx) created with professional Alceon formatting.\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the document should contain, e.g., 'Write an investment memo summarizing the key terms and risks of the attached deal'\"}}\n\nEstimated length:\n{{pages|select:options=[\"1-2 pages\",\"3-5 pages\",\"6-10 pages\",\"10+ pages\"]:default=\"3-5 pages\":placeholder=\"Select approximate length\"}}\n\nTone:\n{{tone|select:options=[\"Professional\",\"Formal\",\"Executive Summary\"]:default=\"Professional\":placeholder=\"Select tone\"}}\n\nBefore creating the document, please:\n1. Review my requirements and consider best practices for this type of document\n2. Ask any clarifying questions about content, structure, tone, or audience\n3. Once clarified, proceed with creation"
             },
             "fileUpload": {
                 "enabled": true,
                 "multiple": true,
                 "accept": ".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.md",
-                "label": "Upload reference files or template",
+                "label": "Upload reference files",
                 "required": false
             },
             "autoSubmit": true,
@@ -220,7 +220,7 @@
         },
         {
             "id": "powerpoint_generator",
-            "title": "PowerPoint Presentation",
+            "title": "PowerPoint Presentation (Experimental)",
             "subtitle": "Create professional presentations",
             "description": "Generate PowerPoint presentations with Alceon branding, compelling visuals, and speaker notes.",
             "icon": "📽️",
@@ -229,13 +229,13 @@
             "action": {
                 "type": "prompt",
                 "modelId": "claude.claude_docs",
-                "prompt": "I need a PowerPoint presentation (.pptx) created with Alceon branding (Navy #1E2761, Ice Blue #CADCFC, White).\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the presentation should contain, e.g., 'Create an IC presentation summarizing the investment thesis, financials, and key risks'\"}}\n\nBefore creating the presentation, please:\n1. Review my requirements and consider best practices for this type of presentation\n2. Ask any clarifying questions about slide count, key messages, audience, or visual elements\n3. Once clarified, proceed with creation"
+                "prompt": "I need a PowerPoint presentation (.pptx) created with Alceon branding (Navy #1E2761, Ice Blue #CADCFC, White).\n\nRequirements:\n{{description|textarea:required:placeholder=\"Describe what the presentation should contain, e.g., 'Create an IC presentation summarizing the investment thesis, financials, and key risks'\"}}\n\nNumber of slides:\n{{slides|number:placeholder=\"e.g., 10\":default=\"10\"}}\n\nTone:\n{{tone|select:options=[\"Professional\",\"Executive\",\"Detailed Analysis\"]:default=\"Professional\":placeholder=\"Select presentation tone\"}}\n\nInclude speaker notes:\n{{speaker_notes|checkbox:default=true}}\n\nBefore creating the presentation, please:\n1. Review my requirements and consider best practices for this type of presentation\n2. Ask any clarifying questions about slide count, key messages, audience, or visual elements\n3. Once clarified, proceed with creation"
             },
             "fileUpload": {
                 "enabled": true,
                 "multiple": true,
                 "accept": ".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.csv,.txt,.md",
-                "label": "Upload reference files or template",
+                "label": "Upload reference files",
                 "required": false
             },
             "autoSubmit": true,
@@ -252,7 +252,7 @@
         },
         {
             "id": "pdf_tools",
-            "title": "PDF Tools",
+            "title": "PDF Tools (Experimental)",
             "subtitle": "Extract, merge, and edit PDFs",
             "description": "Extract text and tables from PDFs, merge or split documents, fill forms, add watermarks, and manipulate existing PDF files.",
             "icon": "📄",
