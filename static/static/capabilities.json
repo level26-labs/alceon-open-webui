@@ -81,8 +81,10 @@
                     "icon": "<svg viewBox='0 0 24 24' fill='currentColor' class='w-full h-full'><rect width='24' height='24' rx='4' fill='#d24726'/><path d='M8 6h5c2.2 0 4 1.8 4 4s-1.8 4-4 4h-2.5v4H8V6zm2.5 6H13c.8 0 1.5-.7 1.5-1.5S13.8 9 13 9h-2.5v3z' fill='white'/></svg>"
                 }
             ],
-            "visibility": ["Technology"],
-            "enabled": false
+            "visibility": [
+                "Technology"
+            ],
+            "enabled": true
         },
         {
             "id": "featured-feb-2026-excel",
@@ -111,8 +113,10 @@
                 "capabilityId": "pdf_tools",
                 "label": "Open PDF Tools"
             },
-            "visibility": ["Technology"],
-            "enabled": false
+            "visibility": [
+                "Technology"
+            ],
+            "enabled": true
         },
         {
             "id": "featured-feb-2026-ai-help-me",
@@ -233,7 +237,9 @@
                 "create"
             ],
             "enabled": true,
-            "visibility": ["Technology"],
+            "visibility": [
+                "Technology"
+            ],
             "examples": [
                 "Write an investment memo based on the attached term sheet",
                 "Create a due diligence report summarizing findings",
@@ -265,7 +271,9 @@
                 "create"
             ],
             "enabled": true,
-            "visibility": ["Technology"],
+            "visibility": [
+                "Technology"
+            ],
             "examples": [
                 "Create an IC presentation from the attached investment memo",
                 "Build a market overview deck with charts and insights",
@@ -297,7 +305,9 @@
                 "create"
             ],
             "enabled": true,
-            "visibility": ["Technology"],
+            "visibility": [
+                "Technology"
+            ],
             "examples": [
                 "Extract all tables from this PDF to Excel",
                 "Merge these PDFs into a single document",

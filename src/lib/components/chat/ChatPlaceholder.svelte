@@ -51,7 +51,6 @@
 				if (groups && Array.isArray(groups)) {
 					// Flatten to include both IDs and names for backward compatibility
 					userGroups = groups.flatMap(g => [g.id, g.name].filter(Boolean));
-					console.log('[ChatPlaceholder] Fetched user groups:', userGroups);
 				}
 			} catch (error) {
 				console.error('[ChatPlaceholder] Failed to fetch user groups:', error);

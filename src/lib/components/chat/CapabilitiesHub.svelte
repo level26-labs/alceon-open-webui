@@ -120,12 +120,6 @@
 	export let onSelect: (prompt: string, modelId?: string, features?: PromptFeatures, autoSubmit?: boolean, files?: File[]) => void = () => {};
 	export let onNavigate: (route: string) => void = () => {};
 	export let userGroups: string[] = [];
-	export let showDebug: boolean = true;  // Enable debug by default
-
-	// Debug: Log userGroups when it changes
-	$: {
-		console.log('[User Groups Debug]', userGroups);
-	}
 
 	// User preference states
 	let starredCapabilities: string[] = [];
@@ -362,16 +356,7 @@
 			// Case-insensitive match with trimmed whitespace
 			const normalizedUserGroups = userGroups.map(g => g?.toString().trim().toLowerCase());
 			const normalizedVisibility = capability.visibility.map(v => v?.toString().trim().toLowerCase());
-			const hasAccess = normalizedVisibility.some(groupId => normalizedUserGroups.includes(groupId));
-			console.log('[Visibility Debug]', {
-				capability: capability.id,
-				requiredGroups: capability.visibility,
-				normalizedRequired: normalizedVisibility,
-				userGroups: userGroups,
-				normalizedUserGroups: normalizedUserGroups,
-				hasAccess: hasAccess
-			});
-			return hasAccess;
+			return normalizedVisibility.some(groupId => normalizedUserGroups.includes(groupId));
 		}
 		return false;
 	}
@@ -953,20 +938,6 @@
 	</div>
 
 	<!-- Debug Panel -->
-	{#if showDebug}
-		<div class="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-			<div class="text-sm font-semibold text-yellow-800 dark:text-yellow-200 mb-2">🔍 Debug: User Groups</div>
-			<div class="text-xs text-yellow-700 dark:text-yellow-300 font-mono">
-				{#if userGroups.length > 0}
-					<div>Your groups: [{userGroups.join(', ')}]</div>
-					<div class="mt-1">Count: {userGroups.length}</div>
-				{:else}
-					<div class="text-red-600 dark:text-red-400">⚠️ No groups found! This is why visibility isn't working.</div>
-				{/if}
-			</div>
-		</div>
-	{/if}
-
 	<!-- Categories + Search -->
 	<div class="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
 		<div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
