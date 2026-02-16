@@ -156,7 +156,7 @@
     "capabilities": [
         {
             "id": "excel_generator",
-            "title": "Excel Spreadsheet (Experimental)",
+            "title": "Excel (Experimental)",
             "subtitle": "Create professional spreadsheets",
             "description": "Generate Excel spreadsheets with formulas, financial models, and data analysis using Alceon standards.",
             "icon": "📊",
@@ -188,7 +188,7 @@
         },
         {
             "id": "word_generator",
-            "title": "Word Document (Experimental)",
+            "title": "Word (Experimental)",
             "subtitle": "Create professional documents",
             "description": "Generate Word documents with proper formatting, headers, and Alceon branding using corporate templates.",
             "icon": "📝",
@@ -220,7 +220,7 @@
         },
         {
             "id": "powerpoint_generator",
-            "title": "PowerPoint Presentation (Experimental)",
+            "title": "PowerPoint (Experimental)",
             "subtitle": "Create professional presentations",
             "description": "Generate PowerPoint presentations with Alceon branding, compelling visuals, and speaker notes.",
             "icon": "📽️",
@@ -252,7 +252,7 @@
         },
         {
             "id": "pdf_tools",
-            "title": "PDF Tools (Experimental)",
+            "title": "PDF (Experimental)",
             "subtitle": "Extract, merge, and edit PDFs",
             "description": "Extract text and tables from PDFs, merge or split documents, fill forms, add watermarks, and manipulate existing PDF files.",
             "icon": "📄",
