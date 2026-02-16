@@ -93,6 +93,7 @@
 		action?: FeaturedTileAction;
 		actions?: FeaturedTileAction[];
 		enabled: boolean;
+		visibility?: 'all' | string[];
 	}
 
 	interface DashboardMeta {
@@ -166,9 +167,9 @@
 		}
 	}
 	
-	// Featured tiles: filter to visible (enabled + not dismissed)
+	// Featured tiles: filter to visible (enabled + not dismissed + user has access)
 	$: visibleFeaturedTiles = featuredTiles.filter(
-		t => t.enabled && !dismissedFeaturedTiles.includes(t.id)
+		t => t.enabled && !dismissedFeaturedTiles.includes(t.id) && canUserSeeFeaturedTile(t)
 	);
 
 	$: activeFeaturedTile = visibleFeaturedTiles[activeFeaturedIndex] || null;
@@ -353,6 +354,16 @@
 		}
 		if (Array.isArray(capability.visibility)) {
 			return capability.visibility.some(groupId => userGroups.includes(groupId));
+		}
+		return false;
+	}
+
+	function canUserSeeFeaturedTile(tile: FeaturedTile): boolean {
+		if (!tile.visibility || tile.visibility === 'all') {
+			return true;
+		}
+		if (Array.isArray(tile.visibility)) {
+			return tile.visibility.some(groupId => userGroups.includes(groupId));
 		}
 		return false;
 	}
