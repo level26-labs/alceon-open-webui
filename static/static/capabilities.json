@@ -85,7 +85,7 @@
         {
             "id": "featured-feb-2026-excel",
             "title": "Excel Generator",
-            "subtitle": "Create Spreadsheets",
+            "subtitle": "Experimental Feature",
             "description": "Create professional Excel spreadsheets with advanced formulas and charts",
             "icon": "<svg viewBox='0 0 24 24' fill='currentColor' class='w-full h-full'><rect width='24' height='24' rx='4' fill='#217346'/><path d='M6 7l3 5-3 5h2.5l2-3.5 2 3.5H15l-3-5 3-5h-2.5l-2 3.5-2-3.5H6z' fill='white'/></svg>",
             "color": "from-[#217346] to-[#185c37]",
@@ -225,7 +225,7 @@
                 "create"
             ],
             "enabled": true,
-            "visibility": "test group",
+            "visibility": ["test group"],
             "examples": [
                 "Write an investment memo based on the attached term sheet",
                 "Create a due diligence report summarizing findings",
