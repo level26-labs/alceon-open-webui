@@ -33,10 +33,18 @@
 	$: models = modelIds.map((id) => $_models.find((m) => m.id === id));
 
 	// Check if current model is Kingfisher (case-insensitive)
-	$: showCapabilitiesHub = models.some(m => 
-		m?.name?.toLowerCase().includes('kingfisher') || 
+	$: showCapabilitiesHub = models.some(m =>
+		m?.name?.toLowerCase().includes('kingfisher') ||
 		m?.id?.toLowerCase().includes('kingfisher')
 	);
+
+	// Debug: Log user groups
+	$: {
+		if ($user?.groups) {
+			console.log('[ChatPlaceholder Debug] Raw user groups:', $user.groups);
+			console.log('[ChatPlaceholder Debug] Mapped userGroups:', $user.groups.flatMap(g => [g.id, g.name].filter(Boolean)));
+		}
+	}
 
 	onMount(() => {
 		mounted = true;

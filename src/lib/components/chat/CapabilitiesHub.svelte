@@ -121,6 +121,11 @@
 	export let onNavigate: (route: string) => void = () => {};
 	export let userGroups: string[] = [];
 
+	// Debug: Log userGroups when it changes
+	$: {
+		console.log('[User Groups Debug]', userGroups);
+	}
+
 	// User preference states
 	let starredCapabilities: string[] = [];
 	let dismissedFeaturedTiles: string[] = [];
@@ -353,7 +358,14 @@
 			return true;
 		}
 		if (Array.isArray(capability.visibility)) {
-			return capability.visibility.some(groupId => userGroups.includes(groupId));
+			const hasAccess = capability.visibility.some(groupId => userGroups.includes(groupId));
+			console.log('[Visibility Debug]', {
+				capability: capability.id,
+				requiredGroups: capability.visibility,
+				userGroups: userGroups,
+				hasAccess: hasAccess
+			});
+			return hasAccess;
 		}
 		return false;
 	}
