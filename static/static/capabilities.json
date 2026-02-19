@@ -35,8 +35,8 @@
         }
     ],
     "meta": {
-        "version": "1.0.8",
-        "changelog": "• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile.\n• Added document generation capabilities: Excel, Word, PowerPoint with corporate templates.\n• Added PDF Tools for extraction, merging, and form filling."
+        "version": "1.1.0",
+        "changelog": "• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile.\n• Added Claude Opus Excel model generation capability."
     },
     "featuredTile": [
         {
@@ -82,15 +82,15 @@
                 }
             ],
             "visibility": [
-                "Technology"
+                "Ambassadors"
             ],
-            "enabled": true
+            "enabled": false
         },
         {
             "id": "featured-feb-2026-excel",
             "title": "Excel Generator",
             "subtitle": "Experimental Feature",
-            "description": "Create professional Excel spreadsheets with advanced formulas and charts",
+            "description": "Create professional Excel spreadsheets with advanced formulas and charts. Powered by Claude.",
             "icon": "<svg viewBox='0 0 24 24' fill='currentColor' class='w-full h-full'><rect width='24' height='24' rx='4' fill='#217346'/><path d='M6 7l3 5-3 5h2.5l2-3.5 2 3.5H15l-3-5 3-5h-2.5l-2 3.5-2-3.5H6z' fill='white'/></svg>",
             "color": "from-[#217346] to-[#185c37]",
             "action": {
@@ -114,9 +114,9 @@
                 "label": "Open PDF Tools"
             },
             "visibility": [
-                "Technology"
+                "Ambassadors"
             ],
-            "enabled": true
+            "enabled": false
         },
         {
             "id": "featured-feb-2026-ai-help-me",
@@ -182,9 +182,9 @@
     "capabilities": [
         {
             "id": "excel_generator",
-            "title": "Excel (Experimental)",
-            "subtitle": "Create professional spreadsheets",
-            "description": "Generate Excel spreadsheets with formulas, financial models, and data analysis using Alceon standards.",
+            "title": "Excel Generator",
+            "subtitle": "Create professional spreadhseets",
+            "description": "Generate Excel spreadsheets with formulas, financial models, and data analysis. Powered by Claude.",
             "icon": "📊",
             "color": "from-[#217346] to-[#185c37]",
             "capabilityType": "Form",
@@ -236,9 +236,9 @@
             "tags": [
                 "create"
             ],
-            "enabled": true,
+            "enabled": false,
             "visibility": [
-                "Technology"
+                "Ambassadors"
             ],
             "examples": [
                 "Write an investment memo based on the attached term sheet",
@@ -270,9 +270,9 @@
             "tags": [
                 "create"
             ],
-            "enabled": true,
+            "enabled": false,
             "visibility": [
-                "Technology"
+                "Ambassadors"
             ],
             "examples": [
                 "Create an IC presentation from the attached investment memo",
@@ -304,9 +304,9 @@
             "tags": [
                 "create"
             ],
-            "enabled": true,
+            "enabled": false,
             "visibility": [
-                "Technology"
+                "Ambassadors"
             ],
             "examples": [
                 "Extract all tables from this PDF to Excel",
