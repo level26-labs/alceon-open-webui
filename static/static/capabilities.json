@@ -182,9 +182,9 @@
     "capabilities": [
         {
             "id": "excel_generator",
-            "title": "Excel (Experimental)",
-            "subtitle": "Create professional spreadsheets",
-            "description": "Generate Excel spreadsheets with formulas, financial models, and data analysis using Alceon standards.",
+            "title": "Excel Generator",
+            "subtitle": "Create spreadsheets with Claude",
+            "description": "Generate Excel spreadsheets with formulas, financial models, and data analysis.",
             "icon": "📊",
             "color": "from-[#217346] to-[#185c37]",
             "capabilityType": "Form",
