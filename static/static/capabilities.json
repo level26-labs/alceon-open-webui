@@ -89,8 +89,8 @@
         {
             "id": "featured-feb-2026-excel",
             "title": "Excel Generator",
-            "subtitle": "Using Claude Opus",
-            "description": "Create professional Excel spreadsheets with advanced formulas and charts",
+            "subtitle": "Experimental Feature",
+            "description": "Create professional Excel spreadsheets with advanced formulas and charts. Powered by Claude.",
             "icon": "<svg viewBox='0 0 24 24' fill='currentColor' class='w-full h-full'><rect width='24' height='24' rx='4' fill='#217346'/><path d='M6 7l3 5-3 5h2.5l2-3.5 2 3.5H15l-3-5 3-5h-2.5l-2 3.5-2-3.5H6z' fill='white'/></svg>",
             "color": "from-[#217346] to-[#185c37]",
             "action": {
@@ -183,8 +183,8 @@
         {
             "id": "excel_generator",
             "title": "Excel Generator",
-            "subtitle": "Create spreadsheets with Claude",
-            "description": "Generate Excel spreadsheets with formulas, financial models, and data analysis.",
+            "subtitle": "Create professional spreadhseets",
+            "description": "Generate Excel spreadsheets with formulas, financial models, and data analysis. Powered by Claude.",
             "icon": "📊",
             "color": "from-[#217346] to-[#185c37]",
             "capabilityType": "Form",
