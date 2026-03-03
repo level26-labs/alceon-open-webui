@@ -2765,7 +2765,7 @@
 					/>
 
 					<div id="chat-pane" class="flex flex-col flex-auto z-10 w-full @container overflow-auto">
-						{#if ($settings?.landingPageMode === 'chat' && !$selectedFolder) || createMessagesList(history, history.currentId).length > 0}
+						{#if (($settings?.landingPageMode === 'chat' && !$selectedFolder && !selectedModels.some(id => { const m = $models.find(mod => mod.id === id); return m?.name?.toLowerCase().includes('kingfisher') || m?.id?.toLowerCase().includes('kingfisher'); })) || createMessagesList(history, history.currentId).length > 0)}
 							<div
 								class=" pb-2.5 flex flex-col justify-between w-full flex-auto overflow-auto h-0 max-w-full z-10 scrollbar-hidden"
 								id="messages-container"
