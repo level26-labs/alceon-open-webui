@@ -135,6 +135,7 @@ class OAuthSessionTable:
                 db.refresh(result)
 
                 if result:
+                    db.expunge(result)  # Detach so dict swap is never flushed
                     result.token = token  # Return decrypted token
                     return OAuthSessionModel.model_validate(result)
                 else:
@@ -151,6 +152,7 @@ class OAuthSessionTable:
             with get_db_context(db) as db:
                 session = db.query(OAuthSession).filter_by(id=session_id).first()
                 if session:
+                    db.expunge(session)
                     session.token = self._decrypt_token(session.token)
                     return OAuthSessionModel.model_validate(session)
 
@@ -171,6 +173,7 @@ class OAuthSessionTable:
                     .first()
                 )
                 if session:
+                    db.expunge(session)
                     session.token = self._decrypt_token(session.token)
                     return OAuthSessionModel.model_validate(session)
 
@@ -192,6 +195,7 @@ class OAuthSessionTable:
                     .first()
                 )
                 if session:
+                    db.expunge(session)
                     session.token = self._decrypt_token(session.token)
                     return OAuthSessionModel.model_validate(session)
 
@@ -210,8 +214,16 @@ class OAuthSessionTable:
 
                 results = []
                 for session in sessions:
-                    session.token = self._decrypt_token(session.token)
-                    results.append(OAuthSessionModel.model_validate(session))
+                    try:
+                        db.expunge(session)
+                        session.token = self._decrypt_token(session.token)
+                        results.append(OAuthSessionModel.model_validate(session))
+                    except Exception as e:
+                        log.warning(
+                            f"Skipping OAuth session {session.id} due to decryption failure, deleting corrupted session: {type(e).__name__}: {e}"
+                        )
+                        db.query(OAuthSession).filter_by(id=session.id).delete()
+                        db.commit()
 
                 return results
 
@@ -238,6 +250,7 @@ class OAuthSessionTable:
                 session = db.query(OAuthSession).filter_by(id=session_id).first()
 
                 if session:
+                    db.expunge(session)
                     session.token = self._decrypt_token(session.token)
                     return OAuthSessionModel.model_validate(session)
 

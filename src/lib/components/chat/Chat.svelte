@@ -33,17 +33,22 @@
 		currentChatPage,
 		temporaryChatEnabled,
 		mobile,
-		showOverview,
 		chatTitle,
 		showArtifacts,
 		artifactContents,
 		tools,
 		toolServers,
+		terminalServers,
 		functions,
 		selectedFolder,
 		pinnedChats,
-		showEmbeds
+		showEmbeds,
+		selectedTerminalId,
+		showFileNavPath,
+		showFileNavDir
 	} from '$lib/stores';
+
+	import { WEBUI_API_BASE_URL } from '$lib/constants';
 
 	import {
 		convertMessagesToHistory,
@@ -54,7 +59,8 @@
 		processDetails,
 		removeAllDetails,
 		getCodeBlockContents,
-		isYoutubeUrl
+		isYoutubeUrl,
+		displayFileHandler
 	} from '$lib/utils';
 	import { AudioQueue } from '$lib/utils/audio';
 
@@ -92,6 +98,7 @@
 	import ChatControls from './ChatControls.svelte';
 	import EventConfirmDialog from '../common/ConfirmDialog.svelte';
 	import Placeholder from './Placeholder.svelte';
+	import FilesOverlay from './MessageInput/FilesOverlay.svelte';
 	import NotificationToast from '../NotificationToast.svelte';
 	import Spinner from '../common/Spinner.svelte';
 	import Tooltip from '../common/Tooltip.svelte';
@@ -103,10 +110,10 @@
 	let loading = true;
 
 	const eventTarget = new EventTarget();
-	let controlPane;
-	let controlPaneComponent;
+	let controlPane: Pane | undefined;
+	let controlPaneComponent: ChatControls | undefined;
 
-	let messageInput;
+	let messageInput: MessageInput | undefined;
 
 	let autoScroll = true;
 	let processing = '';
@@ -123,8 +130,6 @@
 	let eventConfirmationInputType = '';
 	let eventCallback = null;
 
-	let chatIdUnsubscriber: Unsubscriber | undefined;
-
 	let selectedModels = [''];
 	let atSelectedModel: Model | undefined;
 	let selectedModelIds = [];
@@ -136,6 +141,7 @@
 
 	let selectedToolIds = [];
 	let selectedFilterIds = [];
+
 	let imageGenerationEnabled = false;
 	let webSearchEnabled = false;
 	let codeInterpreterEnabled = false;
@@ -143,6 +149,7 @@
 	let showCommands = false;
 
 	let generating = false;
+	let dragged = false;
 	let generationController = null;
 
 	let chat = null;
@@ -246,50 +253,6 @@
 		}
 	};
 
-	// Handle files from CapabilitiesHub
-	const handleCapabilityFiles = async (inputFiles) => {
-		for (const file of inputFiles) {
-			const tempItemId = uuidv4();
-			const fileItem = {
-				type: 'file',
-				file: '',
-				id: null,
-				url: '',
-				name: file.name,
-				collection_name: '',
-				status: 'uploading',
-				size: file.size,
-				error: '',
-				itemId: tempItemId
-			};
-
-			if (fileItem.size === 0) {
-				toast.error($i18n.t('You cannot upload an empty file.'));
-				continue;
-			}
-
-			files = [...files, fileItem];
-
-			try {
-				const uploadedFile = await uploadFile(localStorage.token, file, null);
-
-				if (uploadedFile) {
-					fileItem.status = 'uploaded';
-					fileItem.file = uploadedFile;
-					fileItem.id = uploadedFile.id;
-					fileItem.collection_name = uploadedFile?.meta?.collection_name || uploadedFile?.collection_name;
-					fileItem.url = `${uploadedFile.id}`;
-					files = files;
-				} else {
-					files = files.filter((item) => item?.itemId !== tempItemId);
-				}
-			} catch (e) {
-				toast.error(`${e}`);
-				files = files.filter((item) => item?.itemId !== tempItemId);
-			}
-		}
-	};	
-	
 	const onSelect = async (e) => {
 		const { type, data, features, autoSubmit, modelId, files: inputFiles } = e;
 		
@@ -384,7 +347,7 @@
 
 	const onSelectedModelIdsChange = () => {
 		resetInput();
-		oldSelectedModelIds = JSON.parse(JSON.stringify(selectedModelIds));
+		oldSelectedModelIds = structuredClone(selectedModelIds);
 	};
 
 	const resetInput = () => {
@@ -419,6 +382,10 @@
 						[...(model?.info?.meta?.toolIds ?? [])].filter((id) => $tools.find((t) => t.id === id))
 					)
 				];
+			} else if ($settings?.tools) {
+				selectedToolIds = $settings.tools;
+			} else {
+				selectedToolIds = selectedToolIds.filter((id) => !id.startsWith('direct_server:'));
 			}
 
 			// Set Default Filters (Toggleable only)
@@ -491,6 +458,15 @@
 		await tick();
 
 		saveChatHandler(_chatId, history);
+	};
+
+	const terminalEventHandler = (type: string, data: any) => {
+		if (!data?.path) return;
+		if (type === 'terminal:display_file') {
+			displayFileHandler(data.path, { showControls, showFileNavPath });
+		} else if (type === 'terminal:write_file') {
+			showFileNavDir.set(data.path);
+		}
 	};
 
 	const chatEventHandler = async (event, cb) => {
@@ -626,6 +602,8 @@
 					eventConfirmationInputPlaceholder = data.placeholder;
 					eventConfirmationInputValue = data?.value ?? '';
 					eventConfirmationInputType = data?.type ?? '';
+				} else if (type.startsWith('terminal:')) {
+					terminalEventHandler(type, data);
 				} else {
 					console.log('Unknown message type', data);
 				}
@@ -692,26 +670,33 @@
 		savedModelIds();
 	}
 
-	let pageSubscribe = null;
-	let showControlsSubscribe = null;
-	let selectedFolderSubscribe = null;
-
 	const stopAudio = () => {
 		try {
 			speechSynthesis.cancel();
-			$audioQueue.stop();
+			$audioQueue?.stop();
 		} catch {}
 	};
 
-	onMount(async () => {
+	onMount(() => {
 		loading = true;
 		console.log('mounted');
 		window.addEventListener('message', onMessageHandler);
 		$socket?.on('events', chatEventHandler);
 
-		audioQueue.set(new AudioQueue(document.getElementById('audioElement')));
+		$audioQueue?.destroy();
 
-		pageSubscribe = page.subscribe(async (p) => {
+		const audioQueueInstance = new AudioQueue(document.getElementById('audioElement'));
+		audioQueue.set(audioQueueInstance);
+
+		// Reset direct terminal enabled states — selectedTerminalId starts null on every page load
+		if ($settings?.terminalServers?.some((s) => s.enabled)) {
+			settings.set({
+				...$settings,
+				terminalServers: ($settings.terminalServers ?? []).map((s) => ({ ...s, enabled: false }))
+			});
+		}
+
+		const pageSubscribe = page.subscribe(async (p) => {
 			if (p.url.pathname === '/') {
 				await tick();
 				initNewChat();
@@ -720,46 +705,12 @@
 			stopAudio();
 		});
 
-		const storageChatInput = sessionStorage.getItem(
-			`chat-input${chatIdProp ? `-${chatIdProp}` : ''}`
-		);
-
-		if (!chatIdProp) {
-			loading = false;
+		const showControlsSubscribe = showControls.subscribe(async (value) => {
 			await tick();
-		}
-
-		if (storageChatInput) {
-			prompt = '';
-			messageInput?.setText('');
-
-			files = [];
-			selectedToolIds = [];
-			selectedFilterIds = [];
-			webSearchEnabled = false;
-			imageGenerationEnabled = false;
-			codeInterpreterEnabled = false;
-
-			try {
-				const input = JSON.parse(storageChatInput);
-
-				if (!$temporaryChatEnabled) {
-					messageInput?.setText(input.prompt);
-					files = input.files;
-					selectedToolIds = input.selectedToolIds;
-					selectedFilterIds = input.selectedFilterIds;
-					webSearchEnabled = input.webSearchEnabled;
-					imageGenerationEnabled = input.imageGenerationEnabled;
-					codeInterpreterEnabled = input.codeInterpreterEnabled;
-				}
-			} catch (e) {}
-		}
-
-		showControlsSubscribe = showControls.subscribe(async (value) => {
 			if (controlPane && !$mobile) {
 				try {
 					if (value) {
-						controlPaneComponent.openPane();
+						controlPaneComponent?.openPane();
 					} else {
 						controlPane.collapse();
 					}
@@ -770,13 +721,13 @@
 
 			if (!value) {
 				showCallOverlay.set(false);
-				showOverview.set(false);
 				showArtifacts.set(false);
 				showEmbeds.set(false);
 			}
 		});
 
-		selectedFolderSubscribe = selectedFolder.subscribe(async (folder) => {
+		const selectedFolderSubscribe = selectedFolder.subscribe(async (folder) => {
+			await tick();
 			if (
 				folder?.data?.model_ids &&
 				JSON.stringify(selectedModels) !== JSON.stringify(folder.data.model_ids)
@@ -787,22 +738,60 @@
 			}
 		});
 
-		const chatInput = document.getElementById('chat-input');
-		chatInput?.focus();
-	});
+		const storageChatInput = sessionStorage.getItem(
+			`chat-input${chatIdProp ? `-${chatIdProp}` : ''}`
+		);
 
-	onDestroy(() => {
-		try {
-			pageSubscribe();
-			showControlsSubscribe();
-			selectedFolderSubscribe();
-			chatIdUnsubscriber?.();
-			window.removeEventListener('message', onMessageHandler);
-			$socket?.off('events', chatEventHandler);
-			$audioQueue?.destroy();
-		} catch (e) {
-			console.error(e);
-		}
+		const init = async () => {
+			if (!chatIdProp) {
+				loading = false;
+				await tick();
+			}
+
+			if (storageChatInput) {
+				prompt = '';
+				messageInput?.setText('');
+
+				files = [];
+				selectedToolIds = [];
+				selectedFilterIds = [];
+				webSearchEnabled = false;
+				imageGenerationEnabled = false;
+				codeInterpreterEnabled = false;
+
+				try {
+					const input = JSON.parse(storageChatInput);
+
+					if (!$temporaryChatEnabled) {
+						messageInput?.setText(input.prompt);
+						files = input.files;
+						selectedToolIds = input.selectedToolIds;
+						selectedFilterIds = input.selectedFilterIds;
+						webSearchEnabled = input.webSearchEnabled;
+						imageGenerationEnabled = input.imageGenerationEnabled;
+						codeInterpreterEnabled = input.codeInterpreterEnabled;
+					}
+				} catch (e) {}
+			}
+
+			const chatInput = document.getElementById('chat-input');
+			chatInput?.focus();
+		};
+		init();
+
+		return () => {
+			try {
+				pageSubscribe();
+				showControlsSubscribe();
+				selectedFolderSubscribe();
+				window.removeEventListener('message', onMessageHandler);
+				$socket?.off('events', chatEventHandler);
+				audioQueueInstance?.destroy();
+				audioQueue.set(null);
+			} catch (e) {
+				console.error(e);
+			}
+		};
 	});
 
 	// File upload functions
@@ -990,7 +979,11 @@
 	};
 
 	$: if (history) {
-		getContents();
+		cancelAnimationFrame(contentsRAF);
+		contentsRAF = requestAnimationFrame(() => {
+			getContents();
+			contentsRAF = null;
+		});
 	} else {
 		artifactContents.set([]);
 	}
@@ -1153,9 +1146,10 @@
 			}
 		}
 
-		await showControls.set(false);
+		if ($mobile) {
+			await showControls.set(false);
+		}
 		await showCallOverlay.set(false);
-		await showOverview.set(false);
 		await showArtifacts.set(false);
 
 		if ($page.url.pathname.includes('/c/')) {
@@ -1268,7 +1262,7 @@
 					selectedModels = selectedModels.length > 0 ? [selectedModels[0]] : [''];
 				}
 
-				oldSelectedModelIds = JSON.parse(JSON.stringify(selectedModels));
+				oldSelectedModelIds = structuredClone(selectedModels);
 
 				history =
 					(chatContent?.history ?? undefined) !== undefined
@@ -1314,6 +1308,17 @@
 			messagesContainerElement.scrollTo({
 				top: messagesContainerElement.scrollHeight,
 				behavior
+			});
+		}
+	};
+
+	let scrollRAF = null;
+	let contentsRAF = null;
+	const scheduleScrollToBottom = () => {
+		if (!scrollRAF) {
+			scrollRAF = requestAnimationFrame(async () => {
+				scrollRAF = null;
+				await scrollToBottom();
 			});
 		}
 	};
@@ -1734,7 +1739,7 @@
 		await tick();
 
 		if (autoScroll) {
-			scrollToBottom();
+			scheduleScrollToBottom();
 		}
 	};
 
@@ -1788,7 +1793,7 @@
 		if (taskIds !== null && taskIds.length > 0) {
 			if ($settings?.enableMessageQueue ?? true) {
 				// Queue the message
-				const _files = JSON.parse(JSON.stringify(files));
+				const _files = structuredClone(files);
 				messageQueue = [
 					...messageQueue,
 					{
@@ -1823,7 +1828,7 @@
 		prompt = '';
 
 		const messages = createMessagesList(history, history.currentId);
-		const _files = JSON.parse(JSON.stringify(files));
+		const _files = structuredClone(files);
 
 		chatFiles.push(
 			..._files.filter(
@@ -1892,7 +1897,7 @@
 		}
 
 		let _chatId = JSON.parse(JSON.stringify($chatId));
-		_history = JSON.parse(JSON.stringify(_history));
+		_history = structuredClone(_history);
 
 		const responseMessageIds: Record<PropertyKey, string> = {};
 		// If modelId is provided, use it, else use selected model
@@ -1945,7 +1950,7 @@
 
 		await tick();
 
-		_history = JSON.parse(JSON.stringify(history));
+		_history = structuredClone(history);
 		// Save chat after all messages have been created
 		await saveChatHandler(_chatId, _history);
 
@@ -2056,7 +2061,7 @@
 			return fileExists;
 		});
 
-		let files = JSON.parse(JSON.stringify(chatFiles));
+		let files = structuredClone(chatFiles);
 		files.push(
 			...(userMessage?.files ?? []).filter(
 				(item) =>
@@ -2191,6 +2196,9 @@
 			});
 		}
 
+		// Use the user-selected terminal from the dropdown
+		const activeTerminalId = $selectedTerminalId ?? null;
+
 		const res = await generateOpenAIChatCompletion(
 			localStorage.token,
 			{
@@ -2213,9 +2221,14 @@
 				filter_ids: selectedFilterIds.length > 0 ? selectedFilterIds : undefined,
 				tool_ids: toolIds.length > 0 ? toolIds : undefined,
 				skill_ids: skillIds.length > 0 ? skillIds : undefined,
-				tool_servers: ($toolServers ?? []).filter(
-					(server, idx) => toolServerIds.includes(idx) || toolServerIds.includes(server?.id)
-				),
+				terminal_id: activeTerminalId ?? undefined,
+				tool_servers: [
+					...($toolServers ?? []).filter(
+						(server, idx) => toolServerIds.includes(idx) || toolServerIds.includes(server?.id)
+					),
+					// Direct terminal servers — always included when enabled (not routed through selectedToolIds)
+					...($terminalServers ?? []).filter((t) => !t.id)
+				],
 				features: getFeatures(),
 				variables: {
 					...getPromptVariables(
@@ -2512,7 +2525,7 @@
 					}
 
 					if (autoScroll) {
-						scrollToBottom();
+						scheduleScrollToBottom();
 					}
 				}
 
@@ -2691,6 +2704,7 @@
 
 			<PaneGroup direction="horizontal" class="w-full h-full">
 				<Pane defaultSize={50} minSize={30} class="h-full flex relative max-w-full flex-col">
+					<FilesOverlay show={dragged} />
 					<Navbar
 						bind:this={navbarElement}
 						chat={{
@@ -2727,6 +2741,7 @@
 										id: uuidv4(),
 										title: title.length > 50 ? `${title.slice(0, 50)}...` : title,
 										models: selectedModels,
+										params: params,
 										history: history,
 										messages: messages,
 										timestamp: Date.now()
@@ -2749,8 +2764,8 @@
 						}}
 					/>
 
-					<div class="flex flex-col flex-auto z-10 w-full @container overflow-auto">
-						{#if !$selectedFolder || createMessagesList(history, history.currentId).length > 0}
+					<div id="chat-pane" class="flex flex-col flex-auto z-10 w-full @container overflow-auto">
+						{#if ($settings?.landingPageMode === 'chat' && !$selectedFolder) || selectedModels.some(id => { const m = $models.find(mod => mod.id === id); return m?.name?.toLowerCase().includes('kingfisher') || m?.id?.toLowerCase().includes('kingfisher'); }) || createMessagesList(history, history.currentId).length > 0}
 							<div
 								class=" pb-2.5 flex flex-col justify-between w-full flex-auto overflow-auto h-0 max-w-full z-10 scrollbar-hidden"
 								id="messages-container"
@@ -2803,6 +2818,7 @@
 									bind:webSearchEnabled
 									bind:atSelectedModel
 									bind:showCommands
+									bind:dragged
 									toolServers={$toolServers}
 									{generating}
 									{stopResponse}
@@ -2873,6 +2889,7 @@
 									bind:webSearchEnabled
 									bind:atSelectedModel
 									bind:showCommands
+									bind:dragged
 									toolServers={$toolServers}
 									{stopResponse}
 									{createMessagePair}

@@ -1217,7 +1217,9 @@ def transcription(
         )
 
     try:
-        ext = file.filename.split(".")[-1]
+        safe_name = os.path.basename(file.filename) if file.filename else ""
+        ext = safe_name.rsplit(".", 1)[-1] if "." in safe_name else ""
+
         id = uuid.uuid4()
 
         filename = f"{id}.{ext}"
@@ -1226,6 +1228,10 @@ def transcription(
         file_dir = f"{CACHE_DIR}/audio/transcriptions"
         os.makedirs(file_dir, exist_ok=True)
         file_path = f"{file_dir}/{filename}"
+
+        # Defense-in-depth: ensure resolved path stays within intended directory
+        if not os.path.realpath(file_path).startswith(os.path.realpath(file_dir)):
+            raise ValueError("Invalid file path detected")
 
         with open(file_path, "wb") as f:
             f.write(contents)
@@ -1248,7 +1254,7 @@ def transcription(
 
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=ERROR_MESSAGES.DEFAULT(e),
+                detail="Transcription failed.",
             )
 
     except Exception as e:
@@ -1256,7 +1262,7 @@ def transcription(
 
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=ERROR_MESSAGES.DEFAULT(e),
+            detail="Transcription failed.",
         )
 
 

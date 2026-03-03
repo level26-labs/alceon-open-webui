@@ -24,6 +24,9 @@ export const DEFAULT_PERMISSIONS = {
 		notes: false,
 		public_notes: false
 	},
+	access_grants: {
+		allow_users: true
+	},
 	chat: {
 		controls: true,
 		valves: true,
