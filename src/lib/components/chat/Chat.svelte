@@ -253,6 +253,49 @@
 		}
 	};
 
+	const handleCapabilityFiles = async (inputFiles) => {
+		for (const file of inputFiles) {
+			const tempItemId = uuidv4();
+			const fileItem = {
+				type: 'file',
+				file: '',
+				id: null,
+				url: '',
+				name: file.name,
+				collection_name: '',
+				status: 'uploading',
+				size: file.size,
+				error: '',
+				itemId: tempItemId
+			};
+
+			if (fileItem.size === 0) {
+				toast.error($i18n.t('You cannot upload an empty file.'));
+				continue;
+			}
+
+			files = [...files, fileItem];
+
+			try {
+				const uploadedFile = await uploadFile(localStorage.token, file, null);
+
+				if (uploadedFile) {
+					fileItem.status = 'uploaded';
+					fileItem.file = uploadedFile;
+					fileItem.id = uploadedFile.id;
+					fileItem.collection_name = uploadedFile?.meta?.collection_name || uploadedFile?.collection_name;
+					fileItem.url = `${uploadedFile.id}`;
+					files = files;
+				} else {
+					files = files.filter((item) => item?.itemId !== tempItemId);
+				}
+			} catch (e) {
+				toast.error(`${e}`);
+				files = files.filter((item) => item?.itemId !== tempItemId);
+			}
+		}
+	};
+
 	const onSelect = async (e) => {
 		const { type, data, features, autoSubmit, modelId, files: inputFiles } = e;
 		
