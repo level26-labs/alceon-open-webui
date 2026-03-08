@@ -35,8 +35,8 @@
         }
     ],
     "meta": {
-        "version": "1.1.1",
-        "changelog": "• Review an NDA prompt improved.\n• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile.\n• Added Claude Opus Excel model generation capability."
+        "version": "1.2.0",
+        "changelog": "• Kingfisher upgraded to GPT-5.2.\n• Review an NDA prompt improved.\n• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile.\n• Added Claude Opus Excel model generation capability."
     },
     "featuredTile": [
         {
