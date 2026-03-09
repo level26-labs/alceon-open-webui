@@ -60,12 +60,18 @@
 
 	// Handle capability selection - wraps prompt in expected format with features and autoSubmit
 	function handleCapabilitySelect(
-		prompt: string, 
-		modelId?: string, 
+		prompt: string,
+		modelId?: string,
 		features?: { webSearch?: boolean; imageGeneration?: boolean; codeInterpreter?: boolean },
 		autoSubmit?: boolean,
-		files?: File[]
+		files?: File[],
+		actionType?: string
 	) {
+		// Handle voice recording: tell Chat.svelte to store prompt and trigger dictate
+		if (actionType === 'voice_recording') {
+			onSelect({ type: 'voice_recording', data: prompt, features, modelId });
+			return;
+		}
 		// If prompt is empty or undefined, just focus the input without submitting
 		if (!prompt) {
 			onSelect({ type: 'focus', features, modelId });

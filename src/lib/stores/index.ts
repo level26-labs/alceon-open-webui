@@ -72,6 +72,9 @@ export const functions = writable(null);
 export const toolServers = writable([]);
 export const terminalServers = writable([]);
 
+// Persistent Pyodide worker for code interpreter FS
+export const pyodideWorker: Writable<Worker | null> = writable(null);
+
 export const banners: Writable<Banner[]> = writable([]);
 
 export const settings: Writable<Settings> = writable({});
@@ -96,6 +99,10 @@ export const showFileNav = writable(false);
 export const showFileNavPath: Writable<string | null> = writable(null);
 export const showFileNavDir: Writable<string | null> = writable(null);
 export const selectedTerminalId: Writable<string | null> = writable(null);
+
+// Voice Recorder: one-shot store for wrapping dictate transcription with a prompt.
+// Set before triggering dictate, cleared after use.
+export const pendingVoicePrompt = writable<string | null>(null);
 
 export const artifactCode = writable(null);
 export const artifactContents = writable(null);
