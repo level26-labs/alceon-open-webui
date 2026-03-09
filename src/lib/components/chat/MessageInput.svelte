@@ -19,6 +19,7 @@
 
 	const dispatch = createEventDispatcher();
 
+	import { get } from 'svelte/store';
 	import {
 		type Model,
 		mobile,
@@ -34,7 +35,8 @@
 		showSettings,
 		selectedTerminalId,
 		TTSWorker,
-		temporaryChatEnabled
+		temporaryChatEnabled,
+		pendingVoicePrompt
 	} from '$lib/stores';
 
 	import {
@@ -1145,6 +1147,7 @@
 							bind:recording
 							onCancel={async () => {
 								recording = false;
+								pendingVoicePrompt.set(null);
 
 								await tick();
 								document.getElementById('chat-input')?.focus();
@@ -1155,12 +1158,25 @@
 								recording = false;
 
 								await tick();
-								await insertTextAtCursor(`${text}`);
-								await tick();
-								document.getElementById('chat-input')?.focus();
 
-								if ($settings?.speechAutoSend ?? false) {
-									dispatch('submit', prompt);
+								// Check if there's a pending voice recording prompt to wrap
+								const voicePrompt = get(pendingVoicePrompt);
+								if (voicePrompt) {
+									// Wrap the transcription with the stored prompt and auto-submit
+									const fullPrompt = voicePrompt + text;
+									pendingVoicePrompt.set(null);
+									await insertTextAtCursor(fullPrompt);
+									await tick();
+									dispatch('submit', fullPrompt);
+								} else {
+									// Normal dictate flow
+									await insertTextAtCursor(`${text}`);
+									await tick();
+									document.getElementById('chat-input')?.focus();
+
+									if ($settings?.speechAutoSend ?? false) {
+										dispatch('submit', prompt);
+									}
 								}
 							}}
 						/>

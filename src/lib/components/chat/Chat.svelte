@@ -45,7 +45,8 @@
 		showEmbeds,
 		selectedTerminalId,
 		showFileNavPath,
-		showFileNavDir
+		showFileNavDir,
+		pendingVoicePrompt
 	} from '$lib/stores';
 
 	import { WEBUI_API_BASE_URL } from '$lib/constants';
@@ -350,6 +351,18 @@
 		if (type === 'focus') {
 			const chatInput = document.getElementById('chat-input');
 			chatInput?.focus();
+		} else if (type === 'voice_recording') {
+			// Voice Recorder: store the wrapper prompt, then trigger native dictate
+			pendingVoicePrompt.set(data);
+
+			// Trigger the dictate button after UI settles from modal close
+			await tick();
+			setTimeout(() => {
+				const voiceBtn = document.getElementById('voice-input-button');
+				if (voiceBtn) {
+					voiceBtn.click();
+				}
+			}, 300);
 		} else if (type === 'prompt') {
 			if (autoSubmit && data) {
 				const waitForUploads = async () => {

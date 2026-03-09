@@ -36,7 +36,7 @@
     ],
     "meta": {
         "version": "1.2.0",
-        "changelog": "• Kingfisher upgraded to GPT-5.2.\n• Review an NDA prompt improved.\n• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile.\n• Added Claude Opus Excel model generation capability."
+        "changelog": "• Kingfisher upgraded to GPT-5.2.\n• Review an NDA prompt improved.\n• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile.\n• Added Claude Opus Excel model generation capability.\n• Added Voice Recorder capability for meeting transcription and notes."
     },
     "featuredTile": [
         {
@@ -53,6 +53,21 @@
             },
             "visibility": "all",
             "enabled": false
+        },
+		{
+            "id": "featured-mar-2026-voice-recorder",
+            "title": "Voice Recorder",
+            "subtitle": "New Capability",
+            "description": "Record meetings, voice notes, or conversations. Get transcripts, summaries, and action items.",
+            "icon": "🎙️",
+            "color": "from-[#1a365d] to-[#63b3ed]",
+            "action": {
+                "type": "capability",
+                "capabilityId": "voice_recorder",
+                "label": "Start Recording"
+            },
+            "visibility": "all",
+            "enabled": true
         },
         {
             "id": "featured-feb-2026-doc-generator",
@@ -1863,6 +1878,30 @@
             ],
             "enabled": true,
             "visibility": "all"
+        },
+        {
+            "id": "voice_recorder",
+            "title": "Voice Recorder",
+            "subtitle": "Record, transcribe & summarise",
+            "description": "Record meetings, voice notes, or conversations directly in your browser. Get transcripts, summaries, and action items.",
+            "icon": "🎙️",
+            "color": "from-[#1a365d] to-[#63b3ed]",
+            "capabilityType": "Form",
+            "action": {
+                "type": "voice_recording",
+                "prompt": "You are an expert transcription and meeting analysis assistant.\n\n## Recording Details\n- **Recording Type:** {{recording_type|select:required:options=[\"Meeting / Group Discussion\",\"Interview\",\"Personal Voice Note\",\"Phone / Video Call\",\"Presentation / Lecture\"]:default=\"Meeting / Group Discussion\"}}\n- **Output Format:** {{output_type|select:required:options=[\"Transcript & Summary\",\"Transcript only\",\"Summary only\",\"Action items only\"]:default=\"Transcript & Summary\"}}\n- **Additional Context:** {{context|textarea:placeholder=\"Optional: meeting topic, attendee names, purpose of the recording...\"}}\n\n## Instructions\n\nThe user recorded audio using their browser microphone. The transcription follows below.\n\nBased on the **Recording Type**, consider:\n- For meetings, calls, or interviews: identify different speakers from context clues (questions vs answers, name mentions, perspective shifts). Label them as **Speaker 1**, **Speaker 2**, etc. or by name if identifiable.\n- For personal voice notes or presentations: focus on a single speaker's content.\n\nBased on the **Output Format**, produce:\n- **Transcript & Summary**: A cleaned-up transcript with speaker labels where detectable, followed by a summary with key points, decisions, action items, and open questions.\n- **Transcript only**: A cleaned-up transcript with speaker labels and paragraph breaks.\n- **Summary only**: Key points, decisions made, action items with owners, and open questions.\n- **Action items only**: A table of action items with owner, deadline, and priority columns.\n\nAlways:\n- Fix transcription errors and grammar\n- Preserve the speaker's meaning — do not add, remove, or alter substantive content\n- Use Australian English\n- Add paragraph breaks at natural topic changes\n\n---\n\n## Transcribed Audio\n\n"
+            },
+            "autoSubmit": false,
+            "tags": ["create"],
+            "enabled": true,
+            "visibility": "all",
+            "difficulty": "basic",
+            "helpText": "Record audio in your browser and get AI-powered transcription and analysis.",
+            "examples": [
+                "Record a team meeting and get action items",
+                "Capture a quick voice note with summary",
+                "Record a client call for transcript"
+            ]
         }
     ]
 }

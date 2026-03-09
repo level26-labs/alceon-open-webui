@@ -100,6 +100,10 @@ export const showFileNavPath: Writable<string | null> = writable(null);
 export const showFileNavDir: Writable<string | null> = writable(null);
 export const selectedTerminalId: Writable<string | null> = writable(null);
 
+// Voice Recorder: one-shot store for wrapping dictate transcription with a prompt.
+// Set before triggering dictate, cleared after use.
+export const pendingVoicePrompt = writable<string | null>(null);
+
 export const artifactCode = writable(null);
 export const artifactContents = writable(null);
 

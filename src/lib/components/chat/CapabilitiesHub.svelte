@@ -47,7 +47,7 @@
 		color: string;
 		capabilityType: CapabilityType;
 		action: {
-			type: 'model' | 'prompt' | 'route' | 'url' | 'workflow';
+			type: 'model' | 'prompt' | 'route' | 'url' | 'workflow' | 'voice_recording';
 			modelId?: string;  // Now available for all action types
 			prompt?: string;
 			route?: string;
@@ -117,7 +117,7 @@
 
 	export let config: { categories: Category[]; capabilities: Capability[]; featuredTile?: FeaturedTile | FeaturedTile[]; meta?: DashboardMeta } | null = null;
 	export let configUrl: string = '';
-	export let onSelect: (prompt: string, modelId?: string, features?: PromptFeatures, autoSubmit?: boolean, files?: File[]) => void = () => {};
+	export let onSelect: (prompt: string, modelId?: string, features?: PromptFeatures, autoSubmit?: boolean, files?: File[], actionType?: string) => void = () => {};
 	export let onNavigate: (route: string) => void = () => {};
 	export let userGroups: string[] = [];
 
@@ -702,6 +702,20 @@
 				// Pass modelId to onSelect
 				onSelect(processedPrompt, capability.action.modelId, capability.features, capability.autoSubmit ?? false);
 			}
+		} else if (capability.action.type === 'voice_recording') {
+			// Voice recording: show form modal like a prompt, then trigger dictate on submit
+			const prompt = capability.action.prompt ?? '';
+			const customVars = parseInputVariables(prompt);
+			currentCapability = capability;
+			currentFeatures = capability.features || null;
+			currentAutoSubmit = capability.autoSubmit ?? true;
+			currentModelId = capability.action.modelId;
+			inputVariables = customVars;
+			uploadedFiles = [];
+			showInputModal = true;
+			if (capability.examples && capability.examples.length > 0) {
+				startExampleRotation(capability.examples);
+			}
 		} else if (capability.action.type === 'route') {
 			if (capability.action.route) onNavigate(capability.action.route);
 		} else if (capability.action.type === 'url') {
@@ -727,6 +741,12 @@
 		if (currentFeatures?.knowledge && currentFeatures.knowledge.length > 0) {
 			const knowledgeTags = currentFeatures.knowledge.map(k => `#${typeof k === 'string' ? k : k.id}`).join(' ');
 			prompt = `${knowledgeTags}\n\n${prompt}`;
+		}
+		// If this is a voice_recording capability, signal to trigger dictate instead of normal submit
+		if (currentCapability?.action?.type === 'voice_recording') {
+			onSelect(prompt, currentModelId, currentFeatures || undefined, true, undefined, 'voice_recording');
+			closeModal();
+			return;
 		}
 		// Pass currentModelId to onSelect
 		onSelect(prompt, currentModelId, currentFeatures || undefined, currentAutoSubmit, uploadedFiles.length > 0 ? uploadedFiles : undefined);
@@ -1570,7 +1590,11 @@
 			<div class="flex justify-end gap-2 p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700">
 				<button type="button" class="px-3 py-1.5 text-sm rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" on:click={closeModal}>Cancel</button>
 				<button type="button" class="px-3 py-1.5 text-sm rounded-lg bg-blue-500 text-white hover:bg-blue-600 font-medium" on:click={handleModalSubmit}>
-					{currentAutoSubmit ? 'Submit' : 'Load Prompt'}
+					{#if currentCapability?.action?.type === 'voice_recording'}
+						<span class="flex items-center gap-1.5">🎙️ Start Recording</span>
+					{:else}
+						{currentAutoSubmit ? 'Submit' : 'Load Prompt'}
+					{/if}
 				</button>
 			</div>
 		</div>
