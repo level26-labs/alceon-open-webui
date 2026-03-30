@@ -101,9 +101,6 @@
 	import InputModal from '../common/InputModal.svelte';
 	import Expand from '../icons/Expand.svelte';
 	import QueuedMessageItem from './MessageInput/QueuedMessageItem.svelte';
-	
-	import { pendingVoicePrompt } from '$lib/stores';
-    import { get } from 'svelte/store';
 
 	const i18n = getContext('i18n');
 
