@@ -765,24 +765,12 @@ def transcription_handler(request, file_path, metadata, user=None):
                 )
             }
 
-            # Add diarization if multiple speakers
-            if max_speakers > 1:
-                definition_data["diarizationSettings"] = {
-                    "minSpeakers": 1,
-                    "maxSpeakers": max_speakers
-                }
-
-            data = {
-                "definition": json.dumps(definition_data)
-            }
-
             # FAST TRANSCRIPTION API ENDPOINT
             url = (
                 base_url or f'https://{region}.api.cognitive.microsoft.com'
             ) + '/speechtotext/transcriptions:transcribe?api-version=2024-11-15'
 
             log.info(f"Azure Fast Transcription URL: {url}")
-            log.info(f"Definition data: {definition_data}")
             log.info(f"File size: {file_size} bytes")
             log.info(f"File path: {file_path}")
 
