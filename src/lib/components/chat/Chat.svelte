@@ -107,6 +107,7 @@
 	import Sidebar from '../icons/Sidebar.svelte';
 	import Image from '../common/Image.svelte';
 	import { getBanners } from '$lib/apis/configs';
+	import { pendingVoicePrompt } from '$lib/stores';
 
 	export let chatIdProp = '';
 
@@ -329,6 +330,22 @@
 		} else if (type === 'voice_recording') {
 			// Voice Recorder: store the wrapper prompt, then trigger native dictate
 			pendingVoicePrompt.set(data);
+
+			// Switch model if specified
+			if (modelId) {
+				const modelExists = $models.find((m) => m.id === modelId);
+				if (modelExists) {
+					selectedModels = [modelId];
+					await tick();
+				}
+			}
+
+			// Apply features if provided
+			if (features) {
+				if (features.webSearch !== undefined) webSearchEnabled = features.webSearch;
+				if (features.imageGeneration !== undefined) imageGenerationEnabled = features.imageGeneration;
+				if (features.codeInterpreter !== undefined) codeInterpreterEnabled = features.codeInterpreter;
+			}
 
 			// Trigger the dictate button after UI settles from modal close
 			await tick();
