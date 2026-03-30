@@ -34,10 +34,10 @@
             "label": "Launch"
         }
     ],
-    "meta": {
-        "version": "1.2.0",
-        "changelog": "• Kingfisher upgraded to GPT-5.2.\n• Review an NDA prompt improved.\n• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile.\n• Added Claude Opus Excel model generation capability.\n• Added Voice Recorder capability for meeting transcription and notes."
-    },
+	"meta": {
+		"version": "1.3.0",
+		"changelog": "• Added Boardroom investor registry integration with 7 new lookup tiles.\n• Added Claude AI to Launch category.\n• Kingfisher upgraded to GPT-5.2.\n• Review an NDA prompt improved.\n• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile.\n• Added Claude Opus Excel model generation capability.\n• Added Voice Recorder capability for meeting transcription and notes."
+	},
     "featuredTile": [
         {
             "id": "featured-jan-2026-v6",
@@ -518,7 +518,7 @@
             "capabilityType": "Form",
             "action": {
                 "type": "prompt",
-                "prompt": "# Complete Diligent Company Information Report\n\n## Prompt Purpose:\n* Retrieve and compile a comprehensive company information report for the specified entity, presenting key information as bullet points and shareholder/office holder details in tables.\n\n---\n\n## System Instruction:\n* You are an expert company information specialist with access to the Diligent API.\n* Your task is to **retrieve and compile a complete company information report** for the provided entity name.\n\nYou must:\n\n### Data Retrieval Requirements:\n* Query the Diligent API using the entity name provided\n* Extract ALL available information returned by the API\n* Present company identification, addresses, and status information as concise bullet points\n* Present shareholders and office holders (current only) in detailed tables\n* Include only the data fields actually returned by the API - do not create empty placeholders\n* Calculate totals and summaries where applicable (e.g., total shares, percentage holdings)\n\n### Presentation Requirements:\n* Use bullet points for: company identifiers, names, addresses, and status information\n* Use tables ONLY for: shareholders and current office holders\n* Include all data fields returned by the API in tables\n* Format dates consistently\n* Keep summaries concise and actionable\n* Highlight key information prominently\n\n---\n\n## Inputs:\n### Entity Name\n* {{entity_name | text:placeholder=\"Enter the company or entity name...\"}}\n\n---\n\n## Output:\n\nReturn a **comprehensive company information report** structured as follows:\n\n---\n\n### COMPANY OVERVIEW\n\n**Company Identification:**\n* [Include all identifiers returned by API: ACN, ABN, ARBN, etc.]\n* [Legal name and any trading names]\n* [Company type and class]\n* [Registration status and date]\n\n**Registered Address:**\n* [Complete registered address as returned by API]\n\n**Business Address:**\n* [Principal place of business address if different from registered]\n* [Note if same as registered address]\n\n---\n\n### CURRENT OFFICE HOLDERS\n\n**Directors:** [Total: X]\n\n[Table with all director information returned by API - adapt columns to actual data]\n\n**Company Secretary:** [Total: X]\n\n[Table with all secretary information returned by API - adapt columns to actual data]\n\n---\n\n### SHAREHOLDERS\n\n**Summary:** \n* Total Shareholders: [X]\n* Total Shares: [X]\n\n[Table with all shareholder information returned by API including: names, addresses, share classes, holdings, percentages, and any other fields returned]\n\n---\n\n### ADDITIONAL INFORMATION\n\n[Include any other information returned by the API that doesn't fit above categories, presented as bullet points]\n\n---\n\n**Report Generated:** [Timestamp]  \n**Data Source:** Diligent API"
+                "prompt": "# Complete Diligent Company Information Report\n\n## Prompt Purpose:\n* Retrieve and compile a comprehensive company information report for the specified entity, presenting key information as bullet points and shareholder/office holder details in tables.\n\n---\n\n## System Instruction:\n* You are an expert company information specialist with access to the Diligent API.\n* Your task is to **retrieve and compile a complete company information report** for the provided entity name.\n\nYou must:\n\n### Data Retrieval Requirements:\n* Query the Diligent API using the entity name provided\n* Extract ALL available information returned by the API\n* Present company identification, addresses, and status information as concise bullet points\n* Present shareholders and office holders (current only) in detailed tables\n* Include only the data fields actually returned by the API - do not create empty placeholders\n* Calculate totals and summaries where applicable (e.g., total shares, percentage holdings)\n\n### Presentation Requirements:\n* Use bullet points for: company identifiers, names, addresses, and status information\n* Use tables ONLY for: shareholders and current office holders\n* Include all data fields returned by the API in tables\n* Format dates consistently\n* Keep summaries concise and actionable\n* Highlight key information prominently\n\n---\n\n## Inputs:\n### Entity Name\n* {{entity_name | text:placeholder:required=\"Enter the company or entity name...\"}}\n\n---\n\n## Output:\n\nReturn a **comprehensive company information report** structured as follows:\n\n---\n\n### COMPANY OVERVIEW\n\n**Company Identification:**\n* [Include all identifiers returned by API: ACN, ABN, ARBN, etc.]\n* [Legal name and any trading names]\n* [Company type and class]\n* [Registration status and date]\n\n**Registered Address:**\n* [Complete registered address as returned by API]\n\n**Business Address:**\n* [Principal place of business address if different from registered]\n* [Note if same as registered address]\n\n---\n\n### CURRENT OFFICE HOLDERS\n\n**Directors:** [Total: X]\n\n[Table with all director information returned by API - adapt columns to actual data]\n\n**Company Secretary:** [Total: X]\n\n[Table with all secretary information returned by API - adapt columns to actual data]\n\n---\n\n### SHAREHOLDERS\n\n**Summary:** \n* Total Shareholders: [X]\n* Total Shares: [X]\n\n[Table with all shareholder information returned by API including: names, addresses, share classes, holdings, percentages, and any other fields returned]\n\n---\n\n### ADDITIONAL INFORMATION\n\n[Include any other information returned by the API that doesn't fit above categories, presented as bullet points]\n\n---\n\n**Report Generated:** [Timestamp]  \n**Data Source:** Diligent API"
             },
             "autoSubmit": true,
             "tags": [
@@ -965,7 +965,7 @@
             "capabilityType": "Form",
             "action": {
                 "type": "prompt",
-                "prompt": "Prompt Purpose:\n\nRetrieve the official registered address and business address for the specified entity.\n\nSystem Instruction:\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve the registered address and business address for the provided entity.\n\nInputs:\nEntity Name\n\n{{entity_name | text:placeholder=\"Enter the company or entity name...\"}}\n\nYou must:\n\nQuery the Diligent API using the entity name provided\nPresent the registered address and business address as bullet points\nInclude the ACN and ABN (if available) for reference\nInclude only data fields actually returned by the API"
+                "prompt": "Prompt Purpose:\n\nRetrieve the official registered address and business address for the specified entity.\n\nSystem Instruction:\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve the registered address and business address for the provided entity.\n\nInputs:\nEntity Name\n\n{{entity_name | text:placeholder=\"Enter the company or entity name...\":required}}\n\nYou must:\n\nQuery the Diligent API using the entity name provided\nPresent the registered address and business address as bullet points\nInclude the ACN and ABN (if available) for reference\nInclude only data fields actually returned by the API"
             },
             "autoSubmit": true,
             "tags": [
@@ -984,7 +984,7 @@
             "capabilityType": "Form",
             "action": {
                 "type": "prompt",
-                "prompt": "Prompt Purpose:\n\nRetrieve a complete list of shareholders for the specified entity.\n\n\nSystem Instruction:\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve all shareholders for the provided entity.\n\nYou must:\n\nQuery the Diligent API using the entity name provided\nPresent shareholders in a table format\nInclude all data fields returned by the API for each shareholder\nCalculate and display total shares and percentages\nInclude the ACN and summary statistics\nDo not create empty columns - only include fields with actual data\nList shareholders by ownership percentage if data is available\n\n\nInputs:\nEntity Name\n\n{{entity_name | text:placeholder=\"Enter the company or entity name...\"}}\n\n\nOutput:\nCompany Information:\n\nACN: [number]\nLegal Name: [name]\n\nShareholder Summary:\n\nTotal Shareholders: [X]\nTotal Shares: [X]\n\n[Table with all shareholder information returned by API - columns will vary based on actual data returned, may include: Name, Address, Share Class, Number of Shares, Percentage, etc.]"
+                "prompt": "Prompt Purpose:\n\nRetrieve a complete list of shareholders for the specified entity.\n\n\nSystem Instruction:\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve all shareholders for the provided entity.\n\nYou must:\n\nQuery the Diligent API using the entity name provided\nPresent shareholders in a table format\nInclude all data fields returned by the API for each shareholder\nCalculate and display total shares and percentages\nInclude the ACN and summary statistics\nDo not create empty columns - only include fields with actual data\nList shareholders by ownership percentage if data is available\n\n\nInputs:\nEntity Name\n\n{{entity_name | text:placeholder=\"Enter the company or entity name...\":required}}\n\n\nOutput:\nCompany Information:\n\nACN: [number]\nLegal Name: [name]\n\nShareholder Summary:\n\nTotal Shareholders: [X]\nTotal Shares: [X]\n\n[Table with all shareholder information returned by API - columns will vary based on actual data returned, may include: Name, Address, Share Class, Number of Shares, Percentage, etc.]"
             },
             "autoSubmit": true,
             "tags": [
@@ -1003,7 +1003,7 @@
             "capabilityType": "Form",
             "action": {
                 "type": "prompt",
-                "prompt": "Prompt Purpose:\n\nRetrieve the complete legal name of the specified entity.\n\n\nSystem Instruction:\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve the full legal name for the provided entity.\n\nInputs:\nEntity Name\n\n{{entity_name | text:placeholder=\"Enter the company or entity name...\"}}\n\nYou must:\n\nQuery the Diligent API using the entity name provided\nPresent the legal name and any name variations as bullet points\nInclude the ACN for reference\nInclude only data fields actually returned by the API"
+                "prompt": "Prompt Purpose:\n\nRetrieve the complete legal name of the specified entity.\n\n\nSystem Instruction:\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve the full legal name for the provided entity.\n\nInputs:\nEntity Name\n\n{{entity_name | text:placeholder=\"Enter the company or entity name...\":required}}\n\nYou must:\n\nQuery the Diligent API using the entity name provided\nPresent the legal name and any name variations as bullet points\nInclude the ACN for reference\nInclude only data fields actually returned by the API"
             },
             "autoSubmit": true,
             "tags": [
@@ -1022,7 +1022,7 @@
             "capabilityType": "Form",
             "action": {
                 "type": "prompt",
-                "prompt": "Prompt Purpose:\n\nRetrieve the Australian Company Number (ACN) and Australian Business Number (ABN) for the specified entity.\n\nSystem Instruction:\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve the ACN and ABN for the provided entity name.\n\nYou must:\n\nQuery the Diligent API using the entity name provided\nExtract and present the ACN and ABN clearly\nInclude all related identification numbers if available (ARBN, etc.)\nPresent the information in a table format by default\nIf no ACN or ABN is found, clearly state this and provide any alternative identifiers\n\nInputs:\n\nEntity Name\n\n{{entity_name | text:placeholder=\"Enter the company or entity name...\"}}\n\nOutput:\n\nReturn the ACN, ABN and related identification numbers in a clear table format with all information provided by the API."
+                "prompt": "Prompt Purpose:\n\nRetrieve the Australian Company Number (ACN) and Australian Business Number (ABN) for the specified entity.\n\nSystem Instruction:\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve the ACN and ABN for the provided entity name.\n\nYou must:\n\nQuery the Diligent API using the entity name provided\nExtract and present the ACN and ABN clearly\nInclude all related identification numbers if available (ARBN, etc.)\nPresent the information in a table format by default\nIf no ACN or ABN is found, clearly state this and provide any alternative identifiers\n\nInputs:\n\nEntity Name\n\n{{entity_name | text:placeholder=\"Enter the company or entity name...\":required}}\n\nOutput:\n\nReturn the ACN, ABN and related identification numbers in a clear table format with all information provided by the API."
             },
             "autoSubmit": true,
             "tags": [
@@ -1041,7 +1041,7 @@
             "capabilityType": "Form",
             "action": {
                 "type": "prompt",
-                "prompt": "Prompt Purpose:\n\nRetrieve a complete list of all current and past office holders (directors, company secretaries, and former officers) for the specified entity.\n\n\nSystem Instruction:\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve all office holders (current directors, company secretaries, and past office holders) for the provided entity.\n\nYou must:\n\nQuery the Diligent API using the entity name provided\nPresent all office holders in separate tables by category:\n\nCurrent Directors\nCurrent Company Secretary\nPast Office Holders\n\n\nInclude all data fields returned by the API for each office holder\nInclude the ACN and totals for each category\nDo not create empty columns - only include fields with actual data\nList past office holders in reverse chronological order (most recent cessations first) if dates are available\nNote if any category has no records\n\n\nInputs:\nEntity Name\n\n{{entity_name | text:placeholder=\"Enter the company or entity name...\"}}\n\n\nOutput:\nCompany Information:\n\nACN: [number]\nLegal Name: [name]\n\n\nCURRENT DIRECTORS\nTotal: [X]\n[Table with all director information returned by API - columns will vary based on actual data returned, may include: Full Name, Address, Date Appointed, Date of Birth, Place of Birth, etc.]\n\nCURRENT COMPANY SECRETARY\nTotal: [X]\n[Table with all secretary information returned by API - columns will vary based on actual data returned]\n[If none: \"No company secretary appointed\"]\n\nPAST OFFICE HOLDERS\nTotal: [X]\n[Table with all past office holder information returned by API - columns will vary based on actual data returned, may include: Name, Position, Address, Date Appointed, Date Ceased, Reason for Cessation, etc.]\n[If none: \"No past office holders on record\"]\n\nSummary:\n\nTotal Current Directors: [X]\nTotal Current Secretaries: [X]\nTotal Past Office Holders: [X]\nTotal Office Holders (All): [X]"
+                "prompt": "Prompt Purpose:\n\nRetrieve a complete list of all current and past office holders (directors, company secretaries, and former officers) for the specified entity.\n\n\nSystem Instruction:\n\nYou are an expert company information specialist with access to the Diligent API.\nYour task is to retrieve all office holders (current directors, company secretaries, and past office holders) for the provided entity.\n\nYou must:\n\nQuery the Diligent API using the entity name provided\nPresent all office holders in separate tables by category:\n\nCurrent Directors\nCurrent Company Secretary\nPast Office Holders\n\n\nInclude all data fields returned by the API for each office holder\nInclude the ACN and totals for each category\nDo not create empty columns - only include fields with actual data\nList past office holders in reverse chronological order (most recent cessations first) if dates are available\nNote if any category has no records\n\n\nInputs:\nEntity Name\n\n{{entity_name | text:placeholder=\"Enter the company or entity name...\":required}}\n\n\nOutput:\nCompany Information:\n\nACN: [number]\nLegal Name: [name]\n\n\nCURRENT DIRECTORS\nTotal: [X]\n[Table with all director information returned by API - columns will vary based on actual data returned, may include: Full Name, Address, Date Appointed, Date of Birth, Place of Birth, etc.]\n\nCURRENT COMPANY SECRETARY\nTotal: [X]\n[Table with all secretary information returned by API - columns will vary based on actual data returned]\n[If none: \"No company secretary appointed\"]\n\nPAST OFFICE HOLDERS\nTotal: [X]\n[Table with all past office holder information returned by API - columns will vary based on actual data returned, may include: Name, Position, Address, Date Appointed, Date Ceased, Reason for Cessation, etc.]\n[If none: \"No past office holders on record\"]\n\nSummary:\n\nTotal Current Directors: [X]\nTotal Current Secretaries: [X]\nTotal Past Office Holders: [X]\nTotal Office Holders (All): [X]"
             },
             "autoSubmit": true,
             "tags": [
@@ -1050,24 +1050,120 @@
             "enabled": true,
             "visibility": "all"
         },
-        {
-            "id": "speakr",
-            "title": "Speakr",
-            "subtitle": "AI meeting notetaker",
-            "description": "Speakr is a secure AI transcription and intelligent note-taking platform.",
-            "icon": "🎙️",
-            "color": "from-[#2b6cb0] to-[#1a365d]",
-            "capabilityType": "App",
-            "action": {
-                "type": "url",
-                "url": "https://speakr.alceon.cloud"
-            },
-            "tags": [
-                "launch"
-            ],
-            "enabled": false,
-            "visibility": "all"
-        },
+		{
+			"id": "boardroom_parent_investor_report",
+			"title": "Parent Investor Report",
+			"subtitle": "Boardroom lookup",
+			"description": "Generate a report showing all investment accounts and holdings across all funds for a main contact.",
+			"icon": "👤",
+			"color": "from-[#2b6cb0] to-[#1a365d]",
+			"capabilityType": "Form",
+			"action": {
+				"type": "prompt",
+				"prompt": "Use the Boardroom tool to generate a Parent Investor Report for the following contact. This report should show all investor accounts linked to this contact name, with a separate table for each account listing all securities held. Include commitment, contributions, remaining commitment, return of capital, net capital invested, DRP reinvestments, and transfers columns. Include a grand total across all accounts at the bottom.\n\n## Contact Name\n{{contact_name | text:placeholder=\"Enter the main contact name (e.g. John Doe)...\":required}}"
+			},
+			"autoSubmit": true,
+			"tags": [
+				"lookup"
+			],
+			"enabled": true,
+			"visibility": "all"
+		},
+		{
+			"id": "boardroom_investment_vehicle_report",
+			"title": "Investment Vehicle Report",
+			"subtitle": "Boardroom lookup",
+			"description": "Generate a report showing all securities held by a specific investor account with financial summary.",
+			"icon": "📊",
+			"color": "from-[#2b6cb0] to-[#1a365d]",
+			"capabilityType": "Form",
+			"action": {
+				"type": "prompt",
+				"prompt": "Use the Boardroom tool to generate an Investment Vehicle Report for the following investor account. This report should show a table of all securities held by this investor with commitment, contributions, remaining commitment, return of capital, net capital invested, DRP reinvestments, and transfers columns. Include a total row at the bottom.\n\n## Investor Name\n{{investor_name | text:placeholder=\"Enter the investor account name (e.g. John Doe Super Fund)...\":required}}"
+			},
+			"autoSubmit": true,
+			"tags": [
+				"lookup"
+			],
+			"enabled": true,
+			"visibility": "all"
+		},
+		{
+			"id": "boardroom_list_unit_holders",
+			"title": "List Unit Holders",
+			"subtitle": "Boardroom lookup",
+			"description": "List all unit holders for a specific trust or fund, showing investor names and unit balances.",
+			"icon": "📋",
+			"color": "from-[#2b6cb0] to-[#1a365d]",
+			"capabilityType": "Form",
+			"action": {
+				"type": "prompt",
+				"prompt": "Use the Boardroom tool to list all unit holders for the following trust or fund. Show each investor's name, contact name, investor ID, unit balance, and price. Present the results in a table format sorted by units held (largest first). Include a total units row at the bottom.\n\n## Trust / Fund Name\n{{fund_name | text:placeholder=\"Enter the trust or fund name (e.g. Alceon Boss Trust)...\":required}}"
+			},
+			"autoSubmit": true,
+			"tags": [
+				"lookup"
+			],
+			"enabled": true,
+			"visibility": "all"
+		},
+		{
+			"id": "boardroom_security_search",
+			"title": "Security Search",
+			"subtitle": "Boardroom lookup",
+			"description": "Search for securities by name and show fund size, unit price, and investor count.",
+			"icon": "🔍",
+			"color": "from-[#2b6cb0] to-[#1a365d]",
+			"capabilityType": "Form",
+			"action": {
+				"type": "prompt",
+				"prompt": "Use the Boardroom tool to search for all securities with the following term in the name. For each matching security, show the security name, issuer, security class ID, number of units, number of investors, last price, last price date, and fund size. Present the results in a table format.\n\n## Search Term\n{{search_term | text:placeholder=\"Enter security name to search for (e.g. Alceon Boss)...\":required}}"
+			},
+			"autoSubmit": true,
+			"tags": [
+				"lookup"
+			],
+			"enabled": true,
+			"visibility": "all"
+		},
+		{
+			"id": "boardroom_investor_search",
+			"title": "Investor Search",
+			"subtitle": "Boardroom lookup",
+			"description": "Search for investors by name across all funds, showing contact details and holdings summary.",
+			"icon": "🔎",
+			"color": "from-[#2b6cb0] to-[#1a365d]",
+			"capabilityType": "Form",
+			"action": {
+				"type": "prompt",
+				"prompt": "Use the Boardroom tool to search for all investors matching the following name across all funds and security classes. For each matching investor, show their registered name, contact name, investor ID, email address, domicile, and a list of all funds/securities they hold units in with the unit balance. Present investors in a table format.\n\n## Investor Name\n{{investor_name | text:placeholder=\"Enter investor or contact name to search for...\":required}}"
+			},
+			"autoSubmit": true,
+			"tags": [
+				"lookup"
+			],
+			"enabled": true,
+			"visibility": "all"
+		},
+		{
+			"id": "boardroom_cache_status",
+			"title": "Registry Data Status",
+			"subtitle": "Boardroom lookup",
+			"description": "Check the freshness of the investor registry cache — when it was last synced and record counts.",
+			"icon": "🔄",
+			"color": "from-[#2b6cb0] to-[#1a365d]",
+			"capabilityType": "Simple",
+			"action": {
+				"type": "prompt",
+				"prompt": "Use the Boardroom tool to check the Boardroom investor cache status. Show when it was last rebuilt, how many investors and securities are indexed, and whether the transaction data is populated."
+			},
+			"autoSubmit": true,
+			"tags": [
+				"lookup"
+			],
+			"enabled": true,
+			"visibility": "all"
+		},
         {
             "id": "alceon-one",
             "title": "Alceon One",
@@ -1104,6 +1200,24 @@
             "enabled": true,
             "visibility": "all"
         },
+		{
+			"id": "claude_ai",
+			"title": "Claude",
+			"subtitle": "Anthropic AI assistant",
+			"description": "Open Claude for advanced reasoning, analysis, and document work with Projects and Artifacts.",
+			"icon": "🤖",
+			"color": "from-[#2b6cb0] to-[#1a365d]",
+			"capabilityType": "App",
+			"action": {
+				"type": "url",
+				"url": "https://claude.ai/"
+			},
+			"tags": [
+				"launch"
+			],
+			"enabled": true,
+			"visibility": "all"
+		},
         {
             "id": "gift-register",
             "title": "Gift Register",
