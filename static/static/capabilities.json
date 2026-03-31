@@ -1060,7 +1060,7 @@
 			"capabilityType": "Form",
 			"action": {
 				"type": "prompt",
-				"prompt": "Use the Boardroom tool to generate a Parent Investor Report for the following contact. This report should show all investor accounts linked to this contact name, with a separate table for each account listing all securities held. Include commitment, contributions, remaining commitment, return of capital, net capital invested, DRP reinvestments, and transfers columns. Include a grand total across all accounts at the bottom.\n\n## Contact Name\n{{contact_name | text:placeholder=\"Enter the main contact name (e.g. John Doe)...\":required}}"
+				"prompt": "Use the Boardroom tool to generate a Parent Investor Report for the following contact. This report should show all investor accounts linked to this contact name, with a separate table for each account listing all securities held. Include commitment, contributions, remaining commitment, return of capital, and net capital invested columns. Include a grand total across all accounts at the bottom.\n\n## Contact Name\n{{contact_name | text:placeholder=\"Enter the main contact name (e.g. John Doe)...\":required}}"
 			},
 			"autoSubmit": true,
 			"tags": [
@@ -1079,7 +1079,7 @@
 			"capabilityType": "Form",
 			"action": {
 				"type": "prompt",
-				"prompt": "Use the Boardroom tool to generate an Investment Vehicle Report for the following investor account. This report should show a table of all securities held by this investor with commitment, contributions, remaining commitment, return of capital, net capital invested, DRP reinvestments, and transfers columns. Include a total row at the bottom.\n\n## Investor Name\n{{investor_name | text:placeholder=\"Enter the investor account name (e.g. John Doe Super Fund)...\":required}}"
+				"prompt": "Use the Boardroom tool to generate an Investment Vehicle Report for the following investor account. This report should show a table of all securities held by this investor with commitment, contributions, remaining commitment, return of capital, and net capital invested columns. Include a total row at the bottom.\n\n## Investor Name\n{{investor_name | text:placeholder=\"Enter the investor account name (e.g. John Doe Super Fund)...\":required}}"
 			},
 			"autoSubmit": true,
 			"tags": [
