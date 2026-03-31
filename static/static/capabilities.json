@@ -1354,7 +1354,7 @@
             "capabilityType": "App",
             "action": {
                 "type": "url",
-                "url": "#"
+                "url": "https://www.clientonline.com.au/alceon"
             },
             "tags": [
                 "launch"
