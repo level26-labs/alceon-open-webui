@@ -336,8 +336,9 @@
 						{/if}
 
 						{#if $config?.features?.enable_onedrive_integration && ($config?.features?.enable_onedrive_personal || $config?.features?.enable_onedrive_business)}
-						<DropdownMenu.Item
-							class="flex gap-2 items-center px-3 py-2 text-sm font-medium cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl w-full"
+						<button
+							class="flex w-full gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl"
+							type="button"
 							on:click={() => {
 								uploadOneDriveHandler('organizations');
 							}}
@@ -348,20 +349,17 @@
 								class="w-5 h-5"
 								fill="none"
 							>
-								<!-- Background circles -->
+								<!-- your SVG content stays the same -->
 								<circle cx="22" cy="10" r="8" fill="#0F7B82"/>
 								<circle cx="20" cy="18" r="7" fill="#16A085"/>
 								<circle cx="12" cy="20" r="6" fill="#1ABC9C"/>
 								<circle cx="18" cy="24" r="5" fill="#48C9B0"/>
-								
-								<!-- Main SharePoint square with S -->
 								<rect x="6" y="8" width="14" height="14" rx="2" fill="#0F7B82"/>
 								<text x="13" y="18" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="10" font-weight="bold">S</text>
 							</svg>
 							<div class="line-clamp-1">{$i18n.t('SharePoint')}</div>
-						</DropdownMenu.Item>
+						</button>
 						{/if}
-					{/if}
 				</div>
 			{:else if tab === 'knowledge'}
 				<div in:fly={{ x: 20, duration: 150 }}>
