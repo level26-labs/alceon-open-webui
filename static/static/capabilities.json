@@ -1089,6 +1089,25 @@
 			"visibility": "all"
 		},
 		{
+			"id": "boardroom_security_report",
+			"title": "Security Report",
+			"subtitle": "Boardroom lookup",
+			"description": "View summary details for a specific security including fund size, NAV, investor count, and yield. ",
+			"icon": "📈",
+			"color": "from-[#2b6cb0] to-[#1a365d]",
+			"capabilityType": "Form",
+			"action": {
+				"type": "prompt",
+				"prompt": "Use the Boardroom tool to generate a Security Report for the following security. Present the tool output exactly as returned — do not reformat, summarise, or add any additional commentary.\n\n## Security Name\n{{security_name | text:placeholder=\"E.g. Alceon Boss Trust\":required}}"
+			},
+			"autoSubmit": true,
+			"tags": [
+				"lookup"
+			],
+			"enabled": true,
+			"visibility": "all"
+		},
+		{
 			"id": "boardroom_list_unit_holders",
 			"title": "List Unit Holders",
 			"subtitle": "Boardroom lookup",
