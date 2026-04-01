@@ -360,6 +360,7 @@
 							<div class="line-clamp-1">{$i18n.t('SharePoint')}</div>
 						</button>
 						{/if}
+					{/if}	
 				</div>
 			{:else if tab === 'knowledge'}
 				<div in:fly={{ x: 20, duration: 150 }}>
