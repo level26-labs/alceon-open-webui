@@ -1071,7 +1071,7 @@
 		},
 		{
 			"id": "boardroom_investment_vehicle_report",
-			"title": "Investment Vehicle Report",
+			"title": "Holder Report",
 			"subtitle": "Boardroom lookup",
 			"description": "Generate a report showing all securities held by a specific investor account with financial summary.",
 			"icon": "📊",
@@ -1079,7 +1079,7 @@
 			"capabilityType": "Form",
 			"action": {
 				"type": "prompt",
-				"prompt": "Use the Boardroom tool to generate an Investment Vehicle Report for the following investor account. Present the tool output exactly as returned — do not reformat, summarise, or add any additional commentary.\n\n## Investor Name\n{{investor_name | text:placeholder=\"E.g. Smith Family Trust\":required}}"
+				"prompt": "Use the Boardroom tool to generate an Investment Vehicle Report for the following investor account. Present the tool output exactly as returned — do not reformat, summarise, or add any additional commentary.\n\n## Holder Name\n{{investor_name | text:placeholder=\"E.g. Smith Family Trust\":required}}"
 			},
 			"autoSubmit": true,
 			"tags": [
@@ -1098,7 +1098,7 @@
 			"capabilityType": "Form",
 			"action": {
 				"type": "prompt",
-				"prompt": "Use the Boardroom tool to list all unit holders for the following trust or fund. Present the tool output exactly as returned — do not reformat, summarise, or add any additional commentary.\n\n## Trust / Fund Name\n{{fund_name | text:placeholder=\"E.g. Alceon Boss Trust\":required}}"
+				"prompt": "Use the Boardroom tools to list all unit holders for the following security. First retrieve the security details (issuer, security class, number of units, number of investors, last price, fund size) and present them in a summary table at the top. Then list all investors and their holdings in a second table sorted by units held (largest first) with a total row. Present all output in clean markdown tables.\n\n## Security Name\n{{security_name | text:placeholder=\"E.g. Alceon Boss Trust\":required}}"
 			},
 			"autoSubmit": true,
 			"tags": [
@@ -1117,7 +1117,7 @@
 			"capabilityType": "Form",
 			"action": {
 				"type": "prompt",
-				"prompt": "Use the Boardroom tool to search for all securities matching the following term. Present the tool output exactly as returned — do not reformat, summarise, or add any additional commentary.\n\n## Search Term\n{{search_term | text:placeholder=\"E.g. Alceon Boss\":required}}"
+				"prompt": "Use the Boardroom tool to search for all securities matching the following term. \n\n## Search Term\n{{search_term | text:placeholder=\"E.g. Boss\":required}}"
 			},
 			"autoSubmit": true,
 			"tags": [
@@ -1128,34 +1128,15 @@
 		},
 		{
 			"id": "boardroom_investor_search",
-			"title": "Investor Search",
+			"title": "Holder Search",
 			"subtitle": "Boardroom lookup",
-			"description": "Search for investors by name across all funds, showing contact details and holdings summary.",
+			"description": "Search for investment vehicles by name across all funds, showing contact details and holdings summary.",
 			"icon": "🔎",
 			"color": "from-[#2b6cb0] to-[#1a365d]",
 			"capabilityType": "Form",
 			"action": {
 				"type": "prompt",
-				"prompt": "Use the Boardroom tool to search for all investors matching the following name across all funds. Present the tool output exactly as returned — do not reformat, summarise, or add any additional commentary.\n\n## Investor Name\n{{investor_name | text:placeholder=\"E.g. Smith Super Fund\":required}}"
-			},
-			"autoSubmit": true,
-			"tags": [
-				"lookup"
-			],
-			"enabled": true,
-			"visibility": "all"
-		},
-		{
-			"id": "boardroom_cache_status",
-			"title": "Registry Data Status",
-			"subtitle": "Boardroom lookup",
-			"description": "Check the freshness of the investor registry cache — when it was last synced and record counts.",
-			"icon": "🔄",
-			"color": "from-[#2b6cb0] to-[#1a365d]",
-			"capabilityType": "Simple",
-			"action": {
-				"type": "prompt",
-				"prompt": "Use the Boardroom tool to check the investor cache status. Present the tool output exactly as returned — do not reformat, summarise, or add any additional commentary."
+				"prompt": "Use the Boardroom tool to search for all investors matching the following name across all funds. \n\n## Holder Name\n{{holder_name | text:placeholder=\"E.g. Green\":required}}"
 			},
 			"autoSubmit": true,
 			"tags": [
