@@ -36,7 +36,7 @@
     ],
 	"meta": {
 		"version": "1.3.1",
-		"changelog": "• Added Boardroom investor registry integration with 7 new lookup tiles.\n• Added Claude AI to Launch category.\n• Kingfisher upgraded to GPT-5.2.\n• Review an NDA prompt improved.\n• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile.\n• Added Claude Opus Excel model generation capability.\n• Added Voice Recorder capability for meeting transcription and notes."
+		"changelog": "• Added Boardroom investor registry tiles.\n• Added Claude to Launch category.\n• Kingfisher upgraded to GPT-5.2.\n• Added Voice Recorder capability for meeting transcription and notes."
 	},
     "featuredTile": [
         {
