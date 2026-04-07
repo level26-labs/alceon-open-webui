@@ -35,8 +35,8 @@
         }
     ],
 	"meta": {
-		"version": "1.3.0",
-		"changelog": "• Added Boardroom investor registry integration with 7 new lookup tiles.\n• Added Claude AI to Launch category.\n• Kingfisher upgraded to GPT-5.2.\n• Review an NDA prompt improved.\n• Added Policy Search tile to lookup category.\n• Research Assistant major upgrade.\n• Added How can AI help tile.\n• Added News Search tile.\n• Added Claude Opus Excel model generation capability.\n• Added Voice Recorder capability for meeting transcription and notes."
+		"version": "1.3.1",
+		"changelog": "• Added Boardroom investor registry tiles.\n• Added Claude to Launch category.\n• Kingfisher upgraded to GPT-5.2.\n• Added Voice Recorder capability for meeting transcription and notes."
 	},
     "featuredTile": [
         {
@@ -1117,8 +1117,8 @@
 			"capabilityType": "Form",
 			"action": {
 				"type": "prompt",
-				"prompt": "Use the Boardroom tools to list all unit holders for the following security. First retrieve the security details (issuer, security class, number of units, number of investors, last price, fund size) and present them in a summary table at the top. Then list all investors and their holdings in a second table sorted by units held (largest first) with a total row. Present all output in clean markdown tables.\n\n## Security Name\n{{security_name | text:placeholder=\"E.g. Alceon Boss Trust\":required}}"
-			},
+				"prompt": "Use the Boardroom tools to list all unit holders for the following security.\n\n1. First use list_securities to find the security and get its details.\n2. Present a summary table with: Security Name, Issuer, Security Class, Total Units (formatted as whole number, no decimals), Number of Investors, Last NAV Price, Last Price Date.\n3. Do NOT show a 'Fund Size' row — this data is not reliable from the securities endpoint.\n4. Then use search_investors (or get_daily_extract) to list all investors. Page through ALL results if there are more than one page.\n5. Present all investors in a table with columns: Investor ID, Registered Name, Units. Format units as whole numbers with no decimal places.\n6. At the bottom of the table, add a TOTAL row. The total units MUST equal the Total Units value from the summary in step 2. Do not manually sum the table — use the Total Units value from the security details.\n7. If the table sum does not match the security total, note the discrepancy.\n\nPresent all output in clean markdown tables. Do not add any additional commentary.\n\n## Security Name\n{{security_name | text:placeholder=\"E.g. Alceon Boss Trust\":required}}"
+	        },
 			"autoSubmit": true,
 			"tags": [
 				"lookup"
