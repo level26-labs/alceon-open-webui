@@ -191,7 +191,7 @@
                 "label": "Try Deep Research"
             },
             "visibility": "all",
-            "enabled": true
+            "enabled": false
         }
     ],
     "capabilities": [
@@ -440,7 +440,7 @@
             "tags": [
                 "research"
             ],
-            "enabled": true,
+            "enabled": false,
             "visibility": "all"
         },
         {
