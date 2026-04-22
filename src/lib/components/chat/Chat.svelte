@@ -378,7 +378,7 @@
 					}
 				};
 				await waitForUploads();
-				submitPrompt(data);
+				submitPrompt(data, files);
 			} else {
 				messageInput?.setText(data);
 				await tick();
