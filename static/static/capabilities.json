@@ -35,8 +35,8 @@
         }
     ],
 	"meta": {
-		"version": "1.3.4",
-		"changelog": "• Added Boardroom investor registry tiles.\n• Added Claude to Launch category.\n• Kingfisher upgraded to GPT-5.2.\n• Added Voice Recorder capability for meeting transcription and notes."
+		"version": "1.4.0",
+		"changelog": "• Major Kingfisher upgrade.\n• Automations and Calendar feature.\n• Kingfisher upgraded to GPT-5.4.\n• Voice Recorder stability improvement for long recordings."
 	},
     "featuredTile": [
         {
