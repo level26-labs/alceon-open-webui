@@ -35,8 +35,8 @@
         }
     ],
 	"meta": {
-		"version": "1.4.0",
-		"changelog": "• Major Kingfisher upgrade.\n• Automations and Calendar feature.\n• Kingfisher upgraded to GPT-5.4.\n• Voice Recorder stability improvement for long recordings."
+		"version": "1.4.1",
+		"changelog": "• Major Kingfisher upgrade.\n• Automations and Calendar feature.\n• Kingfisher upgraded to GPT-5.4.\n• Voice Recorder disabled."
 	},
     "featuredTile": [
         {
@@ -67,7 +67,7 @@
                 "label": "Start Recording"
             },
             "visibility": "all",
-            "enabled": true
+            "enabled": false
         },
         {
             "id": "featured-feb-2026-doc-generator",
@@ -2025,7 +2025,7 @@
             },
             "autoSubmit": false,
             "tags": ["create"],
-            "enabled": true,
+            "enabled": false,
             "visibility": "all",
             "difficulty": "basic",
             "helpText": "Record audio in your browser and get AI-powered transcription and analysis.",
