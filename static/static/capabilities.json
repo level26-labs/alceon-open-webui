@@ -35,8 +35,8 @@
         }
     ],
 	"meta": {
-		"version": "1.4.1",
-		"changelog": "• Major Kingfisher upgrade.\n• Automations and Calendar feature.\n• Kingfisher upgraded to GPT-5.4.\n• Voice Recorder disabled."
+		"version": "2.0",
+		"changelog": "• Simplified interface."
 	},
     "featuredTile": [
         {
@@ -146,7 +146,7 @@
                 "label": "Get Started"
             },
             "visibility": "all",
-            "enabled": true
+            "enabled": false
         },
         {
             "id": "featured-feb-2026-policy-search_1",
@@ -161,7 +161,7 @@
                 "label": "Try Policy Search"
             },
             "visibility": "all",
-            "enabled": true
+            "enabled": false
         },
         {
             "id": "featured-feb-2026-news-search",
@@ -176,7 +176,7 @@
                 "label": "Search News"
             },
             "visibility": "all",
-            "enabled": true
+            "enabled": false
         },
         {
             "id": "featured-feb-2026-deep-research",
@@ -353,7 +353,7 @@
             "tags": [
                 "lookup"
             ],
-            "enabled": true,
+            "enabled": false,
             "visibility": "all",
             "difficulty": "basic",
             "examples": [
@@ -524,7 +524,7 @@
             "tags": [
                 "lookup"
             ],
-            "enabled": true,
+            "enabled": false,
             "visibility": "all"
         },
         {
@@ -550,7 +550,7 @@
             "tags": [
                 "review"
             ],
-            "enabled": true,
+            "enabled": false,
             "visibility": "all",
             "difficulty": "intermediate",
             "helpText": "Upload a draft NDA (PDF or Word) to review against Alceon's standard terms and compliance requirements."
@@ -1518,34 +1518,8 @@
             "visibility": "all"
         },
         {
-            "id": "what_would_trevor_say",
-            "title": "What would Trevor say?",
-            "subtitle": "Investor report review",
-            "description": "Review investor reports against Alceon's 20-point reporting standards. Get compliance feedback and suggested rewrites.",
-            "icon": "👨‍💼",
-            "color": "from-[#1a365d] to-[#2b6cb0]",
-            "capabilityType": "Form",
-            "action": {
-                "type": "prompt",
-                "prompt": "You are a senior analyst conducting an investor report compliance review for Alceon Group, applying Trevor's rigorous 20-point reporting standards.\n\n---\n\n## Review Context\n- **Investment/Fund Name:** {{investment_name|text:required:placeholder=\"e.g., Project Atlas, Alceon Fund IV\"}}\n- **Report Type:** {{report_type|select:required:options=[\"Quarterly investor update\",\"Annual report\",\"Capital call notice\",\"Distribution notice\",\"Ad-hoc / material update\",\"Final exit report\"]}}\n- **Report Period:** {{report_period|text:required:placeholder=\"e.g., Q3 2024, FY24, December 2024\"}}\n- **Investor Audience:** {{audience|select:required:options=[\"Institutional LPs\",\"HNW / Family offices\",\"Mixed investor base\",\"Single investor / SMA\"]}}\n- **Sensitivity Level:** {{sensitivity|select:options=[\"Standard\",\"High - performance issues\",\"High - material event\",\"High - exit/liquidity\"]:default=\"Standard\"}}\n\n## Documents Provided\nThe user has uploaded documents for review. First, identify what has been provided and flag any gaps.\n\n**Expected documents:**\n- Current investor report (being reviewed) — REQUIRED\n- Investment Memorandum (IM) — for alignment check\n- Previous investor reports — for consistency check\n- Latest financial statements — for accuracy check\n- Market data / benchmarks — for context\n\n## Review Focus\n- **Specific concerns to check:** {{concerns|textarea:placeholder=\"e.g., Performance explanation may be too optimistic, timeline slippage not addressed, tone may alarm investors...\"}}\n- **Sections to prioritise:** {{sections|textarea:placeholder=\"e.g., Executive summary, valuation commentary, outlook section...\"}}\n\n---\n\n## Instructions\n\n### Step 1: Document Check\nFirst, review what documents were uploaded and present:\n\n| Document | Provided | Notes |\n|----------|----------|-------|\n| Current investor report | ✔/✖ | |\n| Investment Memorandum | ✔/✖ | |\n| Previous investor reports | ✔/✖ | |\n| Financial statements | ✔/✖ | |\n| Market data/benchmarks | ✔/✖ | |\n| Other materials | ✔/✖ | [List if any] |\n\n**Note any missing documents that would strengthen the review.**\n\n---\n\n### Step 2: Executive Summary\nProvide 3-5 bullet points:\n- Key findings from the review\n- Critical issues requiring immediate attention\n- Overall compliance assessment (Strong / Acceptable / Needs Work / Significant Concerns)\n\n---\n\n### Step 3: 20-Point Compliance Review\n\nReview the investor report against each criterion:\n\n| # | Criteria | Status | Assessment | Suggested Improvement |\n|---|----------|--------|------------|----------------------|\n| 1 | **IM Alignment** — Does the report align with promises/strategy in the IM? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 2 | **Previous Report Consistency** — Consistent narrative with prior updates? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 3 | **Return Expectations** — Are return expectations clearly and accurately stated? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 4 | **Timeline Accuracy** — Are timelines realistic and accurately represented? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 5 | **Transparency** — Appropriate level of disclosure on issues/risks? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 6 | **Conciseness** — Is the report appropriately concise without fluff? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 7 | **Concept Simplification** — Complex concepts explained clearly? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 8 | **Information Relevance** — All information relevant and necessary? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 9 | **Appropriate Tone** — Right balance of alarm vs reassurance? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 10 | **Sensitivity Handling** — Sensitive matters addressed appropriately? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 11 | **Promise Calibration** — Avoiding under/over promising? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 12 | **Credibility** — Does the report maintain/build credibility? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 13 | **Investor Reaction** — How will investors react to this? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 14 | **Market Context** — Adequate market/macro context provided? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 15 | **Forward-Looking Disclosure** — Forward statements appropriately caveated? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 16 | **Related Party Issues** — Related party matters properly disclosed? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 17 | **Disclosure Permissions** — All disclosures appropriately permissioned? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 18 | **Recipient Context** — Tailored appropriately for the audience? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 19 | **Factual Accuracy** — Numbers and facts verified/accurate? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n| 20 | **Typos & Errors** — Free from typos, grammatical errors, formatting issues? | ✔/✖ | [Brief reason] | [Specific suggestion] |\n\n**Compliance Score:** [X/20 passed]\n\n---\n\n### Step 4: Priority Rewrites\n\nFor any criteria that failed (✖), provide specific rewrite suggestions:\n\n| Page/Section | Original Content | Suggested Rewrite | Criteria Addressed |\n|--------------|------------------|-------------------|--------------------|\n| [Location] | [Problematic text from report] | [Improved version - concise, professional, investment-grade] | [#X - Criteria name] |\n\n---\n\n### Step 5: Summary & Recommendations\n\n**Overall Assessment:**\n[1-2 sentence summary of report quality]\n\n**Must Fix (before sending):**\n1. [Critical issue]\n2. [Critical issue]\n\n**Should Fix (if time permits):**\n1. [Improvement]\n2. [Improvement]\n\n**Minor Suggestions:**\n- [Nice to have]\n\n---\n\n*Review conducted against Alceon's 20-point investor reporting standards. Use Australian English throughout.*"
-            },
-            "autoSubmit": true,
-            "fileUpload": {
-                "enabled": true,
-                "multiple": true,
-                "accept": ".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt",
-                "label": "Upload investor report and supporting documents (IM, prior reports, financials)",
-                "required": true
-            },
-            "tags": [
-                "review"
-            ],
-            "enabled": true,
-            "visibility": "all"
-        },
-        {
             "id": "investment_summary",
-            "title": "IC Deal Summary",
+            "title": "Deal Summary",
             "subtitle": "Professional 2-page summary",
             "description": "Upload deal documents and generate a professional 2-page investment summary with criteria screening and recommendation.",
             "icon": "📑",
