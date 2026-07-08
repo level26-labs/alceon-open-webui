@@ -32,6 +32,7 @@
 	let widescreenMode = false;
 	let splitLargeChunks = false;
 	let scrollOnBranchChange = true;
+	let showFilesOnTerminalSelect = true;
 	let userLocation = false;
 
 	// Interface
@@ -242,6 +243,7 @@
 		widescreenMode = $settings?.widescreenMode ?? false;
 		splitLargeChunks = $settings?.splitLargeChunks ?? false;
 		scrollOnBranchChange = $settings?.scrollOnBranchChange ?? true;
+		showFilesOnTerminalSelect = $settings?.showFilesOnTerminalSelect ?? true;
 
 		temporaryChatByDefault = $settings?.temporaryChatByDefault ?? false;
 		chatDirection = $settings?.chatDirection ?? 'auto';
@@ -418,7 +420,7 @@
 			<div>
 				<div class=" py-0.5 flex w-full justify-between">
 					<div id="high-contrast-mode-label" class=" self-center text-xs">
-						{$i18n.t('High Contrast Mode')} ({$i18n.t('Beta')})
+						{$i18n.t('High Contrast Mode')}
 					</div>
 
 					<div class="flex items-center gap-2 p-1">
@@ -437,7 +439,7 @@
 			<div>
 				<div class=" py-0.5 flex w-full justify-between">
 					<div id="use-chat-title-as-tab-title-label" class=" self-center text-xs">
-						{$i18n.t('Display chat title in tab')}
+						{$i18n.t('Display Chat Title in Tab')}
 					</div>
 
 					<div class="flex items-center gap-2 p-1">
@@ -552,7 +554,7 @@
 				<div>
 					<div class=" py-0.5 flex w-full justify-between">
 						<div id="toast-notifications-label" class=" self-center text-xs">
-							{$i18n.t('Toast notifications for new updates')}
+							{$i18n.t('Toast Notifications for New Updates')}
 						</div>
 
 						<div class="flex items-center gap-2 p-1">
@@ -571,7 +573,7 @@
 				<div>
 					<div class=" py-0.5 flex w-full justify-between">
 						<div id="whats-new-label" class=" self-center text-xs">
-							{$i18n.t(`Show "What's New" modal on login`)}
+							{$i18n.t(`Show "What's New" Modal on Login`)}
 						</div>
 
 						<div class="flex items-center gap-2 p-1">
@@ -612,7 +614,7 @@
 			<div>
 				<div class=" py-0.5 flex w-full justify-between">
 					<div id="chat-direction-label" class=" self-center text-xs">
-						{$i18n.t('Chat direction')}
+						{$i18n.t('Chat Direction')}
 					</div>
 
 					<button
@@ -702,7 +704,7 @@
 				<div>
 					<div class=" py-0.5 flex w-full justify-between">
 						<div id="chat-bubble-username-label" class=" self-center text-xs">
-							{$i18n.t('Display the username instead of You in the Chat')}
+							{$i18n.t('Display the Username Instead of You in the Chat')}
 						</div>
 
 						<div class="flex items-center gap-2 p-1">
@@ -1038,6 +1040,25 @@
 							bind:state={scrollOnBranchChange}
 							on:change={() => {
 								saveSettings({ scrollOnBranchChange });
+							}}
+						/>
+					</div>
+				</div>
+			</div>
+
+			<div>
+				<div class=" py-0.5 flex w-full justify-between">
+					<div id="show-files-on-terminal-select-label" class=" self-center text-xs">
+						{$i18n.t('Show Files on Terminal Select')}
+					</div>
+
+					<div class="flex items-center gap-2 p-1">
+						<Switch
+							ariaLabelledbyId="show-files-on-terminal-select-label"
+							tooltip={true}
+							bind:state={showFilesOnTerminalSelect}
+							on:change={() => {
+								saveSettings({ showFilesOnTerminalSelect });
 							}}
 						/>
 					</div>
