@@ -8,6 +8,7 @@
 	import { createPicker } from '$lib/utils/google-drive-picker';
 
 	import Dropdown from '$lib/components/common/Dropdown.svelte';
+	import DropdownMenu from '$lib/components/common/DropdownMenu.svelte';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 	import DocumentArrowUp from '$lib/components/icons/DocumentArrowUp.svelte';
 	import Camera from '$lib/components/icons/Camera.svelte';
@@ -105,11 +106,12 @@
 	accept="image/*"
 	capture="environment"
 	on:change={handleFileChange}
-	style="display: none;"
+	class="hidden"
 />
 
 <Dropdown
 	bind:show
+	visualViewportAware
 	on:change={(e) => {
 		if (e.detail === false) {
 			onClose();
@@ -121,11 +123,12 @@
 	</Tooltip>
 
 	<div slot="content">
-		<div
-			class="w-70 rounded-2xl px-1 py-1 border border-gray-100 dark:border-gray-800 z-50 bg-white dark:bg-gray-850 dark:text-white shadow-lg max-h-72 overflow-y-auto overflow-x-hidden scrollbar-thin transition"
-		>
+		<DropdownMenu className="w-70 max-h-72 overflow-hidden transition">
 			{#if tab === ''}
-				<div in:fly={{ x: -20, duration: 150 }}>
+				<div
+					class="max-h-72 overflow-y-auto overflow-x-hidden scrollbar-thin"
+					in:fly={{ x: -20, duration: 150 }}
+				>
 					<Tooltip
 						content={fileUploadCapableModels.length !== selectedModels.length
 							? $i18n.t('Model(s) do not support file upload')
@@ -135,7 +138,7 @@
 						className="w-full"
 					>
 						<button
-							class="flex w-full gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl {!fileUploadEnabled
+							class="flex w-full gap-2 items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer hover:bg-gray-50/40 dark:hover:bg-gray-800/40 rounded-xl {!fileUploadEnabled
 								? 'opacity-50'
 								: ''}"
 							type="button"
@@ -161,7 +164,7 @@
 						className="w-full"
 					>
 						<button
-							class="flex w-full gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl {!fileUploadEnabled
+							class="flex w-full gap-2 items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer hover:bg-gray-50/40 dark:hover:bg-gray-800/40 rounded-xl {!fileUploadEnabled
 								? 'opacity-50'
 								: ''}"
 							type="button"
@@ -192,7 +195,7 @@
 						className="w-full"
 					>
 						<button
-							class="flex w-full gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl {!webUploadEnabled
+							class="flex w-full gap-2 items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer hover:bg-gray-50/40 dark:hover:bg-gray-800/40 rounded-xl {!webUploadEnabled
 								? 'opacity-50'
 								: ''}"
 							type="button"
@@ -217,7 +220,7 @@
 						className="w-full"
 					>
 						<button
-							class="flex gap-2 w-full items-center px-3 py-1.5 text-sm select-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl {!fileUploadEnabled
+							class="flex gap-2 w-full items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer hover:bg-gray-50/40 dark:hover:bg-gray-800/40 rounded-xl {!fileUploadEnabled
 								? 'opacity-50'
 								: ''}"
 							on:click={() => {
@@ -250,7 +253,7 @@
 							className="w-full"
 						>
 							<button
-								class="flex gap-2 w-full items-center px-3 py-1.5 text-sm select-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl {!fileUploadEnabled
+								class="flex gap-2 w-full items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer hover:bg-gray-50/40 dark:hover:bg-gray-800/40 rounded-xl {!fileUploadEnabled
 									? 'opacity-50'
 									: ''}"
 								on:click={() => {
@@ -281,7 +284,7 @@
 						className="w-full"
 					>
 						<button
-							class="flex gap-2 w-full items-center px-3 py-1.5 text-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl {!fileUploadEnabled
+							class="flex gap-2 w-full items-center h-[1.6875rem] px-2 text-[13px] font-normal cursor-pointer hover:bg-gray-50/40 dark:hover:bg-gray-800/40 rounded-xl {!fileUploadEnabled
 								? 'opacity-50'
 								: ''}"
 							on:click={() => {
@@ -311,7 +314,7 @@
 						className="w-full"
 					>
 						<button
-							class="flex gap-2 w-full items-center px-3 py-1.5 text-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl {!fileUploadEnabled
+							class="flex gap-2 w-full items-center h-[1.6875rem] px-2 text-[13px] font-normal cursor-pointer hover:bg-gray-50/40 dark:hover:bg-gray-800/40 rounded-xl {!fileUploadEnabled
 								? 'opacity-50'
 								: ''}"
 							on:click={() => {
@@ -335,14 +338,18 @@
 					{#if fileUploadEnabled}
 						{#if $config?.features?.enable_google_drive_integration}
 							<button
-								class="flex w-full gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl"
+								class="flex w-full gap-2 items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer hover:bg-gray-50/40 dark:hover:bg-gray-800/40 rounded-xl"
 								type="button"
 								on:click={() => {
 									uploadGoogleDriveHandler();
 									show = false;
 								}}
 							>
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 87.3 78" class="w-4">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 87.3 78"
+									class="size-3.5 shrink-0"
+								>
 									<path
 										d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z"
 										fill="#0066da"
@@ -373,36 +380,117 @@
 						{/if}
 
 						{#if $config?.features?.enable_onedrive_integration && ($config?.features?.enable_onedrive_personal || $config?.features?.enable_onedrive_business)}
-						<button
-							class="flex w-full gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl"
-							type="button"
-							on:click={() => {
-								uploadOneDriveHandler('organizations');
-							}}
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 32 32"
-								class="w-5 h-5"
-								fill="none"
+							<button
+								class="flex gap-2 w-full items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer hover:bg-gray-50/40 dark:hover:bg-gray-800/40 rounded-xl {!fileUploadEnabled
+									? 'opacity-50'
+									: ''}"
+								on:click={() => {
+									tab = 'microsoft_onedrive';
+								}}
 							>
-								<!-- your SVG content stays the same -->
-								<circle cx="22" cy="10" r="8" fill="#0F7B82"/>
-								<circle cx="20" cy="18" r="7" fill="#16A085"/>
-								<circle cx="12" cy="20" r="6" fill="#1ABC9C"/>
-								<circle cx="18" cy="24" r="5" fill="#48C9B0"/>
-								<rect x="6" y="8" width="14" height="14" rx="2" fill="#0F7B82"/>
-								<text x="13" y="18" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="10" font-weight="bold">S</text>
-							</svg>
-							<div class="line-clamp-1">{$i18n.t('SharePoint')}</div>
-						</button>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 32 32"
+									class="size-3.5"
+									fill="none"
+								>
+									<mask
+										id="mask0_87_7796"
+										style="mask-type:alpha"
+										maskUnits="userSpaceOnUse"
+										x="0"
+										y="6"
+										width="32"
+										height="20"
+									>
+										<path
+											d="M7.82979 26C3.50549 26 0 22.5675 0 18.3333C0 14.1921 3.35322 10.8179 7.54613 10.6716C9.27535 7.87166 12.4144 6 16 6C20.6308 6 24.5169 9.12183 25.5829 13.3335C29.1316 13.3603 32 16.1855 32 19.6667C32 23.0527 29 26 25.8723 25.9914L7.82979 26Z"
+											fill="#C4C4C4"
+										/>
+									</mask>
+									<g mask="url(#mask0_87_7796)">
+										<path
+											d="M7.83017 26.0001C5.37824 26.0001 3.18957 24.8966 1.75391 23.1691L18.0429 16.3335L30.7089 23.4647C29.5926 24.9211 27.9066 26.0001 26.0004 25.9915C23.1254 26.0001 12.0629 26.0001 7.83017 26.0001Z"
+											fill="url(#paint0_linear_87_7796)"
+										/>
+										<path
+											d="M25.5785 13.3149L18.043 16.3334L30.709 23.4647C31.5199 22.4065 32.0004 21.0916 32.0004 19.6669C32.0004 16.1857 29.1321 13.3605 25.5833 13.3337C25.5817 13.3274 25.5801 13.3212 25.5785 13.3149Z"
+											fill="url(#paint1_linear_87_7796)"
+										/>
+										<path
+											d="M7.06445 10.7028L18.0423 16.3333L25.5779 13.3148C24.5051 9.11261 20.6237 6 15.9997 6C12.4141 6 9.27508 7.87166 7.54586 10.6716C7.3841 10.6773 7.22358 10.6877 7.06445 10.7028Z"
+											fill="url(#paint2_linear_87_7796)"
+										/>
+										<path
+											d="M1.7535 23.1687L18.0425 16.3331L7.06471 10.7026C3.09947 11.0792 0 14.3517 0 18.3331C0 20.1665 0.657197 21.8495 1.7535 23.1687Z"
+											fill="url(#paint3_linear_87_7796)"
+										/>
+									</g>
+									<defs>
+										<linearGradient
+											id="paint0_linear_87_7796"
+											x1="4.42591"
+											y1="24.6668"
+											x2="27.2309"
+											y2="23.2764"
+											gradientUnits="userSpaceOnUse"
+										>
+											<stop stop-color="#2086B8" />
+											<stop offset="1" stop-color="#46D3F6" />
+										</linearGradient>
+										<linearGradient
+											id="paint1_linear_87_7796"
+											x1="23.8302"
+											y1="19.6668"
+											x2="30.2108"
+											y2="15.2082"
+											gradientUnits="userSpaceOnUse"
+										>
+											<stop stop-color="#1694DB" />
+											<stop offset="1" stop-color="#62C3FE" />
+										</linearGradient>
+										<linearGradient
+											id="paint2_linear_87_7796"
+											x1="8.51037"
+											y1="7.33333"
+											x2="23.3335"
+											y2="15.9348"
+											gradientUnits="userSpaceOnUse"
+										>
+											<stop stop-color="#0D3D78" />
+											<stop offset="1" stop-color="#063B83" />
+										</linearGradient>
+										<linearGradient
+											id="paint3_linear_87_7796"
+											x1="-0.340429"
+											y1="19.9998"
+											x2="14.5634"
+											y2="14.4649"
+											gradientUnits="userSpaceOnUse"
+										>
+											<stop stop-color="#16589B" />
+											<stop offset="1" stop-color="#1464B7" />
+										</linearGradient>
+									</defs>
+								</svg>
+
+								<div class="flex items-center w-full justify-between">
+									<div class=" line-clamp-1">
+										{$i18n.t('Microsoft OneDrive')}
+									</div>
+
+									<div class="text-gray-500">
+										<ChevronRight />
+									</div>
+								</div>
+							</button>
 						{/if}
 					{/if}	
 				</div>
 			{:else if tab === 'knowledge'}
-				<div in:fly={{ x: 20, duration: 150 }}>
+				<div class="flex max-h-72 flex-col overflow-hidden" in:fly={{ x: 20, duration: 150 }}>
 					<button
-						class="flex w-full justify-between gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50"
+						class="flex w-full shrink-0 justify-between gap-2 items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer rounded-xl hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
 						on:click={() => {
 							tab = '';
 						}}
@@ -419,9 +507,9 @@
 					<Knowledge {onSelect} />
 				</div>
 			{:else if tab === 'notes'}
-				<div in:fly={{ x: 20, duration: 150 }}>
+				<div class="flex max-h-72 flex-col overflow-hidden" in:fly={{ x: 20, duration: 150 }}>
 					<button
-						class="flex w-full justify-between gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50"
+						class="flex w-full shrink-0 justify-between gap-2 items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer rounded-xl hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
 						on:click={() => {
 							tab = '';
 						}}
@@ -438,9 +526,9 @@
 					<Notes {onSelect} />
 				</div>
 			{:else if tab === 'files'}
-				<div in:fly={{ x: 20, duration: 150 }}>
+				<div class="flex max-h-72 flex-col overflow-hidden" in:fly={{ x: 20, duration: 150 }}>
 					<button
-						class="flex w-full justify-between gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50"
+						class="flex w-full shrink-0 justify-between gap-2 items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer rounded-xl hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
 						on:click={() => {
 							tab = '';
 						}}
@@ -457,9 +545,9 @@
 					<Files {onSelect} />
 				</div>
 			{:else if tab === 'chats'}
-				<div in:fly={{ x: 20, duration: 150 }}>
+				<div class="flex max-h-72 flex-col overflow-hidden" in:fly={{ x: 20, duration: 150 }}>
 					<button
-						class="flex w-full justify-between gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50"
+						class="flex w-full shrink-0 justify-between gap-2 items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer rounded-xl hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
 						on:click={() => {
 							tab = '';
 						}}
@@ -478,7 +566,7 @@
 			{:else if tab === 'microsoft_onedrive'}
 				<div in:fly={{ x: 20, duration: 150 }}>
 					<button
-						class="flex w-full justify-between gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50"
+						class="flex w-full justify-between gap-2 items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer rounded-xl hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
 						on:click={() => {
 							tab = '';
 						}}
@@ -494,7 +582,7 @@
 
 					{#if $config?.features?.enable_onedrive_personal}
 						<button
-							class="flex w-full gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl text-left"
+							class="flex w-full gap-2 items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer hover:bg-gray-50/40 dark:hover:bg-gray-800/40 rounded-xl text-left"
 							type="button"
 							on:click={() => {
 								uploadOneDriveHandler('personal');
@@ -509,23 +597,20 @@
 
 					{#if $config?.features?.enable_onedrive_business}
 						<button
-							class="flex w-full gap-2 items-center px-3 py-1.5 text-sm select-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl text-left"
+							class="flex w-full gap-2 items-center h-[1.6875rem] px-2 text-[13px] font-normal select-none cursor-pointer hover:bg-gray-50/40 dark:hover:bg-gray-800/40 rounded-xl text-left"
 							type="button"
 							on:click={() => {
 								uploadOneDriveHandler('organizations');
 								show = false;
 							}}
 						>
-							<div class="flex flex-col">
-								<div class="line-clamp-1">
-									{$i18n.t('Microsoft OneDrive (work/school)')}
-								</div>
-								<div class="text-xs text-gray-500">{$i18n.t('Includes SharePoint')}</div>
+							<div class="line-clamp-1">
+								{$i18n.t('Microsoft OneDrive (work/school)')}
 							</div>
 						</button>
 					{/if}
 				</div>
 			{/if}
-		</div>
+		</DropdownMenu>
 	</div>
 </Dropdown>
