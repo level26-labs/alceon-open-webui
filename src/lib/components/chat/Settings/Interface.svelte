@@ -71,6 +71,7 @@
 	let renderMarkdownInUserMessages = true;
 	let renderMarkdownInAssistantMessages = true;
 	let expandDetails = false;
+	let renderMarkdownInPreviews = true;
 	let showChatTitleInTab = true;
 
 	let showFloatingActionButtons = true;
@@ -246,6 +247,7 @@
 		renderMarkdownInUserMessages = $settings?.renderMarkdownInUserMessages ?? true;
 		renderMarkdownInAssistantMessages = $settings?.renderMarkdownInAssistantMessages ?? true;
 		expandDetails = $settings?.expandDetails ?? false;
+		renderMarkdownInPreviews = $settings?.renderMarkdownInPreviews ?? true;
 
 		landingPageMode = $settings?.landingPageMode ?? '';
 		chatBubble = $settings?.chatBubble ?? true;
