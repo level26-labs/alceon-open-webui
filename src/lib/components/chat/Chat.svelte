@@ -656,100 +656,16 @@
 	};
 
 	const onSelect = async (e) => {
-		const { type, data, features, autoSubmit, modelId, files: inputFiles } = e;
-		
-		// Switch model if specified
-		if (modelId) {
-			const modelExists = $models.find((m) => m.id === modelId);
-			if (modelExists) {
-				selectedModels = [modelId];
-				await tick();
-			} else {
-				toast.error($i18n.t('Model {{modelId}} not found', { modelId }));
-			}
-		}
-		
-		// Apply features if provided
-		if (features) {
-			if (features.webSearch !== undefined) {
-				webSearchEnabled = features.webSearch;
-			}
-			if (features.imageGeneration !== undefined) {
-				imageGenerationEnabled = features.imageGeneration;
-			}
-			if (features.codeInterpreter !== undefined) {
-				codeInterpreterEnabled = features.codeInterpreter;
-			}
-		}
-		
-		// Handle knowledge collections from CapabilitiesHub
-		if (features?.knowledge && features.knowledge.length > 0) {
-			for (const k of features.knowledge) {
-				const alreadyAttached = files.some(f => f.type === 'collection' && f.id === k.id);
-				if (!alreadyAttached) {
-					files = [...files, {
-						type: 'collection',
-						name: k.name,
-						collection_name: k.name,
-						id: k.id,
-						status: 'processed',
-						error: ''
-					}];
-				}
-			}
-		}
-		
-		// Handle files from CapabilitiesHub if provided
-		if (inputFiles && inputFiles.length > 0) {
-			await handleCapabilityFiles(inputFiles);
-		}
-		
-		if (type === 'focus') {
-			const chatInput = document.getElementById('chat-input');
-			chatInput?.focus();
-		} else if (type === 'voice_recording') {
-			// Voice Recorder: store the wrapper prompt, then trigger native dictate
-			pendingVoicePrompt.set(data);
+		const { type, data } = e;
 
-			// Switch model if specified
-			if (modelId) {
-				const modelExists = $models.find((m) => m.id === modelId);
-				if (modelExists) {
-					selectedModels = [modelId];
+		if (type === 'prompt') {
+			// Handle prompt selection
+			messageInput?.setText(data, async () => {
+				if (!($settings?.insertSuggestionPrompt ?? false)) {
 					await tick();
+					submitHandler(prompt);
 				}
-			}
-
-			// Apply features if provided
-			if (features) {
-				if (features.webSearch !== undefined) webSearchEnabled = features.webSearch;
-				if (features.imageGeneration !== undefined) imageGenerationEnabled = features.imageGeneration;
-				if (features.codeInterpreter !== undefined) codeInterpreterEnabled = features.codeInterpreter;
-			}
-
-			// Trigger the dictate button after UI settles from modal close
-			await tick();
-			setTimeout(() => {
-				const voiceBtn = document.getElementById('voice-input-button');
-				if (voiceBtn) {
-					voiceBtn.click();
-				}
-			}, 300);
-		} else if (type === 'prompt') {
-			if (autoSubmit && data) {
-				const waitForUploads = async () => {
-					while (files.some(f => f.status === 'uploading')) {
-						await new Promise(r => setTimeout(r, 100));
-					}
-				};
-				await waitForUploads();
-				submitPrompt(data, files);
-			} else {
-				messageInput?.setText(data);
-				await tick();
-				const chatInput = document.getElementById('chat-input');
-				chatInput?.focus();
-			}
+			});
 		}
 	};
 
@@ -3979,7 +3895,7 @@
 						/>
 					{/if}
 					<div id="chat-pane" class="flex flex-col flex-auto z-10 w-full @container overflow-auto">
-						{#if ($settings?.landingPageMode === 'chat' && !$selectedFolder) || selectedModels.some(id => { const m = $models.find(mod => mod.id === id); return m?.name?.toLowerCase().includes('kingfisher') || m?.id?.toLowerCase().includes('kingfisher'); }) || createMessagesList(history, history.currentId).length > 0}
+						{#if ($settings?.landingPageMode === 'chat' && !$selectedFolder) || createMessagesList(history, history.currentId).length > 0}
 							<div
 								class=" pb-2.5 flex flex-col justify-between w-full flex-auto overflow-auto h-0 max-w-full z-10 scrollbar-hidden"
 								id="messages-container"

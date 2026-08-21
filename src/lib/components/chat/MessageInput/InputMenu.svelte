@@ -485,7 +485,7 @@
 								</div>
 							</button>
 						{/if}
-					{/if}	
+					{/if}
 				</div>
 			{:else if tab === 'knowledge'}
 				<div class="flex max-h-72 flex-col overflow-hidden" in:fly={{ x: 20, duration: 150 }}>

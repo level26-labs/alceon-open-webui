@@ -13,10 +13,6 @@
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 	import EyeSlash from '$lib/components/icons/EyeSlash.svelte';
 
-	import CapabilitiesHub from './CapabilitiesHub.svelte';
-	import { goto } from '$app/navigation';
-	import { getUserGroups } from '$lib/apis/users';
-
 	const i18n = getContext('i18n');
 
 	export let modelIds = [];
@@ -27,7 +23,6 @@
 
 	let mounted = false;
 	let selectedModelIdx = 0;
-	let userGroups: string[] = [];
 
 	$: if (modelIds.length > 0) {
 		selectedModelIdx = models.length - 1;
@@ -35,52 +30,9 @@
 
 	$: models = modelIds.map((id) => $_models.find((m) => m.id === id));
 
-	// Check if current model is Kingfisher (case-insensitive)
-	$: showCapabilitiesHub = models.some(m =>
-		m?.name?.toLowerCase().includes('kingfisher') ||
-		m?.id?.toLowerCase().includes('kingfisher')
-	);
-
-	// Fetch user groups on mount
-	onMount(async () => {
+	onMount(() => {
 		mounted = true;
-
-		// Fetch user's groups from API
-		if (localStorage.token) {
-			try {
-				const groups = await getUserGroups(localStorage.token);
-				if (groups && Array.isArray(groups)) {
-					// Flatten to include both IDs and names for backward compatibility
-					userGroups = groups.flatMap(g => [g.id, g.name].filter(Boolean));
-				}
-			} catch (error) {
-				console.error('[ChatPlaceholder] Failed to fetch user groups:', error);
-			}
-		}
 	});
-
-	// Handle capability selection - wraps prompt in expected format with features and autoSubmit
-	function handleCapabilitySelect(
-		prompt: string,
-		modelId?: string,
-		features?: { webSearch?: boolean; imageGeneration?: boolean; codeInterpreter?: boolean },
-		autoSubmit?: boolean,
-		files?: File[],
-		actionType?: string
-	) {
-		// Handle voice recording: tell Chat.svelte to store prompt and trigger dictate
-		if (actionType === 'voice_recording') {
-			onSelect({ type: 'voice_recording', data: prompt, features, modelId });
-			return;
-		}
-		// If prompt is empty or undefined, just focus the input without submitting
-		if (!prompt) {
-			onSelect({ type: 'focus', features, modelId });
-			return;
-		}
-		// Otherwise, set the prompt in the input with optional features, autoSubmit flag, modelId, and files
-		onSelect({ type: 'prompt', data: prompt, features, autoSubmit: autoSubmit ?? false, modelId, files });
-	}
 </script>
 
 {#key mounted}
