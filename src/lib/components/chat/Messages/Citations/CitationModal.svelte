@@ -2,6 +2,7 @@
 	import { getContext, onMount, tick } from 'svelte';
 	import Modal from '$lib/components/common/Modal.svelte';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
+	import Markdown from '$lib/components/chat/Messages/Markdown.svelte';
 	import { WEBUI_API_BASE_URL } from '$lib/constants';
 	import { settings, config } from '$lib/stores';
 	import { injectCsp } from '$lib/utils/csp';
@@ -10,6 +11,9 @@
 	import Textarea from '$lib/components/common/Textarea.svelte';
 
 	const i18n = getContext('i18n');
+
+	const CONTENT_PREVIEW_LIMIT = 10000;
+	let expandedDocs: Set<number> = new Set();
 
 	export let show = false;
 	export let citation;
@@ -36,7 +40,8 @@
 	}
 
 	$: if (citation) {
-		mergedDocuments = citation.document?.map((c, i) => {
+		expandedDocs = new Set();
+		mergedDocuments = (citation.document ?? []).map((c, i) => {
 			return {
 				source: citation.source,
 				document: c,
@@ -210,15 +215,20 @@
 							{#if document.metadata?.html}
 								<iframe
 									class="w-full border-0 h-auto rounded-none"
-									sandbox="allow-scripts allow-forms{($settings?.iframeSandboxAllowSameOrigin ??
-									false)
+									sandbox="{($settings?.iframeSandboxAllowScripts ?? true)
+										? 'allow-scripts'
+										: ''}{($settings?.iframeSandboxAllowForms ?? true)
+										? ' allow-forms'
+										: ''}{($settings?.iframeSandboxAllowDownloads ?? true)
+										? ' allow-downloads'
+										: ''}{($settings?.iframeSandboxAllowSameOrigin ?? false)
 										? ' allow-same-origin'
 										: ''}"
 									srcdoc={injectCsp(document.document, $config?.ui?.iframe_csp ?? '')}
 									title={$i18n.t('Content')}
 								></iframe>
 							{:else}
-								{@const rawContent = document.document.trim().replace(/\n\n+/g, '\n\n')}
+								{@const rawContent = (document.document ?? '').trim().replace(/\n\n+/g, '\n\n')}
 								{@const isTruncated =
 									($settings?.renderMarkdownInPreviews ?? true) &&
 									rawContent.length > CONTENT_PREVIEW_LIMIT &&
