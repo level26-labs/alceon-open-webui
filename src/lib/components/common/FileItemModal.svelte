@@ -6,6 +6,7 @@
 
 	import { formatFileSize, getLineCount } from '$lib/utils';
 	import { WEBUI_API_BASE_URL } from '$lib/constants';
+	import { settings } from '$lib/stores';
 	import { getKnowledgeById } from '$lib/apis/knowledge';
 	import { getFileById, getFileContentById } from '$lib/apis/files';
 
@@ -13,6 +14,9 @@
 	import Markdown from '$lib/components/chat/Messages/Markdown.svelte';
 
 	const i18n = getContext('i18n');
+
+	const CONTENT_PREVIEW_LIMIT = 10000;
+	let expandedContent = false;
 
 	import Modal from './Modal.svelte';
 	import XMark from '../icons/XMark.svelte';
@@ -22,6 +26,8 @@
 	import Spinner from './Spinner.svelte';
 	import PDFViewer from './PDFViewer.svelte';
 	import PanzoomContainer from './PanzoomContainer.svelte';
+	import DocxPreview from './DocxPreview.svelte';
+	import PptxPreview from './PptxPreview.svelte';
 	import Reset from '../icons/Reset.svelte';
 
 	export let item;
@@ -33,6 +39,7 @@
 
 	let isPDF = false;
 	let isAudio = false;
+	let isImage = false;
 	let isExcel = false;
 	let isDocx = false;
 	let isPptx = false;
@@ -46,7 +53,7 @@
 	let rowCount = 0;
 
 	// DOCX state
-	let docxHtml = '';
+	let docxData: ArrayBuffer | null = null;
 	let docxError = '';
 
 	// PPTX state
@@ -97,6 +104,18 @@
 		(item?.name && item?.name.toLowerCase().endsWith('.ogg')) ||
 		(item?.name && item?.name.toLowerCase().endsWith('.m4a')) ||
 		(item?.name && item?.name.toLowerCase().endsWith('.webm'));
+
+	$: isImage =
+		(item?.meta?.content_type ?? '').startsWith('image/') ||
+		(item?.name &&
+			(item.name.toLowerCase().endsWith('.png') ||
+				item.name.toLowerCase().endsWith('.jpg') ||
+				item.name.toLowerCase().endsWith('.jpeg') ||
+				item.name.toLowerCase().endsWith('.gif') ||
+				item.name.toLowerCase().endsWith('.webp') ||
+				item.name.toLowerCase().endsWith('.svg') ||
+				item.name.toLowerCase().endsWith('.bmp') ||
+				item.name.toLowerCase().endsWith('.ico')));
 
 	$: isExcel =
 		item?.meta?.content_type === 'application/vnd.ms-excel' ||
@@ -155,12 +174,7 @@
 	const loadDocxContent = async () => {
 		try {
 			docxError = '';
-			const [arrayBuffer, mammoth] = await Promise.all([
-				getFileContentById(item.id),
-				import('mammoth')
-			]);
-			const result = await mammoth.convertToHtml({ arrayBuffer });
-			docxHtml = DOMPurify.sanitize(result.value);
+			docxData = await getFileContentById(item.id);
 		} catch (error) {
 			console.error('Error loading DOCX file:', error);
 			docxError = $i18n.t('Failed to load DOCX file. Please try downloading it instead.');
@@ -185,6 +199,8 @@
 
 	const loadContent = async () => {
 		selectedTab = '';
+		expandedContent = false;
+		docxData = null;
 		if (item?.type === 'collection') {
 			loading = true;
 
@@ -423,13 +439,69 @@
 					</div>
 				{:else if selectedTab === ''}
 					{#if item?.file?.data}
-						<div class="max-h-96 overflow-scroll scrollbar-hidden text-xs whitespace-pre-wrap">
-							{(item?.file?.data?.content ?? '').trim() || 'No content'}
-						</div>
+						{@const rawContent = (item?.file?.data?.content ?? '').trim() || 'No content'}
+						{@const isTruncated =
+							($settings?.renderMarkdownInPreviews ?? true) &&
+							rawContent.length > CONTENT_PREVIEW_LIMIT &&
+							!expandedContent}
+						{#if $settings?.renderMarkdownInPreviews ?? true}
+							<div
+								class="max-h-96 overflow-scroll scrollbar-hidden text-sm prose dark:prose-invert max-w-full"
+							>
+								<Markdown
+									content={isTruncated ? rawContent.slice(0, CONTENT_PREVIEW_LIMIT) : rawContent}
+									id="file-preview"
+								/>
+							</div>
+							{#if isTruncated}
+								<button
+									class="mt-1 text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition"
+									on:click={() => {
+										expandedContent = true;
+									}}
+								>
+									{$i18n.t('Show all ({{COUNT}} characters)', {
+										COUNT: rawContent.length.toLocaleString()
+									})}
+								</button>
+							{/if}
+						{:else}
+							<div class="max-h-96 overflow-scroll scrollbar-hidden text-xs whitespace-pre-wrap">
+								{rawContent}
+							</div>
+						{/if}
 					{:else if item?.content}
-						<div class="max-h-96 overflow-scroll scrollbar-hidden text-xs whitespace-pre-wrap">
-							{(item?.content ?? '').trim() || 'No content'}
-						</div>
+						{@const rawContent = (item?.content ?? '').trim() || 'No content'}
+						{@const isTruncated =
+							($settings?.renderMarkdownInPreviews ?? true) &&
+							rawContent.length > CONTENT_PREVIEW_LIMIT &&
+							!expandedContent}
+						{#if $settings?.renderMarkdownInPreviews ?? true}
+							<div
+								class="max-h-96 overflow-scroll scrollbar-hidden text-sm prose dark:prose-invert max-w-full"
+							>
+								<Markdown
+									content={isTruncated ? rawContent.slice(0, CONTENT_PREVIEW_LIMIT) : rawContent}
+									id="file-preview-content"
+								/>
+							</div>
+							{#if isTruncated}
+								<button
+									class="mt-1 text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition"
+									on:click={() => {
+										expandedContent = true;
+									}}
+								>
+									{$i18n.t('Show all ({{COUNT}} characters)', {
+										COUNT: rawContent.length.toLocaleString()
+									})}
+								</button>
+							{/if}
+						{:else}
+							<div class="max-h-96 overflow-scroll scrollbar-hidden text-xs whitespace-pre-wrap">
+								{rawContent}
+							</div>
+						{/if}
 					{/if}
 				{:else if selectedTab === 'preview'}
 					{#if isAudio}
@@ -496,12 +568,8 @@
 					{:else if isDocx}
 						{#if docxError}
 							<div class="text-red-500 text-sm p-4">{docxError}</div>
-						{:else if docxHtml}
-							<div
-								class="office-preview max-h-[60vh] overflow-auto p-4 prose dark:prose-invert max-w-full text-sm"
-							>
-								{@html docxHtml}
-							</div>
+						{:else if docxData}
+							<DocxPreview data={docxData} className="h-[60vh]" />
 						{:else}
 							<div class="text-gray-500 text-sm p-4">No content available</div>
 						{/if}
@@ -509,60 +577,11 @@
 						{#if pptxError}
 							<div class="text-red-500 text-sm p-4">{pptxError}</div>
 						{:else if pptxSlides.length > 0}
-							<div class="max-h-[60vh] overflow-auto">
-								<div class="flex justify-center p-4">
-									<img
-										src={pptxSlides[pptxCurrentSlide]}
-										alt="Slide {pptxCurrentSlide + 1}"
-										class="max-w-full max-h-[50vh] object-contain rounded-md shadow-lg"
-										draggable="false"
-									/>
-								</div>
-								{#if pptxSlides.length > 1}
-									<div class="flex items-center justify-center gap-3 pb-3 text-sm text-gray-500">
-										<button
-											aria-label={$i18n.t('Previous slide')}
-											class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-30"
-											disabled={pptxCurrentSlide === 0}
-											on:click={() => (pptxCurrentSlide = Math.max(0, pptxCurrentSlide - 1))}
-										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 20 20"
-												fill="currentColor"
-												class="size-5"
-											>
-												<path
-													fill-rule="evenodd"
-													d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
-													clip-rule="evenodd"
-												/>
-											</svg>
-										</button>
-										<span>{pptxCurrentSlide + 1} / {pptxSlides.length}</span>
-										<button
-											aria-label={$i18n.t('Next slide')}
-											class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-30"
-											disabled={pptxCurrentSlide === pptxSlides.length - 1}
-											on:click={() =>
-												(pptxCurrentSlide = Math.min(pptxSlides.length - 1, pptxCurrentSlide + 1))}
-										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 20 20"
-												fill="currentColor"
-												class="size-5"
-											>
-												<path
-													fill-rule="evenodd"
-													d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
-													clip-rule="evenodd"
-												/>
-											</svg>
-										</button>
-									</div>
-								{/if}
-							</div>
+							<PptxPreview
+								slides={pptxSlides}
+								bind:currentSlide={pptxCurrentSlide}
+								className="h-[60vh]"
+							/>
 						{:else}
 							<div class="text-gray-500 text-sm p-4">No content available</div>
 						{/if}
