@@ -503,7 +503,7 @@
 				name: model.name,
 				base_model_id: null,
 				params: {},
-				access_control: {},
+				access_grants: [],
 				...model
 			}).catch((error) => {
 				return null;
@@ -529,7 +529,7 @@
 				base_model_id: null,
 				meta: {},
 				params: {},
-				access_control: {},
+				access_grants: [],
 				is_active: model.is_active
 			}).catch((error) => {
 				return null;
