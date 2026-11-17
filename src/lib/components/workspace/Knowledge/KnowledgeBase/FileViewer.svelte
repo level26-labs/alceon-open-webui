@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import DOMPurify from 'dompurify';
 	import { isCodeFile } from '$lib/utils/codeHighlight';
 	import {
 		FileContentError,
@@ -39,9 +38,7 @@
 	let controller: AbortController;
 	let indexedController: AbortController;
 	let objectUrl = '';
-	let workbook: any = null;
 	let selectedExcelSheet = '';
-	let excelSheetNames: string[] = [];
 	let indexedEditor: FileCodeEditor;
 	let mounted = false;
 	$: name = fileName(file);
@@ -89,14 +86,6 @@
 			if (!signal.aborted) indexedLoading = false;
 		}
 	};
-	const selectSheet = async (sheet: string) => {
-		const key = request;
-		const { excelToTable } = await import('$lib/utils/excelToTable');
-		const result = await excelToTable(workbook.Sheets[sheet]);
-		if (key !== request) return;
-		selectedExcelSheet = sheet;
-		previewData = { fileOfficeHtml: DOMPurify.sanitize(result.html) };
-	};
 	const loadOriginal = async () => {
 		controller?.abort();
 		controller = new AbortController();
@@ -120,7 +109,7 @@
 				data = { filePdfData: await blob.arrayBuffer() };
 			else if (ext === 'svg' || mime === 'image/svg+xml') {
 				previewName = `${name}.svg`;
-				data = { fileContent: await blob.text() };
+				data = { fileContent: await getFileIndexedText(localStorage.token, file.id!, signal) };
 				sourceToggle = true;
 			} else if (mime.startsWith('image/') || /^(png|jpe?g|gif|webp|avif|bmp|ico)$/.test(ext)) {
 				objectUrl = URL.createObjectURL(blob);
@@ -134,14 +123,13 @@
 			} else if (ext === 'docx' || mime.includes('wordprocessingml'))
 				data = { fileDocxData: await blob.arrayBuffer() };
 			else if (ext === 'xlsx' || mime.includes('spreadsheetml')) {
-				const XLSX = await import('xlsx');
+				const { readExcelWorkbook } = await import('$lib/utils/excelToTable');
 				const bytes = await blob.arrayBuffer();
 				if (signal.aborted || key !== request) return;
-				workbook = XLSX.read(bytes, { type: 'array' });
-				excelSheetNames = workbook.SheetNames;
-				if (!excelSheetNames.length) throw new Error('This workbook has no sheets.');
-				await selectSheet(excelSheetNames[0]);
-				data = previewData;
+				const workbook = await readExcelWorkbook(bytes);
+				if (!workbook.SheetNames.length) throw new Error('This workbook has no sheets.');
+				selectedExcelSheet = workbook.SheetNames[0];
+				data = { excelWorkbook: workbook };
 			} else if (ext === 'pptx' || mime.includes('presentationml')) {
 				const { pptxToImages } = await import('$lib/utils/pptxToHtml');
 				const result = await pptxToImages(await blob.arrayBuffer());
@@ -154,7 +142,7 @@
 				) ||
 				mime.includes('json')
 			) {
-				data = { fileContent: await blob.text() };
+				data = { fileContent: await getFileIndexedText(localStorage.token, file.id!, signal) };
 				if (mime === 'text/csv' && ext !== 'csv') previewName = `${name}.csv`;
 				if (mime === 'text/html' && !/^html?$/.test(ext)) previewName = `${name}.html`;
 				if (mime.includes('json') && !/^(json|jsonc|jsonl|json5|ipynb)$/.test(ext))
@@ -205,6 +193,7 @@
 		} catch (error) {
 			toast.error(message(error));
 		} finally {
+			if (!noOriginal && (loading || 'fileContent' in previewData)) await loadOriginal();
 			saving = false;
 		}
 	};
@@ -299,9 +288,7 @@
 				readOnly
 				allowScripts={false}
 				bind:showRaw
-				{excelSheetNames}
-				{selectedExcelSheet}
-				onSheetChange={selectSheet}
+				bind:selectedExcelSheet
 			/>{/if}
 	{:else if indexedLoading}<div class="p-4"><Spinner className="size-4" /></div>
 	{:else if indexedError}<div class="p-4 text-xs">
