@@ -9,16 +9,13 @@
 	import { getOutputText } from '$lib/components/chat/Messages/structuredOutput';
 
 	import {
-		showControls,
-		showArtifacts,
 		mobile,
-		temporaryChatEnabled,
+		temporaryChat,
 		theme,
 		user,
 		settings,
 		folders,
-		showEmbeds,
-		artifactContents
+		visibleControls
 	} from '$lib/stores';
 
 	import { getChatById } from '$lib/apis/chats';
@@ -26,16 +23,18 @@
 	import Dropdown from '$lib/components/common/Dropdown.svelte';
 	import DropdownMenu from '$lib/components/common/DropdownMenu.svelte';
 	import DropdownSub from '$lib/components/common/DropdownSub.svelte';
-	import Tags from '$lib/components/chat/Tags.svelte';
+	import ChevronRight from '$lib/components/icons/ChevronRight.svelte';
+	import TagPicker from '$lib/components/chat/TagPicker.svelte';
+	import Tag from '$lib/components/icons/Tag.svelte';
 	import Clipboard from '$lib/components/icons/Clipboard.svelte';
 	import AdjustmentsHorizontal from '$lib/components/icons/AdjustmentsHorizontal.svelte';
-	import Cube from '$lib/components/icons/Cube.svelte';
 	import Folder from '$lib/components/icons/Folder.svelte';
 	import Share from '$lib/components/icons/Share.svelte';
 	import ArchiveBox from '$lib/components/icons/ArchiveBox.svelte';
 	import GarbageBin from '$lib/components/icons/GarbageBin.svelte';
 	import Messages from '$lib/components/chat/Messages.svelte';
 	import Download from '$lib/components/icons/Download.svelte';
+	import EditPencilIcon from '$lib/components/layout/Sidebar/icons/EditPencil.svelte';
 
 	const i18n = getContext('i18n');
 
@@ -43,6 +42,7 @@
 	export let readOnly: boolean = false;
 
 	export let shareHandler: Function;
+	export let renameHandler: Function;
 	export let moveChatHandler: Function;
 
 	export let archiveChatHandler: Function;
@@ -53,8 +53,12 @@
 	export let chat;
 	export let onClose: Function = () => {};
 	export let scrollToTop: (() => void) | null = null;
+	/** Overrides the global temporary chat state for chats with their own (side chats). */
+	export let temporary: boolean | null = null;
+	$: isTemporary = temporary ?? $temporaryChat;
 
 	let showFullMessages = false;
+	let show = false;
 
 	const getChatAsText = async () => {
 		const history = chat.chat.history;
@@ -283,7 +287,7 @@
 		if (chat.id) {
 			let chatObj = null;
 
-			if ((chat?.id ?? '').startsWith('local') || $temporaryChatEnabled) {
+			if ((chat?.id ?? '').startsWith('local') || isTemporary) {
 				chatObj = chat;
 			} else {
 				chatObj = await getChatById(localStorage.token, chat.id);
@@ -319,6 +323,7 @@
 {/if}
 
 <Dropdown
+	bind:show
 	closeOnSelect
 	onOpenChange={(state) => {
 		if (state === false) {
@@ -385,29 +390,13 @@
 					</svg>
 					<div class="flex items-center">{$i18n.t('Scroll to Top')}</div>
 				</button>
+			{/if}
 
+			{#if scrollToTop}
 				<hr class="border-gray-50/30 dark:border-gray-800/30 mx-1 my-0.5" />
 			{/if}
 
-			{#if ($artifactContents ?? []).length > 0}
-				<button
-					draggable="false"
-					class="flex h-[1.6875rem] w-full items-center gap-2 rounded-xl px-2 text-[0.8125rem] cursor-pointer select-none hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
-					id="chat-artifacts-button"
-					on:click={async () => {
-						await showControls.set(true);
-						await showArtifacts.set(true);
-						await showEmbeds.set(false);
-					}}
-				>
-					<Cube className="size-3.5" strokeWidth="1.5" />
-					<div class="flex items-center">{$i18n.t('Artifacts')}</div>
-				</button>
-
-				<hr class="border-gray-50/30 dark:border-gray-800/30 mx-1 my-0.5" />
-			{/if}
-
-			{#if !readOnly && !$temporaryChatEnabled && ($user?.role === 'admin' || ($user.permissions?.chat?.share ?? true))}
+			{#if !readOnly && !isTemporary && ($user?.role === 'admin' || ($user.permissions?.chat?.share ?? true))}
 				<button
 					draggable="false"
 					class="flex h-[1.6875rem] w-full items-center gap-2 rounded-xl px-2 text-[0.8125rem] cursor-pointer select-none hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
@@ -465,25 +454,40 @@
 				</DropdownSub>
 			{/if}
 
-			<button
-				draggable="false"
-				class="flex h-[1.6875rem] w-full items-center gap-2 rounded-xl px-2 text-[0.8125rem] cursor-pointer select-none hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
-				id="chat-copy-button"
-				on:click={async () => {
-					const res = await copyToClipboard(await getChatAsText()).catch((e) => {
-						console.error(e);
-					});
+			{#if (!readOnly || $folders.find((folder) => folder.id === chat?.folder_id)?.user_id === $user?.id) && !isTemporary && chat?.id}
+				<button
+					draggable="false"
+					class="flex h-[1.6875rem] w-full items-center gap-2 rounded-xl px-2 text-[0.8125rem] cursor-pointer select-none hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
+					on:click={() => {
+						renameHandler();
+					}}
+				>
+					<EditPencilIcon className="size-3.5" strokeWidth="1.5" />
+					<div class="flex items-center">{$i18n.t('Rename')}</div>
+				</button>
+			{/if}
 
-					if (res) {
-						toast.success($i18n.t('Copied to clipboard'));
-					}
-				}}
-			>
-				<Clipboard className="size-3.5" strokeWidth="1.5" />
-				<div class="flex items-center">{$i18n.t('Copy')}</div>
-			</button>
+			{#if $user?.role === 'admin' || ($user.permissions?.chat?.export ?? true)}
+				<button
+					draggable="false"
+					class="flex h-[1.6875rem] w-full items-center gap-2 rounded-xl px-2 text-[0.8125rem] cursor-pointer select-none hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
+					id="chat-copy-button"
+					on:click={async () => {
+						const res = await copyToClipboard(await getChatAsText()).catch((e) => {
+							console.error(e);
+						});
 
-			{#if !readOnly && !$temporaryChatEnabled && chat?.id}
+						if (res) {
+							toast.success($i18n.t('Copied to clipboard'));
+						}
+					}}
+				>
+					<Clipboard className="size-3.5" strokeWidth="1.5" />
+					<div class="flex items-center">{$i18n.t('Copy')}</div>
+				</button>
+			{/if}
+
+			{#if !readOnly && !isTemporary && chat?.id}
 				<hr class="border-gray-50/30 dark:border-gray-800/30 mx-1 my-0.5" />
 
 				{#if $folders.length > 0}
@@ -517,18 +521,20 @@
 					</DropdownSub>
 				{/if}
 
-				<button
-					draggable="false"
-					class="flex h-[1.6875rem] w-full items-center gap-2 rounded-xl px-2 text-[0.8125rem] cursor-pointer select-none hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
-					on:click={() => {
-						archiveChatHandler();
-					}}
-				>
-					<ArchiveBox className="size-3.5" strokeWidth="1.5" />
-					<div class="flex items-center">
-						{chat?.archived ? $i18n.t('Unarchive') : $i18n.t('Archive')}
-					</div>
-				</button>
+				{#if $visibleControls['chat.archive']}
+					<button
+						draggable="false"
+						class="flex h-[1.6875rem] w-full items-center gap-2 rounded-xl px-2 text-[0.8125rem] cursor-pointer select-none hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
+						on:click={() => {
+							archiveChatHandler();
+						}}
+					>
+						<ArchiveBox className="size-3.5" strokeWidth="1.5" />
+						<div class="flex items-center">
+							{chat?.archived ? $i18n.t('Unarchive') : $i18n.t('Archive')}
+						</div>
+					</button>
+				{/if}
 
 				{#if $user?.role === 'admin' || ($user?.permissions?.chat?.delete ?? true)}
 					<button
@@ -543,12 +549,31 @@
 					</button>
 				{/if}
 
-				<hr class="border-gray-50/30 dark:border-gray-800/30 mx-1 my-0.5" />
+				{#if $visibleControls['chat.tags']}
+					<hr class="border-gray-50/30 dark:border-gray-800/30 mx-1 my-0.5" />
 
-				<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
-				<div class="flex max-h-28 overflow-y-auto px-2 py-1" on:click={(e) => e.preventDefault()}>
-					<Tags chatId={chat.id} />
-				</div>
+					<!-- Same picker as folder chats. -->
+					<DropdownSub contentClass="select-none z-50 w-52" maxWidth={240}>
+						<button
+							slot="trigger"
+							draggable="false"
+							class="flex h-[1.6875rem] w-full items-center gap-2 rounded-xl px-2 text-[0.8125rem] cursor-pointer select-none hover:bg-gray-50/40 dark:hover:bg-gray-800/40"
+						>
+							<Tag className="size-3.5" strokeWidth="1.5" />
+							<div class="flex flex-1 items-center">{$i18n.t('Tags')}</div>
+							{#if chat?.meta?.tags?.length}<span class="text-xs tabular-nums text-gray-400"
+									>{chat.meta.tags.length}</span
+								>{/if}
+							<ChevronRight className="size-3.5 shrink-0 text-gray-400 rtl:rotate-180" />
+						</button>
+						<TagPicker
+							chatId={chat.id}
+							onChange={(next) => {
+								if (chat?.meta) chat.meta.tags = next.map((tag) => tag.id);
+							}}
+						/>
+					</DropdownSub>
+				{/if}
 			{/if}
 		</DropdownMenu>
 	</div>
