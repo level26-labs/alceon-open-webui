@@ -949,6 +949,31 @@ async def agenerate_openai_batch_embeddings(
                 raise ValueError("Unexpected OpenAI embeddings response: missing 'data' key")
 
 
+# Alceon: keyless Azure OpenAI embeddings. With no API key (or the placeholder below, which the admin screen
+# accepts where it insists on a value), sign in with the machine's managed identity, as chat connections do
+# with auth_type 'microsoft_entra_id'. A real key keeps the upstream behaviour.
+AZURE_OPENAI_ENTRA_ID_KEY_PLACEHOLDER = 'microsoft_entra_id'
+_azure_openai_token_provider = None
+
+
+def _azure_openai_embedding_headers(key: str) -> dict:
+    headers = {'Content-Type': 'application/json'}
+    if key and key != AZURE_OPENAI_ENTRA_ID_KEY_PLACEHOLDER:
+        headers['api-key'] = key
+        return headers
+
+    global _azure_openai_token_provider
+    if _azure_openai_token_provider is None:
+        from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+
+        # One provider for the process: it caches the token and renews it before expiry
+        _azure_openai_token_provider = get_bearer_token_provider(
+            DefaultAzureCredential(), 'https://cognitiveservices.azure.com/.default'
+        )
+    headers['Authorization'] = f'Bearer {_azure_openai_token_provider()}'
+    return headers
+
+
 def generate_azure_openai_batch_embeddings(
     model: str,
     texts: list[str],
@@ -966,10 +991,7 @@ def generate_azure_openai_batch_embeddings(
     url = f'{url}/openai/deployments/{model}/embeddings?api-version={version}'
 
     for _ in range(5):
-        headers = {
-            'Content-Type': 'application/json',
-            'api-key': key,
-        }
+        headers = _azure_openai_embedding_headers(key)
         if ENABLE_FORWARD_USER_INFO_HEADERS and user:
             headers = include_user_info_headers(headers, user)
 
@@ -1007,10 +1029,8 @@ async def agenerate_azure_openai_batch_embeddings(
 
     full_url = f'{url}/openai/deployments/{model}/embeddings?api-version={version}'
 
-    headers = {
-        'Content-Type': 'application/json',
-        'api-key': key,
-    }
+    # (the first token fetch can block briefly, so keep it off the event loop)
+    headers = await asyncio.to_thread(_azure_openai_embedding_headers, key)
     if ENABLE_FORWARD_USER_INFO_HEADERS and user:
         headers = include_user_info_headers(headers, user)
 
